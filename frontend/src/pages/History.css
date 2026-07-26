@@ -1,0 +1,71 @@
+
+/* Enhanced History CSS */
+.history-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  background: #ffffff;
+}
+
+.stat-card h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-dark);
+}
+
+.disease-val { color: var(--danger); }
+.healthy-val { color: var(--success); }
+
+.btn-export {
+  background: var(--primary);
+  border: 1px solid var(--primary-dark);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.btn-export:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.badge-healthy {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid #10b981;
+}
+
+.badge-disease {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
