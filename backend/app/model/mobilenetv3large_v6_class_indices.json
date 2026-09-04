@@ -1,0 +1,21 @@
+{
+  "0": "bacterial_leaf_blight",
+  "1": "bacterial_leaf_streak",
+  "2": "bacterial_panicle_blight",
+  "3": "beetle",
+  "4": "blast",
+  "5": "brown_planthopper",
+  "6": "brown_spot",
+  "7": "dead_heart",
+  "8": "downy_mildew",
+  "9": "golden_apple_snail",
+  "10": "leaf_roller",
+  "11": "leaf_smut",
+  "12": "normal",
+  "13": "sheath_blight",
+  "14": "southern_black_streaked_dwarf",
+  "15": "stem_borer",
+  "16": "tungro",
+  "17": "weeds",
+  "18": "whitebacked_planthopper"
+}

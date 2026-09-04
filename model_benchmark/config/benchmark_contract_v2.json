@@ -1,0 +1,128 @@
+{
+  "schema_version": "riceai-backbone-benchmark/v1",
+  "benchmark_id": "rice_disease_backbone_benchmark_v2",
+  "protocol_revision": {
+    "supersedes": "rice_disease_backbone_benchmark_v1",
+    "reason": "Validation-only pilot MobileNetV2 seed 42 reached its best Macro-F1 at the final allowed fine-tune epoch, so the maximum fine-tune budget was increased before any test access.",
+    "test_accessed_for_revision": false,
+    "v1_pilot_is_excluded_from_primary_results": true
+  },
+  "task": {
+    "type": "single_label_image_classification",
+    "description": "Phan loai 19 nhom benh va doi tuong lua tu mot anh RGB."
+  },
+  "data": {
+    "dataset_root": "../../research/data/cleaned_v4",
+    "split_manifest": "../../research/data/splits/rice_cleaned_v4_exact_cross_label_conflicts_excluded_v1.csv",
+    "split_metadata": "../../research/data/splits/rice_cleaned_v4_exact_cross_label_conflicts_excluded_v1.metadata.json",
+    "manifest_id": "rice_cleaned_v4_exact_cross_label_conflicts_excluded_v1",
+    "split_seed": 2026,
+    "split_level": "stratified_image_level",
+    "fractions": {
+      "train": 0.7,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "cross_label_duplicate_policy": "exclude_cross_label_duplicates",
+    "class_count": 19
+  },
+  "models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "implementation": {
+    "scope": "all_six_models",
+    "framework": "pytorch_torchvision",
+    "weights_source": "official_torchvision_imagenet1k",
+    "input_range": "rgb_float_0_1_then_imagenet_normalize",
+    "imagenet_mean": [0.485, 0.456, 0.406],
+    "imagenet_std": [0.229, 0.224, 0.225],
+    "batchnorm_policy": "freeze_running_statistics_and_parameters_in_both_stages",
+    "deterministic_algorithms": true,
+    "cublas_workspace_config": ":4096:8",
+    "allow_tf32": false
+  },
+  "training": {
+    "models_to_train": [
+      "mobilenetv2",
+      "mobilenetv3large",
+      "resnet18",
+      "efficientnetb0",
+      "shufflenetv2_1_0x",
+      "densenet121"
+    ],
+    "input_shape": [224, 224, 3],
+    "transfer_learning_weights": "imagenet",
+    "batch_size": 32,
+    "head_epochs": 15,
+    "fine_tune_epochs": 30,
+    "optimizer": "adam",
+    "head_learning_rate": 0.001,
+    "fine_tune_learning_rate": 0.00001,
+    "dropout": 0.4,
+    "early_stopping_patience": 5,
+    "reduce_lr_factor": 0.2,
+    "reduce_lr_min": 1e-7,
+    "class_weighting": {
+      "method": "effective_number",
+      "beta": 0.999,
+      "minimum": 0.25,
+      "maximum": 5.0
+    },
+    "augmentation": {
+      "horizontal_flip_probability": 0.5,
+      "rotation_degrees": 20.16,
+      "translation_fraction": 0.1,
+      "scale_range": [0.85, 1.15],
+      "brightness": 0.15,
+      "contrast": 0.15
+    },
+    "selection_metric": "validation_macro_f1",
+    "training_seeds": [42, 123, 2026],
+    "test_must_not_select_model_or_hyperparameters": true
+  },
+  "comparison_design": {
+    "type": "single_framework_repeated_seed_architecture_comparison",
+    "framework": "pytorch_torchvision",
+    "training_seed_count": 3,
+    "limitations": [
+      "The locked split is image-level, not plant, field, or capture-session grouped.",
+      "Three seeds estimate training variability but do not cover every source of deployment variability.",
+      "Mobile latency requires a later common-runtime benchmark on the same physical device."
+    ]
+  },
+  "evaluation": {
+    "primary_metric": "macro_f1",
+    "required_metrics": [
+      "accuracy",
+      "macro_precision",
+      "macro_recall",
+      "macro_f1",
+      "per_class_precision_recall_f1",
+      "confusion_matrix",
+      "bootstrap_ci95_macro_f1"
+    ],
+    "test_policy": "evaluate_once_after_preflight_lock"
+  },
+  "deployment_benchmark": {
+    "device": "OPPO A54 CPH2239",
+    "batch_size": 1,
+    "cpu_threads": 4,
+    "warmup_runs": 50,
+    "measurement_rounds": 3,
+    "measurements_per_round": 300,
+    "required_metrics": ["p50_ms", "p95_ms", "mean_ms", "initialization_ms", "pss_mb", "model_size_mb"]
+  },
+  "integrity_rules": [
+    "Do not manually edit generated metrics or comparison tables.",
+    "Every run must write contract SHA256, split manifest SHA256 and model SHA256.",
+    "A comparison is rejected when contract, split manifest, class map or preprocessing differs.",
+    "Select checkpoints and deployment variants using validation only.",
+    "Use the same locked protocol for all six newly trained architectures.",
+    "Historical TensorFlow/Keras V2/V3 and the v1 pilot are not primary paper results."
+  ]
+}

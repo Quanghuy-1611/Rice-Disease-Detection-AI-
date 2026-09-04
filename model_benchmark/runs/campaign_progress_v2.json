@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "updated_at_utc": "2026-08-30T05:50:03.464146+00:00",
+  "selected_run_count": 1,
+  "completed": [
+    "densenet121/seed_2026"
+  ],
+  "test_evaluated": false
+}

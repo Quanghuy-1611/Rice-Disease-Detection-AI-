@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "915835874142",
+    "project_id": "riceai-production",
+    "storage_bucket": "riceai-production.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915835874142:android:49cebf15c7f3f7b966fdcf",
+        "android_client_info": {
+          "package_name": "com.example.mobile_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915835874142-r780h3799b5ltbgi6h9qe6md0oh8g65e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mobile_app",
+            "certificate_hash": "6393fcf687c55f0e031587c6cd8024dee5455ab9"
+          }
+        },
+        {
+          "client_id": "915835874142-r6niga74l5jkiajuig8eir1f225qr0ad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBu24ULiY2CgTZAYsAjnSMyDOq09DRr-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915835874142-r6niga74l5jkiajuig8eir1f225qr0ad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,2595 @@
+{
+  "schema_version": "riceai-11class-transition/v1",
+  "status": "posthoc_sensitivity_from_19class_checkpoints",
+  "warning": "Không phải kết quả của classifier 11 đầu ra; campaign 11 lớp chưa huấn luyện.",
+  "class_selection_rule": "Giữ lớp có support test >= 100 trong split V2 đã khóa.",
+  "classes": [
+    "bacterial_leaf_blight",
+    "blast",
+    "brown_planthopper",
+    "brown_spot",
+    "dead_heart",
+    "golden_apple_snail",
+    "leaf_roller",
+    "normal",
+    "stem_borer",
+    "tungro",
+    "weeds"
+  ],
+  "class_names_vi": {
+    "bacterial_leaf_blight": "Bạc lá vi khuẩn",
+    "blast": "Đạo ôn",
+    "brown_planthopper": "Rầy nâu",
+    "brown_spot": "Đốm nâu",
+    "dead_heart": "Dảnh héo",
+    "golden_apple_snail": "Ốc bươu vàng",
+    "leaf_roller": "Sâu cuốn lá",
+    "normal": "Bình thường",
+    "stem_borer": "Sâu đục thân",
+    "tungro": "Tungro",
+    "weeds": "Cỏ dại"
+  },
+  "support_test": {
+    "bacterial_leaf_blight": 270,
+    "blast": 251,
+    "brown_planthopper": 2786,
+    "brown_spot": 330,
+    "dead_heart": 215,
+    "golden_apple_snail": 122,
+    "leaf_roller": 1764,
+    "normal": 263,
+    "stem_borer": 2973,
+    "tungro": 163,
+    "weeds": 239
+  },
+  "split_counts": {
+    "bacterial_leaf_blight": {
+      "train": 1260,
+      "validation": 270,
+      "test": 270
+    },
+    "blast": {
+      "train": 1172,
+      "validation": 251,
+      "test": 251
+    },
+    "brown_planthopper": {
+      "train": 13001,
+      "validation": 2786,
+      "test": 2786
+    },
+    "brown_spot": {
+      "train": 1540,
+      "validation": 330,
+      "test": 330
+    },
+    "dead_heart": {
+      "train": 1004,
+      "validation": 215,
+      "test": 215
+    },
+    "golden_apple_snail": {
+      "train": 566,
+      "validation": 122,
+      "test": 122
+    },
+    "leaf_roller": {
+      "train": 8232,
+      "validation": 1764,
+      "test": 1764
+    },
+    "normal": {
+      "train": 1230,
+      "validation": 263,
+      "test": 263
+    },
+    "stem_borer": {
+      "train": 13875,
+      "validation": 2973,
+      "test": 2973
+    },
+    "tungro": {
+      "train": 759,
+      "validation": 163,
+      "test": 163
+    },
+    "weeds": {
+      "train": 1114,
+      "validation": 239,
+      "test": 239
+    }
+  },
+  "test_sample_count": 9376,
+  "runs": {
+    "efficientnetb0": {
+      "42": {
+        "accuracy": 0.99285409556314,
+        "macro_precision": 0.9820271656670223,
+        "macro_recall": 0.9756236260337499,
+        "macro_f1": 0.9787495012564057,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.967391304347826,
+            "recall": 0.9888888888888889,
+            "f1": 0.978021978021978,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9591836734693877,
+            "recall": 0.9362549800796812,
+            "f1": 0.9475806451612904,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9996410624551328,
+            "recall": 0.9996410624551328,
+            "f1": 0.9996410624551328,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9876923076923076,
+            "recall": 0.9727272727272728,
+            "f1": 0.9801526717557252,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9907834101382489,
+            "recall": 1.0,
+            "f1": 0.9953703703703703,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9994331065759637,
+            "recall": 0.9994331065759637,
+            "f1": 0.9994331065759637,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9769230769230769,
+            "recall": 0.9657794676806084,
+            "f1": 0.97131931166348,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9996636394214599,
+            "recall": 0.9996636394214599,
+            "f1": 0.9996636394214599,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9565217391304348,
+            "recall": 0.9447852760736196,
+            "f1": 0.9506172839506173,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9650655021834061,
+            "recall": 0.9246861924686193,
+            "f1": 0.9444444444444444,
+            "support": 239
+          }
+        ]
+      },
+      "123": {
+        "accuracy": 0.9938139931740614,
+        "macro_precision": 0.9851063509101438,
+        "macro_recall": 0.9785278296472029,
+        "macro_f1": 0.9817539043828034,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9851851851851852,
+            "recall": 0.9851851851851852,
+            "f1": 0.9851851851851852,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.979253112033195,
+            "recall": 0.9402390438247012,
+            "f1": 0.959349593495935,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9992823824901328,
+            "recall": 0.9996410624551328,
+            "f1": 0.9994616902924816,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9847560975609756,
+            "recall": 0.9787878787878788,
+            "f1": 0.9817629179331308,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9953703703703703,
+            "recall": 1.0,
+            "f1": 0.9976798143851509,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9988674971687429,
+            "recall": 1.0,
+            "f1": 0.9994334277620397,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9736842105263158,
+            "recall": 0.9847908745247148,
+            "f1": 0.9792060491493384,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 1.0,
+            "recall": 0.9989909182643795,
+            "f1": 0.9994952044422009,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.949685534591195,
+            "recall": 0.9263803680981595,
+            "f1": 0.937888198757764,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9700854700854701,
+            "recall": 0.9497907949790795,
+            "f1": 0.959830866807611,
+            "support": 239
+          }
+        ]
+      },
+      "2026": {
+        "accuracy": 0.9933873720136519,
+        "macro_precision": 0.981492698389577,
+        "macro_recall": 0.9773664520511022,
+        "macro_f1": 0.9793292957299059,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9850187265917603,
+            "recall": 0.9740740740740741,
+            "f1": 0.9795158286778398,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9872881355932204,
+            "recall": 0.9282868525896414,
+            "f1": 0.9568788501026694,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 1.0,
+            "recall": 0.9989231873653984,
+            "f1": 0.9994613036451787,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9908256880733946,
+            "recall": 0.9818181818181818,
+            "f1": 0.9863013698630136,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9953271028037384,
+            "recall": 0.9906976744186047,
+            "f1": 0.993006993006993,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 0.991869918699187,
+            "recall": 1.0,
+            "f1": 0.9959183673469387,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9994331065759637,
+            "recall": 0.9994331065759637,
+            "f1": 0.9994331065759637,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9662921348314607,
+            "recall": 0.9809885931558935,
+            "f1": 0.9735849056603774,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.999327731092437,
+            "recall": 1.0,
+            "f1": 0.9996637525218561,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9386503067484663,
+            "recall": 0.9386503067484663,
+            "f1": 0.9386503067484663,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9423868312757202,
+            "recall": 0.9581589958158996,
+            "f1": 0.950207468879668,
+            "support": 239
+          }
+        ]
+      }
+    },
+    "mobilenetv3large": {
+      "42": {
+        "accuracy": 0.9924274744027304,
+        "macro_precision": 0.9802589206125081,
+        "macro_recall": 0.9733588326446442,
+        "macro_f1": 0.9766594395872733,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9961977186311787,
+            "recall": 0.9703703703703703,
+            "f1": 0.9831144465290806,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.975103734439834,
+            "recall": 0.9362549800796812,
+            "f1": 0.9552845528455285,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9992823824901328,
+            "recall": 0.9996410624551328,
+            "f1": 0.9994616902924816,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9726443768996961,
+            "recall": 0.9696969696969697,
+            "f1": 0.9711684370257967,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 1.0,
+            "recall": 0.9813953488372092,
+            "f1": 0.9906103286384976,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9994334277620397,
+            "recall": 1.0,
+            "f1": 0.9997166336072542,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.935251798561151,
+            "recall": 0.9885931558935361,
+            "f1": 0.9611829944547134,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 1.0,
+            "recall": 0.9993272788429196,
+            "f1": 0.9996635262449529,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9433962264150944,
+            "recall": 0.9202453987730062,
+            "f1": 0.9316770186335404,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9615384615384616,
+            "recall": 0.9414225941422594,
+            "f1": 0.9513742071881607,
+            "support": 239
+          }
+        ]
+      },
+      "123": {
+        "accuracy": 0.9916808873720137,
+        "macro_precision": 0.978947672465983,
+        "macro_recall": 0.972061475382251,
+        "macro_f1": 0.9753918140749517,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9847908745247148,
+            "recall": 0.9592592592592593,
+            "f1": 0.9718574108818011,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9665271966527197,
+            "recall": 0.9203187250996016,
+            "f1": 0.9428571428571428,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9985652797704447,
+            "recall": 0.9992821249102656,
+            "f1": 0.9989235737351991,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.972809667673716,
+            "recall": 0.9757575757575757,
+            "f1": 0.9742813918305597,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9953051643192489,
+            "recall": 0.986046511627907,
+            "f1": 0.9906542056074766,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9413919413919414,
+            "recall": 0.9771863117870723,
+            "f1": 0.9589552238805971,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.999326825984517,
+            "recall": 0.9986545576858392,
+            "f1": 0.9989905787348586,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.94375,
+            "recall": 0.9263803680981595,
+            "f1": 0.934984520123839,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9659574468085106,
+            "recall": 0.9497907949790795,
+            "f1": 0.9578059071729957,
+            "support": 239
+          }
+        ]
+      },
+      "2026": {
+        "accuracy": 0.9915742320819113,
+        "macro_precision": 0.98035552031975,
+        "macro_recall": 0.9711613104085319,
+        "macro_f1": 0.9755116203583235,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9848484848484849,
+            "recall": 0.9629629629629629,
+            "f1": 0.9737827715355806,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9787234042553191,
+            "recall": 0.9163346613545816,
+            "f1": 0.9465020576131687,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9985652797704447,
+            "recall": 0.9992821249102656,
+            "f1": 0.9989235737351991,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9758308157099698,
+            "recall": 0.9787878787878788,
+            "f1": 0.9773071104387292,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 1.0,
+            "recall": 0.986046511627907,
+            "f1": 0.9929742388758782,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9988674971687429,
+            "recall": 1.0,
+            "f1": 0.9994334277620397,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9214285714285714,
+            "recall": 0.9809885931558935,
+            "f1": 0.9502762430939227,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 1.0,
+            "recall": 0.9986545576858392,
+            "f1": 0.999326825984517,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9430379746835443,
+            "recall": 0.9141104294478528,
+            "f1": 0.9283489096573209,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9826086956521739,
+            "recall": 0.9456066945606695,
+            "f1": 0.9637526652452025,
+            "support": 239
+          }
+        ]
+      }
+    },
+    "resnet18": {
+      "42": {
+        "accuracy": 0.9913609215017065,
+        "macro_precision": 0.9803305218149088,
+        "macro_recall": 0.9758855819505609,
+        "macro_f1": 0.9780173694825046,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9816849816849816,
+            "recall": 0.9925925925925926,
+            "f1": 0.9871086556169429,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9708333333333333,
+            "recall": 0.9282868525896414,
+            "f1": 0.9490835030549898,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9964183381088825,
+            "recall": 0.9985642498205313,
+            "f1": 0.9974901398350663,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9876543209876543,
+            "recall": 0.9696969696969697,
+            "f1": 0.9785932721712538,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9953271028037384,
+            "recall": 0.9906976744186047,
+            "f1": 0.993006993006993,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 0.991869918699187,
+            "recall": 1.0,
+            "f1": 0.9959183673469387,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9977349943374858,
+            "recall": 0.9988662131519275,
+            "f1": 0.998300283286119,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9731800766283525,
+            "recall": 0.9657794676806084,
+            "f1": 0.9694656488549618,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9989878542510121,
+            "recall": 0.9959636730575177,
+            "f1": 0.9974734714502274,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9285714285714286,
+            "recall": 0.9570552147239264,
+            "f1": 0.9425981873111783,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9613733905579399,
+            "recall": 0.9372384937238494,
+            "f1": 0.9491525423728814,
+            "support": 239
+          }
+        ]
+      },
+      "123": {
+        "accuracy": 0.9918941979522184,
+        "macro_precision": 0.9808484261187133,
+        "macro_recall": 0.9743241922324923,
+        "macro_f1": 0.977511283857384,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9888475836431226,
+            "recall": 0.9851851851851852,
+            "f1": 0.987012987012987,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9473684210526315,
+            "recall": 0.9322709163346613,
+            "f1": 0.9397590361445783,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9992813510600072,
+            "recall": 0.998205312275664,
+            "f1": 0.9987430418387502,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9846153846153847,
+            "recall": 0.9696969696969697,
+            "f1": 0.9770992366412213,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 1.0,
+            "recall": 0.9906976744186047,
+            "f1": 0.9953271028037384,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 0.991869918699187,
+            "recall": 1.0,
+            "f1": 0.9959183673469387,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.997737556561086,
+            "recall": 1.0,
+            "f1": 0.9988674971687429,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.973384030418251,
+            "recall": 0.973384030418251,
+            "f1": 0.973384030418251,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.999326825984517,
+            "recall": 0.9986545576858392,
+            "f1": 0.9989905787348586,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9333333333333333,
+            "recall": 0.9447852760736196,
+            "f1": 0.9390243902439024,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.973568281938326,
+            "recall": 0.9246861924686193,
+            "f1": 0.9484978540772532,
+            "support": 239
+          }
+        ]
+      },
+      "2026": {
+        "accuracy": 0.9849616040955631,
+        "macro_precision": 0.9660988610635286,
+        "macro_recall": 0.9572955252029144,
+        "macro_f1": 0.9614772409419209,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9846743295019157,
+            "recall": 0.9518518518518518,
+            "f1": 0.967984934086629,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9322033898305084,
+            "recall": 0.8764940239043825,
+            "f1": 0.9034907597535934,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9967684021543985,
+            "recall": 0.9964106245513281,
+            "f1": 0.9965894812421469,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9748427672955975,
+            "recall": 0.9393939393939394,
+            "f1": 0.9567901234567902,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9952830188679245,
+            "recall": 0.9813953488372092,
+            "f1": 0.9882903981264637,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 0.991869918699187,
+            "recall": 1.0,
+            "f1": 0.9959183673469387,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9943598420755781,
+            "recall": 0.9994331065759637,
+            "f1": 0.9968900197907832,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9616858237547893,
+            "recall": 0.9543726235741445,
+            "f1": 0.9580152671755725,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.997638326585695,
+            "recall": 0.9946182307433569,
+            "f1": 0.9961259895570154,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.8786127167630058,
+            "recall": 0.9325153374233128,
+            "f1": 0.9047619047619048,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9191489361702128,
+            "recall": 0.9037656903765691,
+            "f1": 0.9113924050632911,
+            "support": 239
+          }
+        ]
+      }
+    },
+    "densenet121": {
+      "42": {
+        "accuracy": 0.9889078498293515,
+        "macro_precision": 0.9771206206318876,
+        "macro_recall": 0.9653259852402123,
+        "macro_f1": 0.9711065193234805,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9961089494163424,
+            "recall": 0.9481481481481482,
+            "f1": 0.9715370018975332,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9423868312757202,
+            "recall": 0.9123505976095617,
+            "f1": 0.9271255060728745,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9978479196556671,
+            "recall": 0.9985642498205313,
+            "f1": 0.9982059562253319,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9665653495440729,
+            "recall": 0.9636363636363636,
+            "f1": 0.9650986342943855,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9953051643192489,
+            "recall": 0.986046511627907,
+            "f1": 0.9906542056074766,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9988668555240793,
+            "recall": 0.9994331065759637,
+            "f1": 0.9991499008217626,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9619771863117871,
+            "recall": 0.9619771863117871,
+            "f1": 0.9619771863117871,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9986531986531987,
+            "recall": 0.9976454759502187,
+            "f1": 0.9981490829547367,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9386503067484663,
+            "recall": 0.9386503067484663,
+            "f1": 0.9386503067484663,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9519650655021834,
+            "recall": 0.9121338912133892,
+            "f1": 0.9316239316239316,
+            "support": 239
+          }
+        ]
+      },
+      "123": {
+        "accuracy": 0.988481228668942,
+        "macro_precision": 0.9727664386958111,
+        "macro_recall": 0.9648775598399162,
+        "macro_f1": 0.9687531896542546,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9847908745247148,
+            "recall": 0.9592592592592593,
+            "f1": 0.9718574108818011,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9314516129032258,
+            "recall": 0.9203187250996016,
+            "f1": 0.9258517034068137,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9978471474703983,
+            "recall": 0.998205312275664,
+            "f1": 0.9980261977390992,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9780564263322884,
+            "recall": 0.9454545454545454,
+            "f1": 0.9614791987673343,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 1.0,
+            "recall": 0.9906976744186047,
+            "f1": 0.9953271028037384,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9994327850255247,
+            "recall": 0.9988662131519275,
+            "f1": 0.9991494187694925,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9691119691119691,
+            "recall": 0.9543726235741445,
+            "f1": 0.9616858237547893,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9976454759502187,
+            "recall": 0.9976454759502187,
+            "f1": 0.9976454759502187,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9101796407185628,
+            "recall": 0.9325153374233128,
+            "f1": 0.9212121212121213,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9319148936170213,
+            "recall": 0.9163179916317992,
+            "f1": 0.9240506329113924,
+            "support": 239
+          }
+        ]
+      },
+      "2026": {
+        "accuracy": 0.9910409556313993,
+        "macro_precision": 0.9790125380597623,
+        "macro_recall": 0.971126918815428,
+        "macro_f1": 0.9750171176355498,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9885496183206107,
+            "recall": 0.9592592592592593,
+            "f1": 0.9736842105263158,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.943089430894309,
+            "recall": 0.9243027888446215,
+            "f1": 0.9336016096579477,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9982085274095306,
+            "recall": 1.0,
+            "f1": 0.9991034606419221,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9666666666666667,
+            "recall": 0.9666666666666667,
+            "f1": 0.9666666666666667,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 1.0,
+            "recall": 0.986046511627907,
+            "f1": 0.9929742388758782,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9994327850255247,
+            "recall": 0.9988662131519275,
+            "f1": 0.9991494187694925,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9696969696969697,
+            "recall": 0.973384030418251,
+            "f1": 0.9715370018975332,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9993263725159987,
+            "recall": 0.9979818365287588,
+            "f1": 0.998653651969034,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9386503067484663,
+            "recall": 0.9386503067484663,
+            "f1": 0.9386503067484663,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9655172413793104,
+            "recall": 0.9372384937238494,
+            "f1": 0.9511677282377919,
+            "support": 239
+          }
+        ]
+      }
+    },
+    "mobilenetv2": {
+      "42": {
+        "accuracy": 0.9886945392491467,
+        "macro_precision": 0.9740858261528129,
+        "macro_recall": 0.9642088163685514,
+        "macro_f1": 0.9689515257288012,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9921568627450981,
+            "recall": 0.937037037037037,
+            "f1": 0.9638095238095238,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9615384615384616,
+            "recall": 0.896414342629482,
+            "f1": 0.9278350515463918,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9978494623655914,
+            "recall": 0.9992821249102656,
+            "f1": 0.9985652797704447,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9642857142857143,
+            "recall": 0.9818181818181818,
+            "f1": 0.972972972972973,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9906976744186047,
+            "recall": 0.9906976744186047,
+            "f1": 0.9906976744186047,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9982993197278912,
+            "recall": 0.9982993197278912,
+            "f1": 0.9982993197278912,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9653846153846154,
+            "recall": 0.9543726235741445,
+            "f1": 0.9598470363288719,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9986527450319973,
+            "recall": 0.9973091153716784,
+            "f1": 0.997980477953551,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.9096385542168675,
+            "recall": 0.9263803680981595,
+            "f1": 0.9179331306990881,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9364406779661016,
+            "recall": 0.9246861924686193,
+            "f1": 0.9305263157894736,
+            "support": 239
+          }
+        ]
+      },
+      "123": {
+        "accuracy": 0.9818686006825939,
+        "macro_precision": 0.9584970287442676,
+        "macro_recall": 0.9443842845715882,
+        "macro_f1": 0.9510095327308291,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9917695473251029,
+            "recall": 0.8925925925925926,
+            "f1": 0.9395711500974658,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9032258064516129,
+            "recall": 0.8924302788844621,
+            "f1": 0.8977955911823647,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9974883387154646,
+            "recall": 0.9978463747307968,
+            "f1": 0.9976673246007536,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9714285714285714,
+            "recall": 0.9272727272727272,
+            "f1": 0.9488372093023256,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9906542056074766,
+            "recall": 0.986046511627907,
+            "f1": 0.9883449883449883,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9943566591422122,
+            "recall": 0.9988662131519275,
+            "f1": 0.996606334841629,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.946969696969697,
+            "recall": 0.9505703422053232,
+            "f1": 0.9487666034155597,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9983130904183536,
+            "recall": 0.9952909519004373,
+            "f1": 0.9967997305036214,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.838150289017341,
+            "recall": 0.8895705521472392,
+            "f1": 0.8630952380952381,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.9111111111111111,
+            "recall": 0.8577405857740585,
+            "f1": 0.8836206896551724,
+            "support": 239
+          }
+        ]
+      },
+      "2026": {
+        "accuracy": 0.98794795221843,
+        "macro_precision": 0.9711084492908448,
+        "macro_recall": 0.9629647887846576,
+        "macro_f1": 0.9668597234634131,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9922779922779923,
+            "recall": 0.9518518518518518,
+            "f1": 0.9716446124763705,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9574468085106383,
+            "recall": 0.896414342629482,
+            "f1": 0.9259259259259259,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9974919383733429,
+            "recall": 0.9992821249102656,
+            "f1": 0.9983862291554599,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9813664596273292,
+            "recall": 0.9575757575757575,
+            "f1": 0.9693251533742331,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9953271028037384,
+            "recall": 0.9906976744186047,
+            "f1": 0.993006993006993,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9971703452178834,
+            "recall": 0.9988662131519275,
+            "f1": 0.9980175587652224,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9550561797752809,
+            "recall": 0.9695817490494296,
+            "f1": 0.9622641509433962,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9986509274873524,
+            "recall": 0.9959636730575177,
+            "f1": 0.9973054900639946,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.8875739644970414,
+            "recall": 0.9202453987730062,
+            "f1": 0.9036144578313253,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.919831223628692,
+            "recall": 0.9121338912133892,
+            "f1": 0.9159663865546218,
+            "support": 239
+          }
+        ]
+      }
+    },
+    "shufflenetv2_1_0x": {
+      "42": {
+        "accuracy": 0.9740827645051194,
+        "macro_precision": 0.9453426971515693,
+        "macro_recall": 0.9249186413144798,
+        "macro_f1": 0.9339347685135084,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9839357429718876,
+            "recall": 0.9074074074074074,
+            "f1": 0.9441233140655106,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.9,
+            "recall": 0.7888446215139442,
+            "f1": 0.8407643312101911,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9949640287769784,
+            "recall": 0.9928212491026561,
+            "f1": 0.9938914840100611,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9833333333333333,
+            "recall": 0.8939393939393939,
+            "f1": 0.9365079365079365,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9903381642512077,
+            "recall": 0.9534883720930233,
+            "f1": 0.9715639810426541,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 0.9838709677419355,
+            "recall": 1.0,
+            "f1": 0.991869918699187,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.992112676056338,
+            "recall": 0.9982993197278912,
+            "f1": 0.9951963831590845,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9590163934426229,
+            "recall": 0.8897338403041825,
+            "f1": 0.9230769230769231,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9962900505902192,
+            "recall": 0.9936091490077363,
+            "f1": 0.9949477938699899,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.7647058823529411,
+            "recall": 0.8773006134969326,
+            "f1": 0.8171428571428572,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.8502024291497976,
+            "recall": 0.8786610878661087,
+            "f1": 0.8641975308641975,
+            "support": 239
+          }
+        ]
+      },
+      "123": {
+        "accuracy": 0.9651237201365188,
+        "macro_precision": 0.9294687120888514,
+        "macro_recall": 0.8999590492228215,
+        "macro_f1": 0.9130756256383563,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9757085020242915,
+            "recall": 0.8925925925925926,
+            "f1": 0.9323017408123792,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.8703703703703703,
+            "recall": 0.749003984063745,
+            "f1": 0.8051391862955032,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9931432695777698,
+            "recall": 0.9877961234745154,
+            "f1": 0.9904624797552636,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.928125,
+            "recall": 0.9,
+            "f1": 0.9138461538461539,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9805825242718447,
+            "recall": 0.9395348837209302,
+            "f1": 0.9596199524940617,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 0.991869918699187,
+            "recall": 1.0,
+            "f1": 0.9959183673469387,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9865395401009535,
+            "recall": 0.9971655328798186,
+            "f1": 0.9918240766845221,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.961038961038961,
+            "recall": 0.844106463878327,
+            "f1": 0.8987854251012146,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.9932591843613077,
+            "recall": 0.9912546249579549,
+            "f1": 0.9922558922558923,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.6994818652849741,
+            "recall": 0.8282208588957055,
+            "f1": 0.7584269662921348,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.8440366972477065,
+            "recall": 0.7698744769874477,
+            "f1": 0.8052516411378556,
+            "support": 239
+          }
+        ]
+      },
+      "2026": {
+        "accuracy": 0.9573378839590444,
+        "macro_precision": 0.9174125885494203,
+        "macro_recall": 0.8844761659911562,
+        "macro_f1": 0.8987061388391389,
+        "per_class": [
+          {
+            "class_name": "bacterial_leaf_blight",
+            "precision": 0.9786324786324786,
+            "recall": 0.8481481481481481,
+            "f1": 0.9087301587301587,
+            "support": 270
+          },
+          {
+            "class_name": "blast",
+            "precision": 0.8529411764705882,
+            "recall": 0.6932270916334662,
+            "f1": 0.7648351648351648,
+            "support": 251
+          },
+          {
+            "class_name": "brown_planthopper",
+            "precision": 0.9909551374819102,
+            "recall": 0.9831299353912419,
+            "f1": 0.987027027027027,
+            "support": 2786
+          },
+          {
+            "class_name": "brown_spot",
+            "precision": 0.9262820512820513,
+            "recall": 0.8757575757575757,
+            "f1": 0.9003115264797508,
+            "support": 330
+          },
+          {
+            "class_name": "dead_heart",
+            "precision": 0.9803921568627451,
+            "recall": 0.9302325581395349,
+            "f1": 0.954653937947494,
+            "support": 215
+          },
+          {
+            "class_name": "golden_apple_snail",
+            "precision": 0.976,
+            "recall": 1.0,
+            "f1": 0.9878542510121457,
+            "support": 122
+          },
+          {
+            "class_name": "leaf_roller",
+            "precision": 0.9755826859045506,
+            "recall": 0.9965986394557823,
+            "f1": 0.9859786876051598,
+            "support": 1764
+          },
+          {
+            "class_name": "normal",
+            "precision": 0.9369747899159664,
+            "recall": 0.8479087452471483,
+            "f1": 0.8902195608782435,
+            "support": 263
+          },
+          {
+            "class_name": "stem_borer",
+            "precision": 0.99153403318659,
+            "recall": 0.9848637739656912,
+            "f1": 0.9881876476544044,
+            "support": 2973
+          },
+          {
+            "class_name": "tungro",
+            "precision": 0.6616161616161617,
+            "recall": 0.803680981595092,
+            "f1": 0.7257617728531855,
+            "support": 163
+          },
+          {
+            "class_name": "weeds",
+            "precision": 0.820627802690583,
+            "recall": 0.7656903765690377,
+            "f1": 0.7922077922077922,
+            "support": 239
+          }
+        ]
+      }
+    }
+  },
+  "aggregate": {
+    "efficientnetb0": {
+      "accuracy": {
+        "mean": 0.9933518202502845,
+        "sample_std": 0.0004809353405314084,
+        "values_by_seed": {
+          "42": 0.99285409556314,
+          "123": 0.9938139931740614,
+          "2026": 0.9933873720136519
+        }
+      },
+      "macro_precision": {
+        "mean": 0.9828754049889143,
+        "sample_std": 0.0019504495879803102,
+        "values_by_seed": {
+          "42": 0.9820271656670223,
+          "123": 0.9851063509101438,
+          "2026": 0.981492698389577
+        }
+      },
+      "macro_recall": {
+        "mean": 0.9771726359106849,
+        "sample_std": 0.0014617705631572418,
+        "values_by_seed": {
+          "42": 0.9756236260337499,
+          "123": 0.9785278296472029,
+          "2026": 0.9773664520511022
+        }
+      },
+      "macro_f1": {
+        "mean": 0.979944233789705,
+        "sample_std": 0.0015938071243156125,
+        "values_by_seed": {
+          "42": 0.9787495012564057,
+          "123": 0.9817539043828034,
+          "2026": 0.9793292957299059
+        }
+      }
+    },
+    "mobilenetv3large": {
+      "accuracy": {
+        "mean": 0.9918941979522184,
+        "sample_std": 0.00046489963135031405,
+        "values_by_seed": {
+          "42": 0.9924274744027304,
+          "123": 0.9916808873720137,
+          "2026": 0.9915742320819113
+        }
+      },
+      "macro_precision": {
+        "mean": 0.9798540377994137,
+        "sample_std": 0.0007864200303231762,
+        "values_by_seed": {
+          "42": 0.9802589206125081,
+          "123": 0.978947672465983,
+          "2026": 0.98035552031975
+        }
+      },
+      "macro_recall": {
+        "mean": 0.972193872811809,
+        "sample_std": 0.0011047274795473905,
+        "values_by_seed": {
+          "42": 0.9733588326446442,
+          "123": 0.972061475382251,
+          "2026": 0.9711613104085319
+        }
+      },
+      "macro_f1": {
+        "mean": 0.9758542913401829,
+        "sample_std": 0.0006998472413523467,
+        "values_by_seed": {
+          "42": 0.9766594395872733,
+          "123": 0.9753918140749517,
+          "2026": 0.9755116203583235
+        }
+      }
+    },
+    "resnet18": {
+      "accuracy": {
+        "mean": 0.989405574516496,
+        "sample_std": 0.003857816839841244,
+        "values_by_seed": {
+          "42": 0.9913609215017065,
+          "123": 0.9918941979522184,
+          "2026": 0.9849616040955631
+        }
+      },
+      "macro_precision": {
+        "mean": 0.9757592696657169,
+        "sample_std": 0.008370165887716902,
+        "values_by_seed": {
+          "42": 0.9803305218149088,
+          "123": 0.9808484261187133,
+          "2026": 0.9660988610635286
+        }
+      },
+      "macro_recall": {
+        "mean": 0.9691684331286559,
+        "sample_std": 0.010311835017239828,
+        "values_by_seed": {
+          "42": 0.9758855819505609,
+          "123": 0.9743241922324923,
+          "2026": 0.9572955252029144
+        }
+      },
+      "macro_f1": {
+        "mean": 0.9723352980939365,
+        "sample_std": 0.00940675738510972,
+        "values_by_seed": {
+          "42": 0.9780173694825046,
+          "123": 0.977511283857384,
+          "2026": 0.9614772409419209
+        }
+      }
+    },
+    "densenet121": {
+      "accuracy": {
+        "mean": 0.9894766780432309,
+        "sample_std": 0.001371395159413088,
+        "values_by_seed": {
+          "42": 0.9889078498293515,
+          "123": 0.988481228668942,
+          "2026": 0.9910409556313993
+        }
+      },
+      "macro_precision": {
+        "mean": 0.9762998657958204,
+        "sample_std": 0.0032029155767493507,
+        "values_by_seed": {
+          "42": 0.9771206206318876,
+          "123": 0.9727664386958111,
+          "2026": 0.9790125380597623
+        }
+      },
+      "macro_recall": {
+        "mean": 0.9671101546318521,
+        "sample_std": 0.0034858380935939895,
+        "values_by_seed": {
+          "42": 0.9653259852402123,
+          "123": 0.9648775598399162,
+          "2026": 0.971126918815428
+        }
+      },
+      "macro_f1": {
+        "mean": 0.971625608871095,
+        "sample_std": 0.0031640620897107987,
+        "values_by_seed": {
+          "42": 0.9711065193234805,
+          "123": 0.9687531896542546,
+          "2026": 0.9750171176355498
+        }
+      }
+    },
+    "mobilenetv2": {
+      "accuracy": {
+        "mean": 0.9861703640500569,
+        "sample_std": 0.003744091892681546,
+        "values_by_seed": {
+          "42": 0.9886945392491467,
+          "123": 0.9818686006825939,
+          "2026": 0.98794795221843
+        }
+      },
+      "macro_precision": {
+        "mean": 0.9678971013959751,
+        "sample_std": 0.008275700431841448,
+        "values_by_seed": {
+          "42": 0.9740858261528129,
+          "123": 0.9584970287442676,
+          "2026": 0.9711084492908448
+        }
+      },
+      "macro_recall": {
+        "mean": 0.9571859632415991,
+        "sample_std": 0.011104014307223799,
+        "values_by_seed": {
+          "42": 0.9642088163685514,
+          "123": 0.9443842845715882,
+          "2026": 0.9629647887846576
+        }
+      },
+      "macro_f1": {
+        "mean": 0.9622735939743478,
+        "sample_std": 0.009810872333930114,
+        "values_by_seed": {
+          "42": 0.9689515257288012,
+          "123": 0.9510095327308291,
+          "2026": 0.9668597234634131
+        }
+      }
+    },
+    "shufflenetv2_1_0x": {
+      "accuracy": {
+        "mean": 0.9655147895335608,
+        "sample_std": 0.00837928741484368,
+        "values_by_seed": {
+          "42": 0.9740827645051194,
+          "123": 0.9651237201365188,
+          "2026": 0.9573378839590444
+        }
+      },
+      "macro_precision": {
+        "mean": 0.9307413325966136,
+        "sample_std": 0.014008476499946078,
+        "values_by_seed": {
+          "42": 0.9453426971515693,
+          "123": 0.9294687120888514,
+          "2026": 0.9174125885494203
+        }
+      },
+      "macro_recall": {
+        "mean": 0.9031179521761525,
+        "sample_std": 0.020405451562531794,
+        "values_by_seed": {
+          "42": 0.9249186413144798,
+          "123": 0.8999590492228215,
+          "2026": 0.8844761659911562
+        }
+      },
+      "macro_f1": {
+        "mean": 0.9152388443303345,
+        "sample_std": 0.017713659235614222,
+        "values_by_seed": {
+          "42": 0.9339347685135084,
+          "123": 0.9130756256383563,
+          "2026": 0.8987061388391389
+        }
+      }
+    }
+  },
+  "per_class": {
+    "efficientnetb0": {
+      "bacterial_leaf_blight": {
+        "mean": 0.9809076639616676,
+        "sample_std": 0.003778993028405416,
+        "values_by_seed": {
+          "42": 0.978021978021978,
+          "123": 0.9851851851851852,
+          "2026": 0.9795158286778398
+        }
+      },
+      "blast": {
+        "mean": 0.9546030295866316,
+        "sample_std": 0.0062057679212001934,
+        "values_by_seed": {
+          "42": 0.9475806451612904,
+          "123": 0.959349593495935,
+          "2026": 0.9568788501026694
+        }
+      },
+      "brown_planthopper": {
+        "mean": 0.9995213521309311,
+        "sample_std": 0.00010367236210490623,
+        "values_by_seed": {
+          "42": 0.9996410624551328,
+          "123": 0.9994616902924816,
+          "2026": 0.9994613036451787
+        }
+      },
+      "brown_spot": {
+        "mean": 0.9827389865172899,
+        "sample_std": 0.0031884407653867365,
+        "values_by_seed": {
+          "42": 0.9801526717557252,
+          "123": 0.9817629179331308,
+          "2026": 0.9863013698630136
+        }
+      },
+      "dead_heart": {
+        "mean": 0.9953523925875047,
+        "sample_std": 0.002336462563053341,
+        "values_by_seed": {
+          "42": 0.9953703703703703,
+          "123": 0.9976798143851509,
+          "2026": 0.993006993006993
+        }
+      },
+      "golden_apple_snail": {
+        "mean": 0.998639455782313,
+        "sample_std": 0.0023565317109780926,
+        "values_by_seed": {
+          "42": 1.0,
+          "123": 1.0,
+          "2026": 0.9959183673469387
+        }
+      },
+      "leaf_roller": {
+        "mean": 0.9994332136379891,
+        "sample_std": 1.8543686741417747e-07,
+        "values_by_seed": {
+          "42": 0.9994331065759637,
+          "123": 0.9994334277620397,
+          "2026": 0.9994331065759637
+        }
+      },
+      "normal": {
+        "mean": 0.9747034221577319,
+        "sample_std": 0.0040605992672082146,
+        "values_by_seed": {
+          "42": 0.97131931166348,
+          "123": 0.9792060491493384,
+          "2026": 0.9735849056603774
+        }
+      },
+      "stem_borer": {
+        "mean": 0.9996075321285056,
+        "sample_std": 9.727864632518315e-05,
+        "values_by_seed": {
+          "42": 0.9996636394214599,
+          "123": 0.9994952044422009,
+          "2026": 0.9996637525218561
+        }
+      },
+      "tungro": {
+        "mean": 0.9423852631522825,
+        "sample_std": 0.00713931558102983,
+        "values_by_seed": {
+          "42": 0.9506172839506173,
+          "123": 0.937888198757764,
+          "2026": 0.9386503067484663
+        }
+      },
+      "weeds": {
+        "mean": 0.9514942600439078,
+        "sample_std": 0.007773504480587391,
+        "values_by_seed": {
+          "42": 0.9444444444444444,
+          "123": 0.959830866807611,
+          "2026": 0.950207468879668
+        }
+      }
+    },
+    "mobilenetv3large": {
+      "bacterial_leaf_blight": {
+        "mean": 0.9762515429821541,
+        "sample_std": 0.006020908339494394,
+        "values_by_seed": {
+          "42": 0.9831144465290806,
+          "123": 0.9718574108818011,
+          "2026": 0.9737827715355806
+        }
+      },
+      "blast": {
+        "mean": 0.9482145844386134,
+        "sample_std": 0.006388246304797383,
+        "values_by_seed": {
+          "42": 0.9552845528455285,
+          "123": 0.9428571428571428,
+          "2026": 0.9465020576131687
+        }
+      },
+      "brown_planthopper": {
+        "mean": 0.9991029459209599,
+        "sample_std": 0.00031068173920239975,
+        "values_by_seed": {
+          "42": 0.9994616902924816,
+          "123": 0.9989235737351991,
+          "2026": 0.9989235737351991
+        }
+      },
+      "brown_spot": {
+        "mean": 0.9742523130983619,
+        "sample_std": 0.00306944001361173,
+        "values_by_seed": {
+          "42": 0.9711684370257967,
+          "123": 0.9742813918305597,
+          "2026": 0.9773071104387292
+        }
+      },
+      "dead_heart": {
+        "mean": 0.9914129243739508,
+        "sample_std": 0.0013523159865757228,
+        "values_by_seed": {
+          "42": 0.9906103286384976,
+          "123": 0.9906542056074766,
+          "2026": 0.9929742388758782
+        }
+      },
+      "golden_apple_snail": {
+        "mean": 1.0,
+        "sample_std": 0.0,
+        "values_by_seed": {
+          "42": 1.0,
+          "123": 1.0,
+          "2026": 1.0
+        }
+      },
+      "leaf_roller": {
+        "mean": 0.9997166871230979,
+        "sample_std": 0.00028328612277130066,
+        "values_by_seed": {
+          "42": 0.9997166336072542,
+          "123": 1.0,
+          "2026": 0.9994334277620397
+        }
+      },
+      "normal": {
+        "mean": 0.956804820476411,
+        "sample_std": 0.005762593375562685,
+        "values_by_seed": {
+          "42": 0.9611829944547134,
+          "123": 0.9589552238805971,
+          "2026": 0.9502762430939227
+        }
+      },
+      "stem_borer": {
+        "mean": 0.9993269769881096,
+        "sample_std": 0.0003364737804600624,
+        "values_by_seed": {
+          "42": 0.9996635262449529,
+          "123": 0.9989905787348586,
+          "2026": 0.999326825984517
+        }
+      },
+      "tungro": {
+        "mean": 0.9316701494715668,
+        "sample_std": 0.0033178105664550895,
+        "values_by_seed": {
+          "42": 0.9316770186335404,
+          "123": 0.934984520123839,
+          "2026": 0.9283489096573209
+        }
+      },
+      "weeds": {
+        "mean": 0.9576442598687863,
+        "sample_std": 0.006190812011013153,
+        "values_by_seed": {
+          "42": 0.9513742071881607,
+          "123": 0.9578059071729957,
+          "2026": 0.9637526652452025
+        }
+      }
+    },
+    "resnet18": {
+      "bacterial_leaf_blight": {
+        "mean": 0.980702192238853,
+        "sample_std": 0.011013572504104934,
+        "values_by_seed": {
+          "42": 0.9871086556169429,
+          "123": 0.987012987012987,
+          "2026": 0.967984934086629
+        }
+      },
+      "blast": {
+        "mean": 0.9307777663177205,
+        "sample_std": 0.02408675914717206,
+        "values_by_seed": {
+          "42": 0.9490835030549898,
+          "123": 0.9397590361445783,
+          "2026": 0.9034907597535934
+        }
+      },
+      "brown_planthopper": {
+        "mean": 0.9976075543053211,
+        "sample_std": 0.0010815708156101142,
+        "values_by_seed": {
+          "42": 0.9974901398350663,
+          "123": 0.9987430418387502,
+          "2026": 0.9965894812421469
+        }
+      },
+      "brown_spot": {
+        "mean": 0.9708275440897551,
+        "sample_std": 0.01217969289684031,
+        "values_by_seed": {
+          "42": 0.9785932721712538,
+          "123": 0.9770992366412213,
+          "2026": 0.9567901234567902
+        }
+      },
+      "dead_heart": {
+        "mean": 0.9922081646457317,
+        "sample_std": 0.0035857214395239143,
+        "values_by_seed": {
+          "42": 0.993006993006993,
+          "123": 0.9953271028037384,
+          "2026": 0.9882903981264637
+        }
+      },
+      "golden_apple_snail": {
+        "mean": 0.9959183673469387,
+        "sample_std": 0.0,
+        "values_by_seed": {
+          "42": 0.9959183673469387,
+          "123": 0.9959183673469387,
+          "2026": 0.9959183673469387
+        }
+      },
+      "leaf_roller": {
+        "mean": 0.9980192667485484,
+        "sample_std": 0.0010182494369636312,
+        "values_by_seed": {
+          "42": 0.998300283286119,
+          "123": 0.9988674971687429,
+          "2026": 0.9968900197907832
+        }
+      },
+      "normal": {
+        "mean": 0.9669549821495951,
+        "sample_std": 0.007986069520199136,
+        "values_by_seed": {
+          "42": 0.9694656488549618,
+          "123": 0.973384030418251,
+          "2026": 0.9580152671755725
+        }
+      },
+      "stem_borer": {
+        "mean": 0.9975300132473671,
+        "sample_std": 0.0014331313689163456,
+        "values_by_seed": {
+          "42": 0.9974734714502274,
+          "123": 0.9989905787348586,
+          "2026": 0.9961259895570154
+        }
+      },
+      "tungro": {
+        "mean": 0.9287948274389951,
+        "sample_std": 0.020889687304308104,
+        "values_by_seed": {
+          "42": 0.9425981873111783,
+          "123": 0.9390243902439024,
+          "2026": 0.9047619047619048
+        }
+      },
+      "weeds": {
+        "mean": 0.9363476005044752,
+        "sample_std": 0.02161431212927861,
+        "values_by_seed": {
+          "42": 0.9491525423728814,
+          "123": 0.9484978540772532,
+          "2026": 0.9113924050632911
+        }
+      }
+    },
+    "densenet121": {
+      "bacterial_leaf_blight": {
+        "mean": 0.9723595411018834,
+        "sample_std": 0.0011583295266544454,
+        "values_by_seed": {
+          "42": 0.9715370018975332,
+          "123": 0.9718574108818011,
+          "2026": 0.9736842105263158
+        }
+      },
+      "blast": {
+        "mean": 0.9288596063792119,
+        "sample_std": 0.004155789892387652,
+        "values_by_seed": {
+          "42": 0.9271255060728745,
+          "123": 0.9258517034068137,
+          "2026": 0.9336016096579477
+        }
+      },
+      "brown_planthopper": {
+        "mean": 0.9984452048687844,
+        "sample_std": 0.0005771081142169313,
+        "values_by_seed": {
+          "42": 0.9982059562253319,
+          "123": 0.9980261977390992,
+          "2026": 0.9991034606419221
+        }
+      },
+      "brown_spot": {
+        "mean": 0.9644148332427955,
+        "sample_std": 0.0026604780980619847,
+        "values_by_seed": {
+          "42": 0.9650986342943855,
+          "123": 0.9614791987673343,
+          "2026": 0.9666666666666667
+        }
+      },
+      "dead_heart": {
+        "mean": 0.9929851824290311,
+        "sample_std": 0.002336467819749378,
+        "values_by_seed": {
+          "42": 0.9906542056074766,
+          "123": 0.9953271028037384,
+          "2026": 0.9929742388758782
+        }
+      },
+      "golden_apple_snail": {
+        "mean": 1.0,
+        "sample_std": 0.0,
+        "values_by_seed": {
+          "42": 1.0,
+          "123": 1.0,
+          "2026": 1.0
+        }
+      },
+      "leaf_roller": {
+        "mean": 0.9991495794535825,
+        "sample_std": 2.78313007906287e-07,
+        "values_by_seed": {
+          "42": 0.9991499008217626,
+          "123": 0.9991494187694925,
+          "2026": 0.9991494187694925
+        }
+      },
+      "normal": {
+        "mean": 0.9650666706547032,
+        "sample_std": 0.00560536464726978,
+        "values_by_seed": {
+          "42": 0.9619771863117871,
+          "123": 0.9616858237547893,
+          "2026": 0.9715370018975332
+        }
+      },
+      "stem_borer": {
+        "mean": 0.9981494036246631,
+        "sample_std": 0.0005040880859041139,
+        "values_by_seed": {
+          "42": 0.9981490829547367,
+          "123": 0.9976454759502187,
+          "2026": 0.998653651969034
+        }
+      },
+      "tungro": {
+        "mean": 0.9328375782363513,
+        "sample_std": 0.010067941113587435,
+        "values_by_seed": {
+          "42": 0.9386503067484663,
+          "123": 0.9212121212121213,
+          "2026": 0.9386503067484663
+        }
+      },
+      "weeds": {
+        "mean": 0.9356140975910386,
+        "sample_std": 0.013991972093634756,
+        "values_by_seed": {
+          "42": 0.9316239316239316,
+          "123": 0.9240506329113924,
+          "2026": 0.9511677282377919
+        }
+      }
+    },
+    "mobilenetv2": {
+      "bacterial_leaf_blight": {
+        "mean": 0.9583417621277867,
+        "sample_std": 0.016721215882792642,
+        "values_by_seed": {
+          "42": 0.9638095238095238,
+          "123": 0.9395711500974658,
+          "2026": 0.9716446124763705
+        }
+      },
+      "blast": {
+        "mean": 0.9171855228848942,
+        "sample_std": 0.01681928294340297,
+        "values_by_seed": {
+          "42": 0.9278350515463918,
+          "123": 0.8977955911823647,
+          "2026": 0.9259259259259259
+        }
+      },
+      "brown_planthopper": {
+        "mean": 0.9982062778422194,
+        "sample_std": 0.00047525543452601223,
+        "values_by_seed": {
+          "42": 0.9985652797704447,
+          "123": 0.9976673246007536,
+          "2026": 0.9983862291554599
+        }
+      },
+      "brown_spot": {
+        "mean": 0.9637117785498439,
+        "sample_std": 0.01301023653438516,
+        "values_by_seed": {
+          "42": 0.972972972972973,
+          "123": 0.9488372093023256,
+          "2026": 0.9693251533742331
+        }
+      },
+      "dead_heart": {
+        "mean": 0.9906832185901954,
+        "sample_std": 0.0023310359489655454,
+        "values_by_seed": {
+          "42": 0.9906976744186047,
+          "123": 0.9883449883449883,
+          "2026": 0.993006993006993
+        }
+      },
+      "golden_apple_snail": {
+        "mean": 1.0,
+        "sample_std": 0.0,
+        "values_by_seed": {
+          "42": 1.0,
+          "123": 1.0,
+          "2026": 1.0
+        }
+      },
+      "leaf_roller": {
+        "mean": 0.9976410711115808,
+        "sample_std": 0.0009071144752932008,
+        "values_by_seed": {
+          "42": 0.9982993197278912,
+          "123": 0.996606334841629,
+          "2026": 0.9980175587652224
+        }
+      },
+      "normal": {
+        "mean": 0.9569592635626093,
+        "sample_std": 0.007197247458489066,
+        "values_by_seed": {
+          "42": 0.9598470363288719,
+          "123": 0.9487666034155597,
+          "2026": 0.9622641509433962
+        }
+      },
+      "stem_borer": {
+        "mean": 0.9973618995070557,
+        "sample_std": 0.0005923914702953692,
+        "values_by_seed": {
+          "42": 0.997980477953551,
+          "123": 0.9967997305036214,
+          "2026": 0.9973054900639946
+        }
+      },
+      "tungro": {
+        "mean": 0.8948809422085505,
+        "sample_std": 0.028443001558516718,
+        "values_by_seed": {
+          "42": 0.9179331306990881,
+          "123": 0.8630952380952381,
+          "2026": 0.9036144578313253
+        }
+      },
+      "weeds": {
+        "mean": 0.9100377973330893,
+        "sample_std": 0.024008239593542993,
+        "values_by_seed": {
+          "42": 0.9305263157894736,
+          "123": 0.8836206896551724,
+          "2026": 0.9159663865546218
+        }
+      }
+    },
+    "shufflenetv2_1_0x": {
+      "bacterial_leaf_blight": {
+        "mean": 0.9283850712026829,
+        "sample_std": 0.01801871490344765,
+        "values_by_seed": {
+          "42": 0.9441233140655106,
+          "123": 0.9323017408123792,
+          "2026": 0.9087301587301587
+        }
+      },
+      "blast": {
+        "mean": 0.8035795607802864,
+        "sample_std": 0.03798860224346763,
+        "values_by_seed": {
+          "42": 0.8407643312101911,
+          "123": 0.8051391862955032,
+          "2026": 0.7648351648351648
+        }
+      },
+      "brown_planthopper": {
+        "mean": 0.9904603302641173,
+        "sample_std": 0.003432228996325189,
+        "values_by_seed": {
+          "42": 0.9938914840100611,
+          "123": 0.9904624797552636,
+          "2026": 0.987027027027027
+        }
+      },
+      "brown_spot": {
+        "mean": 0.9168885389446138,
+        "sample_std": 0.018288988628342308,
+        "values_by_seed": {
+          "42": 0.9365079365079365,
+          "123": 0.9138461538461539,
+          "2026": 0.9003115264797508
+        }
+      },
+      "dead_heart": {
+        "mean": 0.9619459571614033,
+        "sample_std": 0.008691669152378833,
+        "values_by_seed": {
+          "42": 0.9715639810426541,
+          "123": 0.9596199524940617,
+          "2026": 0.954653937947494
+        }
+      },
+      "golden_apple_snail": {
+        "mean": 0.9918808456860905,
+        "sample_std": 0.004032069272042686,
+        "values_by_seed": {
+          "42": 0.991869918699187,
+          "123": 0.9959183673469387,
+          "2026": 0.9878542510121457
+        }
+      },
+      "leaf_roller": {
+        "mean": 0.9909997158162555,
+        "sample_std": 0.004663813457038971,
+        "values_by_seed": {
+          "42": 0.9951963831590845,
+          "123": 0.9918240766845221,
+          "2026": 0.9859786876051598
+        }
+      },
+      "normal": {
+        "mean": 0.9040273030187937,
+        "sample_std": 0.01704433999135514,
+        "values_by_seed": {
+          "42": 0.9230769230769231,
+          "123": 0.8987854251012146,
+          "2026": 0.8902195608782435
+        }
+      },
+      "stem_borer": {
+        "mean": 0.9917971112600955,
+        "sample_std": 0.0034033445631616558,
+        "values_by_seed": {
+          "42": 0.9949477938699899,
+          "123": 0.9922558922558923,
+          "2026": 0.9881876476544044
+        }
+      },
+      "tungro": {
+        "mean": 0.7671105320960592,
+        "sample_std": 0.046305279156834064,
+        "values_by_seed": {
+          "42": 0.8171428571428572,
+          "123": 0.7584269662921348,
+          "2026": 0.7257617728531855
+        }
+      },
+      "weeds": {
+        "mean": 0.8205523214032818,
+        "sample_std": 0.03835640403365496,
+        "values_by_seed": {
+          "42": 0.8641975308641975,
+          "123": 0.8052516411378556,
+          "2026": 0.7922077922077922
+        }
+      }
+    }
+  },
+  "paired_bootstrap_vs_mobilenetv3large": {
+    "mobilenetv3large_minus_efficientnetb0": {
+      "42": {
+        "observed_delta": -0.0020900616691323926,
+        "ci95_lower": -0.008353379441794134,
+        "ci95_upper": 0.0041164971466615165,
+        "bootstrap_samples": 2000
+      },
+      "123": {
+        "observed_delta": -0.006362090307851731,
+        "ci95_lower": -0.012203061181617614,
+        "ci95_upper": -0.0007350521938741286,
+        "bootstrap_samples": 2000
+      },
+      "2026": {
+        "observed_delta": -0.0038176753715823963,
+        "ci95_lower": -0.009704637806933817,
+        "ci95_upper": 0.0018906969263486947,
+        "bootstrap_samples": 2000
+      }
+    },
+    "mobilenetv3large_minus_resnet18": {
+      "42": {
+        "observed_delta": -0.0013579298952313135,
+        "ci95_lower": -0.007413110241287208,
+        "ci95_upper": 0.004924348679917944,
+        "bootstrap_samples": 2000
+      },
+      "123": {
+        "observed_delta": -0.0021194697824322706,
+        "ci95_lower": -0.00851115499369975,
+        "ci95_upper": 0.004180907896576317,
+        "bootstrap_samples": 2000
+      },
+      "2026": {
+        "observed_delta": 0.01403437941640262,
+        "ci95_lower": 0.007367464335428306,
+        "ci95_upper": 0.02124383844109183,
+        "bootstrap_samples": 2000
+      }
+    },
+    "mobilenetv3large_minus_densenet121": {
+      "42": {
+        "observed_delta": 0.005552920263792838,
+        "ci95_lower": -0.0008257483966133127,
+        "ci95_upper": 0.012079385671259461,
+        "bootstrap_samples": 2000
+      },
+      "123": {
+        "observed_delta": 0.00663862442069707,
+        "ci95_lower": 0.0007055009919055111,
+        "ci95_upper": 0.013321781243030517,
+        "bootstrap_samples": 2000
+      },
+      "2026": {
+        "observed_delta": 0.0004945027227737375,
+        "ci95_lower": -0.005645109361028217,
+        "ci95_upper": 0.006757303050478418,
+        "bootstrap_samples": 2000
+      }
+    },
+    "mobilenetv3large_minus_mobilenetv2": {
+      "42": {
+        "observed_delta": 0.007707913858472137,
+        "ci95_lower": 0.0009928134855756777,
+        "ci95_upper": 0.014584564361462398,
+        "bootstrap_samples": 2000
+      },
+      "123": {
+        "observed_delta": 0.02438228134412257,
+        "ci95_lower": 0.016540251988748634,
+        "ci95_upper": 0.032273081705905725,
+        "bootstrap_samples": 2000
+      },
+      "2026": {
+        "observed_delta": 0.008651896894910416,
+        "ci95_lower": 0.0018868174158026135,
+        "ci95_upper": 0.015702335633806772,
+        "bootstrap_samples": 2000
+      }
+    },
+    "mobilenetv3large_minus_shufflenetv2_1_0x": {
+      "42": {
+        "observed_delta": 0.042724671073764875,
+        "ci95_lower": 0.03417398752093509,
+        "ci95_upper": 0.05151612161530873,
+        "bootstrap_samples": 2000
+      },
+      "123": {
+        "observed_delta": 0.062316188436595366,
+        "ci95_lower": 0.052488486555629814,
+        "ci95_upper": 0.07222297096679653,
+        "bootstrap_samples": 2000
+      },
+      "2026": {
+        "observed_delta": 0.07680548151918465,
+        "ci95_lower": 0.0672861538778851,
+        "ci95_upper": 0.08723396923154446,
+        "bootstrap_samples": 2000
+      }
+    }
+  },
+  "projected_parameters_11head": {
+    "efficientnetb0": 4021639,
+    "mobilenetv3large": 4216123,
+    "resnet18": 11182155,
+    "densenet121": 6965131,
+    "mobilenetv2": 2237963,
+    "shufflenetv2_1_0x": 1264879
+  }
+}

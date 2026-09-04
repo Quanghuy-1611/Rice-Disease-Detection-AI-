@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "updated_at_utc": "2026-08-25T06:45:56.743303+00:00",
+  "selected_run_count": 1,
+  "completed": [
+    "mobilenetv2/seed_42"
+  ],
+  "test_evaluated": false
+}

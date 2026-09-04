@@ -1,0 +1,50 @@
+{
+  "schema_version": "riceai-campaign-lock/v1",
+  "campaign_id": "rice_disease_backbone_benchmark_v2",
+  "created_at_utc": "2026-08-25T06:54:35.140030+00:00",
+  "contract_sha256": "e54ea9e3adb1fbb6a82ea29781dc6e8b066390f279aebb175778086f6b7e4514",
+  "split_manifest_sha256": "bc2c7c8c72a14968c402cbb06fc0eebdde57a8b00a5ac5c88962716f06024160",
+  "preflight_report_sha256": "535228ee05c812e05354395132b993d4aef062dce9bd292924a278630ca59b44",
+  "model_smoke_report_sha256": "3097b2178a93522ed03a228dfe04181342a8cd00631b9dc89f4aabe90c3cf6e2",
+  "training_smoke_report_sha256": "9b75d10673ab152e26c070d0b2c0f29f009bd40a10a1300575dc759016985ffc",
+  "superseded_v1_lock_sha256": "374bd317752806a06a001e3736a6867000b5cf53f8ff1e89e814931ccb155b6a",
+  "excluded_v1_pilot_manifest_sha256": "aef880173f03fa3b94665ebe05d6bf6647954f7afb9c334fe43291f287982f29",
+  "full_image_verification": {
+    "performed": true,
+    "images_checked": 65516
+  },
+  "models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "models_to_train": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "training_seeds": [
+    42,
+    123,
+    2026
+  ],
+  "code_sha256": {
+    "model_benchmark/config/benchmark_contract_v2.json": "e54ea9e3adb1fbb6a82ea29781dc6e8b066390f279aebb175778086f6b7e4514",
+    "model_benchmark/requirements.txt": "aac6538cbb8d156995d2198f484e7c8dfa9ee750835fb9a8f71aa0657256004b",
+    "model_benchmark/src/benchmark_common.py": "f645da43436aad0823f07ca67f65d1c3c39fc0877bf97e95489f4d48d1c48103",
+    "model_benchmark/src/model_factory.py": "4b44c67a1ba7a4ec1198781ef8dda5be8f982225fc4e862148499e487acbccf7",
+    "model_benchmark/src/train_backbone.py": "35865468d756e8d348aa31ef8165794981c4677b4d7516aece8969f2003457b9",
+    "model_benchmark/src/run_campaign.py": "d3df72054cb3754149d31728cf37974e92a4fad6b70d4181b74bb37ad327636b",
+    "model_benchmark/src/final_evaluate.py": "b931ab0a714e0f64717cbc06c638718ad406e492af43986658e62bf6449d3832",
+    "model_benchmark/src/train_backbone_v2.py": "e71278ebac1313de77d90529c9efb190c5beb160c380766d849c803d26181a71",
+    "model_benchmark/src/run_campaign_v2.py": "ed0e69a6b469db9ea52895f33f85797955098ae7b1be79a0bb5cbd063cb0a682",
+    "model_benchmark/src/final_evaluate_v2.py": "f9e744c141a0dfa67a4c8b8ce706afe129cc29d909a3918674aa80757df38c17",
+    "model_benchmark/src/lock_campaign_v2.py": "1b046cc3a300c9aa6433ac09924a96b6aea25ebe4bf7bad4f1eec2b0c98eeff1"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "source_sha256": "acd24557d30c3e8423c7bdb8726cf6c84fdb6d708261d23329a11b485da10d49",
+  "output_sha256": "401cb21c01d799466987dff8fdfe7bece8879ac917280fde28da8ed2fb7ad2ac",
+  "validated_runs": 18,
+  "test_images_per_run": 9829,
+  "classes": 19,
+  "aggregate_recomputed_from_confusion": true,
+  "source_figures_verified": [
+    "fig_overall_metrics.png",
+    "fig_seed_stability.png",
+    "fig_per_class_heatmap.png",
+    "fig_confusion_best_mobile.png",
+    "fig_paired_bootstrap.png",
+    "fig_quality_params.png"
+  ],
+  "redrawn_figure": "seed stability redrawn from validated metrics to remove stale source table numbers",
+  "tables": 7,
+  "hyperlinks": 12,
+  "style_preset": "standard_business_brief",
+  "header_pattern": "memo_masthead",
+  "named_overrides": {
+    "page_leading_heading_before_pt": 0,
+    "BriefTable": "8–9pt, line1.05, after0",
+    "BriefSource": "8pt, line1, after3",
+    "BriefFlow": "10pt blue, before3 after3",
+    "figures": "420dpi,6.35in;confusion5.8in"
+  },
+  "source_retained_unchanged": true
+}

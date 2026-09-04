@@ -1,0 +1,79 @@
+{
+  "schema_version": "riceai-model-smoke/v1",
+  "status": "passed",
+  "created_at_utc": "2026-08-25T03:36:24.672296+00:00",
+  "torch": "2.2.1+cu121",
+  "torchvision": "0.17.1+cu121",
+  "cuda": "12.1",
+  "device": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "contract_sha256": "c0f98716bac6dd699dbbbd0562a2242bc3a726b2e45cbb045b217f0b9a1e8383",
+  "split_manifest_sha256": "bc2c7c8c72a14968c402cbb06fc0eebdde57a8b00a5ac5c88962716f06024160",
+  "models": [
+    {
+      "model_id": "mobilenetv2",
+      "status": "passed",
+      "weights_id": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "output_shape": [
+        1,
+        19
+      ],
+      "total_parameters": 2248211,
+      "trainable_parameters": 2248211
+    },
+    {
+      "model_id": "mobilenetv3large",
+      "status": "passed",
+      "weights_id": "MobileNet_V3_Large_Weights.IMAGENET1K_V2",
+      "output_shape": [
+        1,
+        19
+      ],
+      "total_parameters": 4226371,
+      "trainable_parameters": 4226371
+    },
+    {
+      "model_id": "resnet18",
+      "status": "passed",
+      "weights_id": "ResNet18_Weights.IMAGENET1K_V1",
+      "output_shape": [
+        1,
+        19
+      ],
+      "total_parameters": 11186259,
+      "trainable_parameters": 11186259
+    },
+    {
+      "model_id": "efficientnetb0",
+      "status": "passed",
+      "weights_id": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "output_shape": [
+        1,
+        19
+      ],
+      "total_parameters": 4031887,
+      "trainable_parameters": 4031887
+    },
+    {
+      "model_id": "shufflenetv2_1_0x",
+      "status": "passed",
+      "weights_id": "ShuffleNet_V2_X1_0_Weights.IMAGENET1K_V1",
+      "output_shape": [
+        1,
+        19
+      ],
+      "total_parameters": 1273079,
+      "trainable_parameters": 1273079
+    },
+    {
+      "model_id": "densenet121",
+      "status": "passed",
+      "weights_id": "DenseNet121_Weights.IMAGENET1K_V1",
+      "output_shape": [
+        1,
+        19
+      ],
+      "total_parameters": 6973331,
+      "trainable_parameters": 6973331
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": "riceai-agri-cam-calibration/v1",
+  "status": "not_calibrated",
+  "warning": "Do not insert hand-picked thresholds. Populate each class only after validation-set severity calibration with manually annotated leaf and lesion masks.",
+  "reliability_max_std_percent": 7.0,
+  "classes": {}
+}

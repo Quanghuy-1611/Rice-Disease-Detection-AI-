@@ -1,0 +1,220 @@
+{
+  "schema_version": "riceai-model-bundle/v1",
+  "created_at_utc": "2026-08-15T18:18:09.526361+00:00",
+  "model_id": "riceai-mobilenetv3large-v6",
+  "model": {
+    "family": "MobileNetV3Large",
+    "alpha": 1.0,
+    "minimalistic": false,
+    "include_preprocessing": true,
+    "classifier_activation": "softmax",
+    "num_classes": 19,
+    "total_parameters": 3247251
+  },
+  "artifacts": {
+    "keras": {
+      "path": "best_model.keras",
+      "sha256": "57826357e605cb12184471d59f815da0422d11a120fe88083fd83b882465236b",
+      "size_bytes": 13675470
+    },
+    "class_indices": {
+      "path": "class_indices.json",
+      "sha256": "8915ac223bdd2f98fc0884c47fc531b726b844a9fd6ece68e9bd53eb453683d5",
+      "size_bytes": 477
+    },
+    "tflite": {
+      "status": "not_exported",
+      "reason": "TFLite chỉ export/evaluate cùng run có --evaluate-test."
+    }
+  },
+  "input": {
+    "height": 224,
+    "width": 224,
+    "channels": 3,
+    "layout": "NHWC",
+    "color_space": "RGB",
+    "dtype": "float32",
+    "resize_interpolation": "bilinear"
+  },
+  "preprocessing": {
+    "owner": "model_graph",
+    "backend_transform": "identity_raw_rgb_0_255",
+    "backend_expected_range": [
+      0.0,
+      255.0
+    ],
+    "training_generator_transform": "identity_raw_rgb_0_255",
+    "internal_model_transform": "x / 127.5 - 1.0",
+    "warning": "Không áp dụng mobilenet_v2.preprocess_input cho bundle này. Nó sẽ làm MobileNetV3Large Rescaling nhận input sai."
+  },
+  "classes": {
+    "taxonomy_id": "riceai-rice-19-v1",
+    "normal_class_id": "normal",
+    "index_to_id": {
+      "0": "bacterial_leaf_blight",
+      "1": "bacterial_leaf_streak",
+      "2": "bacterial_panicle_blight",
+      "3": "beetle",
+      "4": "blast",
+      "5": "brown_planthopper",
+      "6": "brown_spot",
+      "7": "dead_heart",
+      "8": "downy_mildew",
+      "9": "golden_apple_snail",
+      "10": "leaf_roller",
+      "11": "leaf_smut",
+      "12": "normal",
+      "13": "sheath_blight",
+      "14": "southern_black_streaked_dwarf",
+      "15": "stem_borer",
+      "16": "tungro",
+      "17": "weeds",
+      "18": "whitebacked_planthopper"
+    },
+    "ids_in_logit_order": [
+      "bacterial_leaf_blight",
+      "bacterial_leaf_streak",
+      "bacterial_panicle_blight",
+      "beetle",
+      "blast",
+      "brown_planthopper",
+      "brown_spot",
+      "dead_heart",
+      "downy_mildew",
+      "golden_apple_snail",
+      "leaf_roller",
+      "leaf_smut",
+      "normal",
+      "sheath_blight",
+      "southern_black_streaked_dwarf",
+      "stem_borer",
+      "tungro",
+      "weeds",
+      "whitebacked_planthopper"
+    ]
+  },
+  "xai": {
+    "method": "gradcam",
+    "target_layer_path": [
+      "mobilenetv3large_backbone"
+    ],
+    "target_feature_rank": 4,
+    "note": "Code hiện hữu dùng Grad-CAM bậc một, không phải Grad-CAM++. Backend phải đọc target layer từ bundle thay vì hard-code V2."
+  },
+  "training": {
+    "manifest_id": "rice_cleaned_v4_exact_cross_label_conflicts_excluded_v1",
+    "split_manifest_path": "D:\\Phát hiện bệnh cây lúa\\research\\data\\splits\\rice_cleaned_v4_exact_cross_label_conflicts_excluded_v1.csv",
+    "split_manifest_sha256": "bc2c7c8c72a14968c402cbb06fc0eebdde57a8b00a5ac5c88962716f06024160",
+    "dataset_full_fingerprint_sha256": "63359c4e378b387074b62940d4f248229edbeed260621424cbac9d50832e3148",
+    "split_level": "stratified_image_level",
+    "split_seed": 2026,
+    "seed": 42,
+    "train_class_counts": {
+      "bacterial_leaf_blight": 1260,
+      "bacterial_leaf_streak": 266,
+      "bacterial_panicle_blight": 236,
+      "beetle": 431,
+      "blast": 1172,
+      "brown_planthopper": 13001,
+      "brown_spot": 1540,
+      "dead_heart": 1004,
+      "downy_mildew": 432,
+      "golden_apple_snail": 566,
+      "leaf_roller": 8232,
+      "leaf_smut": 96,
+      "normal": 1230,
+      "sheath_blight": 454,
+      "southern_black_streaked_dwarf": 56,
+      "stem_borer": 13875,
+      "tungro": 759,
+      "weeds": 1114,
+      "whitebacked_planthopper": 134
+    },
+    "effective_number_class_weights": {
+      "bacterial_leaf_blight": 0.37607988715171814,
+      "bacterial_leaf_streak": 1.1532450914382935,
+      "bacterial_panicle_blight": 1.2812860012054443,
+      "beetle": 0.7692977786064148,
+      "blast": 0.39029112458229065,
+      "brown_planthopper": 0.2694711685180664,
+      "brown_spot": 0.3429320752620697,
+      "dead_heart": 0.42518454790115356,
+      "downy_mildew": 0.7678734660148621,
+      "golden_apple_snail": 0.6232424974441528,
+      "leaf_roller": 0.2695419490337372,
+      "leaf_smut": 2.9424729347229004,
+      "normal": 0.3806687593460083,
+      "sheath_blight": 0.7381510734558105,
+      "southern_black_streaked_dwarf": 4.945560932159424,
+      "stem_borer": 0.26947081089019775,
+      "tungro": 0.5064822435379028,
+      "weeds": 0.4010339081287384,
+      "whitebacked_planthopper": 2.1477136611938477
+    },
+    "head_epochs_requested": 15,
+    "fine_tune_epochs_requested": 15,
+    "fine_tuning": {
+      "requested_tail_layers": 60,
+      "trainable_base_layers": 48,
+      "frozen_batchnorm_layers": 46
+    },
+    "selected_stage": "stage2",
+    "selected_validation_metrics": {
+      "sample_count": 9829,
+      "accuracy": 0.9489266456404517,
+      "macro_precision": 0.9080208192515727,
+      "macro_recall": 0.8836504995724453,
+      "macro_f1": 0.8864316443890083,
+      "balanced_accuracy": 0.8836504995724453,
+      "mean_confidence": 0.965796821910169,
+      "ece_15": 0.017302481147750223,
+      "multiclass_brier_score": 0.0736631563176601,
+      "categorical_crossentropy": 0.15452275220733291
+    }
+  },
+  "evaluation": {
+    "test_evaluated": false,
+    "test_metrics_path": null,
+    "per_class_metrics_path": null,
+    "confusion_matrix_path": null,
+    "predictions_path": null,
+    "test_metrics": {
+      "status": "not_evaluated",
+      "reason": "Test và TFLite chưa chạy vì thiếu --evaluate-test. Không dùng run này làm kết quả cuối."
+    }
+  },
+  "runtime": {
+    "seed": 42,
+    "pythonhashseed": null,
+    "pythonhashseed_note": "Chỉ có hiệu lực nếu được đặt trước khi tiến trình Python khởi động; script chỉ ghi nhận, không tự đặt giá trị này.",
+    "tf_deterministic_ops": "1",
+    "onednn_enabled": false,
+    "enable_op_determinism_called": true,
+    "tensorflow_version": "2.21.0",
+    "keras_version": "3.15.0",
+    "numpy_version": "2.4.6",
+    "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "physical_gpus": [],
+    "provenance": {
+      "script_path": "D:\\Phát hiện bệnh cây lúa\\research\\train_v6_mobilenetv3large.py",
+      "script_sha256": "827c85fc0ec46fdbcd880aac54486765a53a8c743ebc118187c66c59636548e1",
+      "command": [
+        "C:\\Users\\Quang Huy\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+        "D:\\Phát hiện bệnh cây lúa\\research\\train_v6_mobilenetv3large.py",
+        "--manifest-id",
+        "rice_cleaned_v4_exact_cross_label_conflicts_excluded_v1",
+        "--split-seed",
+        "2026",
+        "--exclude-cross-label-duplicates",
+        "--seed",
+        "42",
+        "--run-name",
+        "v3_seed42"
+      ],
+      "git_commit": "4f14da515d51b6c28c210263faa3c4078186a904",
+      "git_worktree_dirty": true
+    }
+  },
+  "deployment_status": "research_only_not_loaded_by_current_backend"
+}

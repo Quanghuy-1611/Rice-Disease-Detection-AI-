@@ -16,6 +16,10 @@ eggs/
 .eggs/
 lib/
 lib64/
+# Flutter source must remain versioned; the generic Python lib/ rule above
+# would otherwise hide mobile_app/lib/.
+!mobile_app/lib/
+!mobile_app/lib/**
 parts/
 sdist/
 var/
@@ -28,6 +32,7 @@ MANIFEST
 
 # Virtual Environment
 .env
+firebase-adminsdk*.json
 .venv
 env/
 venv/
@@ -35,28 +40,30 @@ ENV/
 env.bak/
 venv.bak/
 
-# Deep Learning / Keras weights (Too large for GitHub)
-*.keras
-*.h5
-*.hdf5
-*.weight
-*.ckpt
-*.pb
-# We allow .tflite for mobile deployment
+# Deep-learning artifacts are versioned through Git LFS.
 
 # SQLite Database
 *.sqlite3
 *.db
 
-# Dataset & Research logs (Too large & sensitive)
-research/data/
-research/evaluation/
+# Research data and scripts are intentionally excluded from this backup.
+research/
 backend/uploads/
 *.log
 
 # Temp files
 *.msi
-*.docx
 temp_docx_output.txt
 duplicates.txt
 .codegraph/
+
+# Generated dependencies, caches and build outputs
+.gradle/
+**/.gradle/
+**/.venv/
+**/node_modules/
+**/.dart_tool/
+**/build/
+.chart-data-*/
+model_benchmark/.tmp*/
+*.inspect.ndjson
