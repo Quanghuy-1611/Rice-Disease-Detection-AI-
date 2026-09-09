@@ -1,0 +1,144 @@
+{
+  "schema_version": "riceai-release-readiness-audit/v1",
+  "inputs": {
+    "dataset": "D:\\Phát hiện bệnh cây lúa\\research\\dataset_11_curated",
+    "selection": "D:\\Phát hiện bệnh cây lúa\\research\\audit_11class_selection\\selected_balanced_manifest_v3.csv",
+    "split": "D:\\Phát hiện bệnh cây lúa\\research\\splits\\dataset_11_curated_grouped_v3.csv",
+    "split_sha256": "81c2a913483cf235c6c322c783b28e8b9b7ea14d7d73be2e92259e7e7771b9d9"
+  },
+  "counts": {
+    "dataset_images": 9294,
+    "selection_rows": 9294,
+    "split_rows": 9294,
+    "labels": 11,
+    "split": {
+      "test": 1395,
+      "train": 6505,
+      "validation": 1394
+    }
+  },
+  "duplicate_audit": {
+    "sha256": {
+      "duplicate_groups": 0,
+      "cross_label_groups": 0,
+      "cross_split_groups": 0
+    },
+    "pixel_sha256": {
+      "duplicate_groups": 0,
+      "cross_label_groups": 0,
+      "cross_split_groups": 0
+    }
+  },
+  "group_cross_split_violations": [],
+  "source_summary": {
+    "bacterial_leaf_blight": {
+      "source_count": 2,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 509,
+        "D:\\Phát hiện bệnh cây lúa\\research\\rice leaf diseases dataset\\Bacterialblight": 94
+      }
+    },
+    "blast": {
+      "source_count": 1,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 891
+      }
+    },
+    "brown_planthopper": {
+      "source_count": 1,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\Brown Plant Hopper": 900
+      }
+    },
+    "brown_spot": {
+      "source_count": 2,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 707,
+        "D:\\Phát hiện bệnh cây lúa\\research\\rice leaf diseases dataset\\Brownspot": 193
+      }
+    },
+    "dead_heart": {
+      "source_count": 1,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 900
+      }
+    },
+    "golden_apple_snail": {
+      "source_count": 3,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\Golden Apple Snail": 212,
+        "D:\\Phát hiện bệnh cây lúa\\research\\Golden Apple Snail Egg": 334,
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 81
+      }
+    },
+    "leaf_roller": {
+      "source_count": 1,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\Rice Leaf Roller": 900
+      }
+    },
+    "normal": {
+      "source_count": 1,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 895
+      }
+    },
+    "stem_borer": {
+      "source_count": 2,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\Rice Stem Borer Adult": 288,
+        "D:\\Phát hiện bệnh cây lúa\\research\\Rice Stem Borer Larva": 612
+      }
+    },
+    "tungro": {
+      "source_count": 1,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 892
+      }
+    },
+    "weeds": {
+      "source_count": 1,
+      "counts": {
+        "D:\\Phát hiện bệnh cây lúa\\research\\dataset_v4": 886
+      }
+    }
+  },
+  "labels_with_one_source": [
+    "blast",
+    "brown_planthopper",
+    "dead_heart",
+    "leaf_roller",
+    "normal",
+    "tungro",
+    "weeds"
+  ],
+  "expert_review_decisions": {
+    "pending": 700
+  },
+  "expert_policy": "retain_source_labels",
+  "external_test_image_counts": {
+    "bacterial_leaf_blight": 100,
+    "blast": 100,
+    "brown_planthopper": 100,
+    "brown_spot": 100,
+    "dead_heart": 100,
+    "golden_apple_snail": 100,
+    "leaf_roller": 100,
+    "normal": 100,
+    "stem_borer": 100,
+    "tungro": 100,
+    "weeds": 100
+  },
+  "checks": {
+    "dataset_matches_selection": true,
+    "selection_matches_split": true,
+    "group_cross_split_violations_zero": true,
+    "exact_file_cross_split_duplicates_zero": true,
+    "decoded_pixel_cross_split_duplicates_zero": true,
+    "expert_review_complete_or_waived": true,
+    "external_test_has_all_labels": true,
+    "external_test_minimum_50_per_label": true
+  },
+  "technical_integrity_passed": true,
+  "official_training_allowed": true
+}

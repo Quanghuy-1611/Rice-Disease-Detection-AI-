@@ -1,0 +1,129 @@
+{
+  "schema_version": "riceai-grouped-split-11class/v1",
+  "created_at_utc": "2026-09-07T15:56:46.588623+00:00",
+  "dataset_root": "D:\\Phát hiện bệnh cây lúa\\research\\dataset_11_curated",
+  "seed": 2026,
+  "ratios": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "grouping": "canonical pHash64 connected components at Hamming distance <= 4",
+  "manifest_sha256": "be43355b6198bbe159182b74b65d7d8a833af7d7578e52419645a6bf384c5093",
+  "selection_manifest_sha256": "94a2a462bda05cfb3108f328f24c64b00c43011f5e3d935d3dc2feba75d648c5",
+  "counts": {
+    "bacterial_leaf_blight": {
+      "test": 91,
+      "train": 422,
+      "validation": 90
+    },
+    "blast": {
+      "test": 134,
+      "train": 628,
+      "validation": 135
+    },
+    "brown_planthopper": {
+      "test": 135,
+      "train": 630,
+      "validation": 135
+    },
+    "brown_spot": {
+      "test": 135,
+      "train": 630,
+      "validation": 135
+    },
+    "dead_heart": {
+      "test": 135,
+      "train": 630,
+      "validation": 135
+    },
+    "golden_apple_snail": {
+      "test": 94,
+      "train": 439,
+      "validation": 94
+    },
+    "leaf_roller": {
+      "test": 135,
+      "train": 630,
+      "validation": 135
+    },
+    "normal": {
+      "test": 134,
+      "train": 628,
+      "validation": 135
+    },
+    "stem_borer": {
+      "test": 135,
+      "train": 630,
+      "validation": 135
+    },
+    "tungro": {
+      "test": 134,
+      "train": 629,
+      "validation": 135
+    },
+    "weeds": {
+      "test": 133,
+      "train": 624,
+      "validation": 134
+    }
+  },
+  "group_stats": {
+    "bacterial_leaf_blight": {
+      "images": 603,
+      "groups": 543,
+      "largest_group": 5
+    },
+    "blast": {
+      "images": 897,
+      "groups": 811,
+      "largest_group": 7
+    },
+    "brown_planthopper": {
+      "images": 900,
+      "groups": 853,
+      "largest_group": 4
+    },
+    "brown_spot": {
+      "images": 900,
+      "groups": 702,
+      "largest_group": 7
+    },
+    "dead_heart": {
+      "images": 900,
+      "groups": 812,
+      "largest_group": 9
+    },
+    "golden_apple_snail": {
+      "images": 627,
+      "groups": 554,
+      "largest_group": 3
+    },
+    "leaf_roller": {
+      "images": 900,
+      "groups": 821,
+      "largest_group": 4
+    },
+    "normal": {
+      "images": 897,
+      "groups": 821,
+      "largest_group": 5
+    },
+    "stem_borer": {
+      "images": 900,
+      "groups": 814,
+      "largest_group": 4
+    },
+    "tungro": {
+      "images": 898,
+      "groups": 782,
+      "largest_group": 6
+    },
+    "weeds": {
+      "images": 891,
+      "groups": 723,
+      "largest_group": 12
+    }
+  },
+  "group_cross_split_violations": 0
+}

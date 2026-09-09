@@ -1,0 +1,44 @@
+{
+  "efficientnetb0": {
+    "model": "EfficientNet-B0",
+    "accuracy_mean": 0.9933518202502845,
+    "macro_f1_mean": 0.979944233789705,
+    "macro_f1_sample_std": 0.0015938071243156125,
+    "outside_11_weighted_rate": 0.0017420364050056882
+  },
+  "mobilenetv3large": {
+    "model": "MobileNetV3-Large",
+    "accuracy_mean": 0.9918941979522184,
+    "macro_f1_mean": 0.9758542913401829,
+    "macro_f1_sample_std": 0.0006998472413523467,
+    "outside_11_weighted_rate": 0.0019197952218430034
+  },
+  "resnet18": {
+    "model": "ResNet-18",
+    "accuracy_mean": 0.989405574516496,
+    "macro_f1_mean": 0.9723352980939365,
+    "macro_f1_sample_std": 0.00940675738510972,
+    "outside_11_weighted_rate": 0.0026663822525597267
+  },
+  "densenet121": {
+    "model": "DenseNet-121",
+    "accuracy_mean": 0.9894766780432309,
+    "macro_f1_mean": 0.971625608871095,
+    "macro_f1_sample_std": 0.0031640620897107987,
+    "outside_11_weighted_rate": 0.0029507963594994305
+  },
+  "mobilenetv2": {
+    "model": "MobileNetV2",
+    "accuracy_mean": 0.9861703640500569,
+    "macro_f1_mean": 0.9622735939743478,
+    "macro_f1_sample_std": 0.009810872333930114,
+    "outside_11_weighted_rate": 0.0037684869169510807
+  },
+  "shufflenetv2_1_0x": {
+    "model": "ShuffleNet V2 1.0x",
+    "accuracy_mean": 0.9655147895335608,
+    "macro_f1_mean": 0.9152388443303345,
+    "macro_f1_sample_std": 0.017713659235614222,
+    "outside_11_weighted_rate": 0.010594425483503983
+  }
+}

@@ -1,13 +1,13 @@
 {
   "schema_version": "riceai-model-smoke/v1",
   "status": "passed",
-  "created_at_utc": "2026-08-25T03:36:24.672296+00:00",
-  "torch": "2.2.1+cu121",
-  "torchvision": "0.17.1+cu121",
-  "cuda": "12.1",
+  "created_at_utc": "2026-09-08T13:34:07.425744+00:00",
+  "torch": "2.7.1+cu118",
+  "torchvision": "0.22.1+cu118",
+  "cuda": "11.8",
   "device": "NVIDIA GeForce RTX 4050 Laptop GPU",
-  "contract_sha256": "c0f98716bac6dd699dbbbd0562a2242bc3a726b2e45cbb045b217f0b9a1e8383",
-  "split_manifest_sha256": "bc2c7c8c72a14968c402cbb06fc0eebdde57a8b00a5ac5c88962716f06024160",
+  "contract_sha256": "46e54a6fee4ed5cb0cc0cc5824ac419355cafb8854af8f863b4d459f57dedacd",
+  "split_manifest_sha256": "b2d62ff3387e155242427ad089b67ad20adfac7ebe3837ff6cfbf4e55cc19401",
   "models": [
     {
       "model_id": "mobilenetv2",
@@ -15,10 +15,10 @@
       "weights_id": "MobileNet_V2_Weights.IMAGENET1K_V2",
       "output_shape": [
         1,
-        19
+        11
       ],
-      "total_parameters": 2248211,
-      "trainable_parameters": 2248211
+      "total_parameters": 2237963,
+      "trainable_parameters": 2237963
     },
     {
       "model_id": "mobilenetv3large",
@@ -26,10 +26,10 @@
       "weights_id": "MobileNet_V3_Large_Weights.IMAGENET1K_V2",
       "output_shape": [
         1,
-        19
+        11
       ],
-      "total_parameters": 4226371,
-      "trainable_parameters": 4226371
+      "total_parameters": 4216123,
+      "trainable_parameters": 4216123
     },
     {
       "model_id": "resnet18",
@@ -37,10 +37,10 @@
       "weights_id": "ResNet18_Weights.IMAGENET1K_V1",
       "output_shape": [
         1,
-        19
+        11
       ],
-      "total_parameters": 11186259,
-      "trainable_parameters": 11186259
+      "total_parameters": 11182155,
+      "trainable_parameters": 11182155
     },
     {
       "model_id": "efficientnetb0",
@@ -48,10 +48,10 @@
       "weights_id": "EfficientNet_B0_Weights.IMAGENET1K_V1",
       "output_shape": [
         1,
-        19
+        11
       ],
-      "total_parameters": 4031887,
-      "trainable_parameters": 4031887
+      "total_parameters": 4021639,
+      "trainable_parameters": 4021639
     },
     {
       "model_id": "shufflenetv2_1_0x",
@@ -59,10 +59,10 @@
       "weights_id": "ShuffleNet_V2_X1_0_Weights.IMAGENET1K_V1",
       "output_shape": [
         1,
-        19
+        11
       ],
-      "total_parameters": 1273079,
-      "trainable_parameters": 1273079
+      "total_parameters": 1264879,
+      "trainable_parameters": 1264879
     },
     {
       "model_id": "densenet121",
@@ -70,10 +70,10 @@
       "weights_id": "DenseNet121_Weights.IMAGENET1K_V1",
       "output_shape": [
         1,
-        19
+        11
       ],
-      "total_parameters": 6973331,
-      "trainable_parameters": 6973331
+      "total_parameters": 6965131,
+      "trainable_parameters": 6965131
     }
   ]
 }

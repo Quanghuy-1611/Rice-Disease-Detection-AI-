@@ -1,0 +1,136 @@
+{
+  "schema_version": "riceai-backbone-benchmark/v1",
+  "benchmark_id": "rice_11class_resnet18_internal_pilot_v1",
+  "status": "exploratory_internal_train_validation_only",
+  "task": {
+    "type": "single_label_image_classification",
+    "description": "Phân loại 11 nhãn bệnh, sâu hại, cỏ dại và trạng thái cây lúa từ một ảnh RGB."
+  },
+  "data": {
+    "dataset_root": "../../research/dataset_11_curated",
+    "split_manifest": "../../research/splits/dataset_11_curated_grouped_v3_benchmark.csv",
+    "split_metadata": "../../research/splits/dataset_11_curated_grouped_v3_benchmark.metadata.json",
+    "manifest_id": "dataset_11_curated_grouped_v3_benchmark",
+    "split_seed": 2026,
+    "split_level": "exact_all_pairs_canonical_phash64_connected_components_hamming_le_8_with_reviewed_cross_label_collision_exception",
+    "fractions": {
+      "train": 0.7,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "cross_label_duplicate_policy": "quarantine_visually_confirmed_same_scene_conflicts; retain visually distinct pHash collisions",
+    "class_count": 11,
+    "internal_test_role": "secondary_internal_grouped_holdout",
+    "external_test_root": "../../research/external_test_11class",
+    "external_test_required_for_primary_publication_claim": true
+  },
+  "release_gates": {
+    "dataset_integrity": "passed",
+    "group_leakage_audit": "passed_with_one_reviewed_cross_label_false_positive_phash_collision",
+    "cross_label_near_duplicate_audit": "passed_after_visual_review_and_19_image_quarantine",
+    "expert_label_review": "waived_for_exploratory_run_source_labels_retained",
+    "external_test_lock": "not_required_for_exploratory_train_validation_only",
+    "training_allowed": true
+  },
+  "models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "implementation": {
+    "framework": "pytorch_torchvision",
+    "weights_source": "official_torchvision_imagenet1k",
+    "input_range": "rgb_float_0_1_then_imagenet_normalize",
+    "imagenet_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "imagenet_std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "batchnorm_policy": "freeze_running_statistics_and_parameters_in_both_stages",
+    "deterministic_algorithms": true,
+    "cublas_workspace_config": ":4096:8",
+    "allow_tf32": false
+  },
+  "training": {
+    "input_shape": [
+      224,
+      224,
+      3
+    ],
+    "transfer_learning_weights": "imagenet",
+    "batch_size": 32,
+    "head_epochs": 2,
+    "fine_tune_epochs": 3,
+    "optimizer": "adam",
+    "head_learning_rate": 0.001,
+    "fine_tune_learning_rate": 1E-05,
+    "dropout": 0.4,
+    "early_stopping_patience": 5,
+    "reduce_lr_factor": 0.2,
+    "reduce_lr_min": 1E-07,
+    "class_weighting": {
+      "method": "effective_number",
+      "beta": 0.999,
+      "minimum": 0.25,
+      "maximum": 5.0
+    },
+    "augmentation": {
+      "application": "dynamic_train_only_after_split",
+      "horizontal_flip_probability": 0.5,
+      "rotation_degrees": 20.0,
+      "translation_fraction": 0.1,
+      "scale_range": [
+        0.85,
+        1.15
+      ],
+      "brightness": 0.15,
+      "contrast": 0.15
+    },
+    "selection_metric": "validation_macro_f1",
+    "training_seeds": [
+      42
+    ],
+    "test_must_not_select_model_or_hyperparameters": true,
+    "models_to_train": [
+      "resnet18"
+    ]
+  },
+  "evaluation": {
+    "primary_metric": "macro_f1",
+    "required_metrics": [
+      "accuracy",
+      "balanced_accuracy",
+      "macro_precision",
+      "macro_recall",
+      "macro_f1",
+      "per_class_precision_recall_f1",
+      "confusion_matrix",
+      "ece_15_bins",
+      "multiclass_brier_score",
+      "bootstrap_ci95_macro_f1"
+    ],
+    "internal_test_policy": "evaluate_once_after_model_selection_and_lock",
+    "external_test_policy": "evaluate_once_after_campaign_and_external_set_lock",
+    "report_internal_and_external_separately": true
+  },
+  "integrity_rules": [
+    "Do not train while release_gates.training_allowed is false.",
+    "Do not manually edit generated metrics, manifests or comparison tables.",
+    "Do not use internal or external test results to select epochs, hyperparameters or architectures.",
+    "Every run must preserve contract, manifest, dataset and checkpoint SHA256 values.",
+    "Augmentation is dynamic and train-only; validation and test use deterministic preprocessing.",
+    "Report mean and sample standard deviation across three seeds.",
+    "Accuracy is secondary; Macro-F1 is the primary comparison metric.",
+    "The internal grouped holdout is not described as an external test set.",
+    "This pilot must not read or evaluate internal/external test images.",
+    "Pilot metrics are diagnostic and must not be reported as final paper results."
+  ]
+}

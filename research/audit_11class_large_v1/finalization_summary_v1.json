@@ -1,0 +1,71 @@
+{
+  "schema_version": "riceai-large-11class-finalization/v1",
+  "created_at_utc": "2026-09-09T00:54:05.259983+07:00",
+  "policy": {
+    "max_images_per_phash_hamming_le8_component": 3,
+    "representative_ranking": "sharpness, then minimum dimension, then stable path",
+    "manual_exclusions": "confirmed illustration/composite/watermark only"
+  },
+  "before_images": 22979,
+  "after_images": 21216,
+  "removed_near_duplicate_excess": 1757,
+  "removed_manual": 6,
+  "manual_excluded_paths": [
+    "brown_planthopper/brown_planthopper_002111.jpg",
+    "brown_planthopper/brown_planthopper_003385.jpg",
+    "brown_planthopper/brown_planthopper_003732.jpg",
+    "brown_planthopper/brown_planthopper_004225.jpg",
+    "golden_apple_snail/golden_apple_snail_000306.jpg",
+    "leaf_roller/leaf_roller_001029.jpg"
+  ],
+  "layout": "train|val|test / label / image",
+  "counts": {
+    "train": {
+      "bacterial_leaf_blight": 396,
+      "blast": 1005,
+      "brown_planthopper": 2879,
+      "brown_spot": 683,
+      "dead_heart": 845,
+      "golden_apple_snail": 431,
+      "leaf_roller": 2592,
+      "normal": 1106,
+      "stem_borer": 2881,
+      "tungro": 654,
+      "weeds": 851
+    },
+    "val": {
+      "bacterial_leaf_blight": 90,
+      "blast": 257,
+      "brown_planthopper": 655,
+      "brown_spot": 180,
+      "dead_heart": 213,
+      "golden_apple_snail": 94,
+      "leaf_roller": 644,
+      "normal": 262,
+      "stem_borer": 658,
+      "tungro": 160,
+      "weeds": 234
+    },
+    "test": {
+      "bacterial_leaf_blight": 91,
+      "blast": 257,
+      "brown_planthopper": 656,
+      "brown_spot": 180,
+      "dead_heart": 212,
+      "golden_apple_snail": 94,
+      "leaf_roller": 644,
+      "normal": 261,
+      "stem_borer": 657,
+      "tungro": 160,
+      "weeds": 234
+    }
+  },
+  "split_reallocated_after_filter": true,
+  "final_split_counts": {
+    "train": 14850,
+    "val": 3181,
+    "test": 3185
+  },
+  "cleanup_verified": true,
+  "deleted_temporary_backup_images": 44195
+}

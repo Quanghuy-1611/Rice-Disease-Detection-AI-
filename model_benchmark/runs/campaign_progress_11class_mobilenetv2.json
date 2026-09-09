@@ -1,0 +1,12 @@
+{
+  "status": "complete",
+  "model": "mobilenetv2",
+  "seed_count": 3,
+  "completed_seeds": [
+    42,
+    123,
+    2026
+  ],
+  "test_evaluated": false,
+  "updated_at_utc": "2026-09-08T16:05:29.764745+00:00"
+}

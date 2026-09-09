@@ -1,0 +1,45 @@
+{
+  "schema_version": "riceai-campaign-lock/v1",
+  "campaign_id": "rice_11class_grouped_benchmark_v1",
+  "created_at_utc": "2026-09-08T13:35:10.021980+00:00",
+  "contract_sha256": "46e54a6fee4ed5cb0cc0cc5824ac419355cafb8854af8f863b4d459f57dedacd",
+  "split_manifest_sha256": "b2d62ff3387e155242427ad089b67ad20adfac7ebe3837ff6cfbf4e55cc19401",
+  "external_test_manifest_sha256": "2c9277d65d2b01e670889d7133886d8627f811ecfdb6e771aba2c925ad039bb0",
+  "external_test_lock_sha256": "9673a07d4dee02ad488ceb73ac6568351ba37e76c880f081ffc729358c46e2f3",
+  "preflight_report_sha256": "4fc6300e583161ff1e59b25d27db0abf40cb47e7a49bf7965c7258c34e52dd06",
+  "model_smoke_report_sha256": "017ac93837e2197bdff27a69be3d8c4c1f3eefbb635d4b19c7279600968d7f16",
+  "training_smoke_report_sha256": "68e72a6f3492c37042722a7b19caadcb1c46551d148405f9498ac0c37d3b9106",
+  "full_image_verification": {
+    "performed": true,
+    "images_checked": 9294
+  },
+  "models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "models_to_train": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "training_seeds": [
+    42,
+    123,
+    2026
+  ],
+  "code_sha256": {
+    "model_benchmark/config/benchmark_contract_11class_v1.json": "46e54a6fee4ed5cb0cc0cc5824ac419355cafb8854af8f863b4d459f57dedacd",
+    "model_benchmark/requirements.txt": "aac6538cbb8d156995d2198f484e7c8dfa9ee750835fb9a8f71aa0657256004b",
+    "model_benchmark/src/benchmark_common.py": "f645da43436aad0823f07ca67f65d1c3c39fc0877bf97e95489f4d48d1c48103",
+    "model_benchmark/src/model_factory.py": "4b44c67a1ba7a4ec1198781ef8dda5be8f982225fc4e862148499e487acbccf7",
+    "model_benchmark/src/train_backbone.py": "35865468d756e8d348aa31ef8165794981c4677b4d7516aece8969f2003457b9",
+    "model_benchmark/src/run_model_3seeds_11class.py": "a0eb0f2566cdd73959aed463cde20adfa7c5d84452ca7a90cfe586f4e0a6e48c"
+  }
+}

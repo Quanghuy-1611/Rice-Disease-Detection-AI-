@@ -1,0 +1,10 @@
+{
+  "status": "running",
+  "model": "resnet18",
+  "current_seed": 42,
+  "position": 1,
+  "seed_count": 3,
+  "completed_seeds": [],
+  "test_evaluated": false,
+  "updated_at_utc": "2026-09-08T17:49:30.689144+00:00"
+}

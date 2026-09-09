@@ -1,0 +1,89 @@
+{
+  "schema_version": "riceai-image-split/v1",
+  "manifest_id": "dataset_11_curated_grouped_v2_benchmark",
+  "created_at_utc": "2026-09-07T16:14:03.428400+00:00",
+  "split_seed": 2026,
+  "split_level": "grouped_canonical_phash64_hamming_le_4",
+  "cross_label_duplicate_policy": "exclude_cross_label_near_duplicates",
+  "fractions": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "manifest_sha256": "2e6c3890a9b7717d28db3b2f42d5a1dcccf0d6db1e9b905d21aeabb47b0e3020",
+  "canonical_classes": [
+    "bacterial_leaf_blight",
+    "blast",
+    "brown_planthopper",
+    "brown_spot",
+    "dead_heart",
+    "golden_apple_snail",
+    "leaf_roller",
+    "normal",
+    "stem_borer",
+    "tungro",
+    "weeds"
+  ],
+  "class_indices": {
+    "0": "bacterial_leaf_blight",
+    "1": "blast",
+    "2": "brown_planthopper",
+    "3": "brown_spot",
+    "4": "dead_heart",
+    "5": "golden_apple_snail",
+    "6": "leaf_roller",
+    "7": "normal",
+    "8": "stem_borer",
+    "9": "tungro",
+    "10": "weeds"
+  },
+  "split_class_counts": {
+    "test": {
+      "bacterial_leaf_blight": 91,
+      "blast": 134,
+      "brown_planthopper": 135,
+      "brown_spot": 135,
+      "dead_heart": 135,
+      "golden_apple_snail": 94,
+      "leaf_roller": 135,
+      "normal": 134,
+      "stem_borer": 135,
+      "tungro": 134,
+      "weeds": 133
+    },
+    "train": {
+      "bacterial_leaf_blight": 422,
+      "blast": 628,
+      "brown_planthopper": 630,
+      "brown_spot": 630,
+      "dead_heart": 630,
+      "golden_apple_snail": 439,
+      "leaf_roller": 630,
+      "normal": 628,
+      "stem_borer": 630,
+      "tungro": 629,
+      "weeds": 624
+    },
+    "validation": {
+      "bacterial_leaf_blight": 90,
+      "blast": 135,
+      "brown_planthopper": 135,
+      "brown_spot": 135,
+      "dead_heart": 135,
+      "golden_apple_snail": 94,
+      "leaf_roller": 135,
+      "normal": 135,
+      "stem_borer": 135,
+      "tungro": 135,
+      "weeds": 134
+    }
+  },
+  "group_manifest": "D:\\Phát hiện bệnh cây lúa\\research\\splits\\dataset_11_curated_grouped_v2.csv",
+  "group_manifest_sha256": "be43355b6198bbe159182b74b65d7d8a833af7d7578e52419645a6bf384c5093",
+  "dataset_lock": "D:\\Phát hiện bệnh cây lúa\\research\\locks\\dataset_11_curated_v2.lock.json",
+  "dataset_content_sha256": "f81b59b7f0db3e362f1d72701d4c83203381375f3c6d39dc42d3a2cfc32e8dbf",
+  "group_cross_split_violations": 0,
+  "label_review_status": "pending_expert_confirmation_for_7_high-risk labels",
+  "test_role": "internal_grouped_holdout_only",
+  "external_test_required_for_primary_publication_claim": true
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": "riceai-campaign-lock/v1",
+  "campaign_id": "rice_11class_large_grouped_benchmark_v1",
+  "created_at_utc": "2026-09-08T18:10:13.851625+00:00",
+  "contract_sha256": "91d410b24df842b52c32de1c05bf3d0feef55ed3e1c4e47650fb2d44e4540814",
+  "split_manifest_sha256": "21c9227c50ad5bc8758dc50c43198e2d4f32b123ac7ced1791db6beea803f329",
+  "dataset_lock_sha256": "1d06bf203bb17db49ad1944db7d9e2f5f0190c90f30276ae3fddf8dbb291c4dc",
+  "build_report_sha256": "75535a91bf1339f28b051afad7506b5be9375e93346299c9848f6f12bc025d4d",
+  "external_test_manifest_sha256": "2c9277d65d2b01e670889d7133886d8627f811ecfdb6e771aba2c925ad039bb0",
+  "external_test_lock_sha256": "9673a07d4dee02ad488ceb73ac6568351ba37e76c880f081ffc729358c46e2f3",
+  "models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "models_to_train": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "training_seeds": [
+    42,
+    123,
+    2026
+  ],
+  "code_sha256": {
+    "model_benchmark/src/benchmark_common.py": "f645da43436aad0823f07ca67f65d1c3c39fc0877bf97e95489f4d48d1c48103",
+    "model_benchmark/src/model_factory.py": "4b44c67a1ba7a4ec1198781ef8dda5be8f982225fc4e862148499e487acbccf7",
+    "model_benchmark/src/train_backbone.py": "35865468d756e8d348aa31ef8165794981c4677b4d7516aece8969f2003457b9",
+    "model_benchmark/src/run_model_3seeds_11class_large.py": "570e06c1e1b817b9a9f598233560853999f26763c7f5551a546afa8645fff5ce",
+    "model_benchmark/src/run_campaign_11class_large_continuous.py": "1df305d3bd3fc48634132cac90ed60dc16ccb6035482504e2bdee81d4fde08da"
+  }
+}

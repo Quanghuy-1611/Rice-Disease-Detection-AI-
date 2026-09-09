@@ -1,0 +1,26 @@
+{
+  "status": "running",
+  "pid": 10764,
+  "current_model": "resnet18",
+  "model_position": 3,
+  "model_count": 6,
+  "models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "seeds": [
+    42,
+    123,
+    2026
+  ],
+  "completed_models": [
+    "mobilenetv2",
+    "mobilenetv3large"
+  ],
+  "test_evaluated": false,
+  "updated_at_utc": "2026-09-08T17:49:30.440793+00:00"
+}

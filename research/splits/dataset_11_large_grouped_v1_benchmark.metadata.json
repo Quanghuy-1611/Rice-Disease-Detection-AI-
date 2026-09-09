@@ -1,0 +1,89 @@
+{
+  "schema_version": "riceai-image-split/v1",
+  "manifest_id": "dataset_11_large_grouped_v1_benchmark",
+  "created_at_utc": "2026-09-08T18:10:13.183785+00:00",
+  "split_seed": 2026,
+  "split_level": "canonical_phash64_connected_components_hamming_le_8_after_exact_pixel_and_exact_phash_dedup",
+  "cross_label_duplicate_policy": "exclude_all_exact_pixel_or_exact_canonical_phash_cross_label_conflicts",
+  "fractions": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "manifest_sha256": "21c9227c50ad5bc8758dc50c43198e2d4f32b123ac7ced1791db6beea803f329",
+  "canonical_classes": [
+    "bacterial_leaf_blight",
+    "blast",
+    "brown_planthopper",
+    "brown_spot",
+    "dead_heart",
+    "golden_apple_snail",
+    "leaf_roller",
+    "normal",
+    "stem_borer",
+    "tungro",
+    "weeds"
+  ],
+  "class_indices": {
+    "0": "bacterial_leaf_blight",
+    "1": "blast",
+    "2": "brown_planthopper",
+    "3": "brown_spot",
+    "4": "dead_heart",
+    "5": "golden_apple_snail",
+    "6": "leaf_roller",
+    "7": "normal",
+    "8": "stem_borer",
+    "9": "tungro",
+    "10": "weeds"
+  },
+  "split_class_counts": {
+    "test": {
+      "bacterial_leaf_blight": 86,
+      "blast": 228,
+      "brown_planthopper": 629,
+      "brown_spot": 157,
+      "dead_heart": 191,
+      "golden_apple_snail": 93,
+      "leaf_roller": 582,
+      "normal": 245,
+      "stem_borer": 630,
+      "tungro": 146,
+      "weeds": 198
+    },
+    "train": {
+      "bacterial_leaf_blight": 404,
+      "blast": 1063,
+      "brown_planthopper": 2933,
+      "brown_spot": 730,
+      "dead_heart": 889,
+      "golden_apple_snail": 433,
+      "leaf_roller": 2716,
+      "normal": 1140,
+      "stem_borer": 2937,
+      "tungro": 682,
+      "weeds": 923
+    },
+    "validation": {
+      "bacterial_leaf_blight": 87,
+      "blast": 228,
+      "brown_planthopper": 628,
+      "brown_spot": 156,
+      "dead_heart": 190,
+      "golden_apple_snail": 93,
+      "leaf_roller": 582,
+      "normal": 244,
+      "stem_borer": 629,
+      "tungro": 146,
+      "weeds": 198
+    }
+  },
+  "group_manifest": "D:\\Phát hiện bệnh cây lúa\\research\\splits\\dataset_11_large_grouped_v1.csv",
+  "group_manifest_sha256": "b72d3b6773951b519fe15f9138ced1240e08384ae5e9893bcb699e3d12fc5a1b",
+  "dataset_lock": "D:\\Phát hiện bệnh cây lúa\\research\\locks\\dataset_11_large_v1.lock.json",
+  "dataset_content_sha256": "096a1cc9027284ddeb0871336f8031c0a4f0563e465b6074dec11964cb0ad674",
+  "group_cross_split_violations": 0,
+  "label_review_status": "pending_expert_confirmation_for_7_high-risk labels",
+  "test_role": "internal_grouped_holdout_only",
+  "external_test_required_for_primary_publication_claim": true
+}

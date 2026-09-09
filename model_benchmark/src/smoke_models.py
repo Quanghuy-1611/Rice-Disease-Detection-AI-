@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,7 +21,10 @@ REPORT = ROOT / "runs" / "preflight" / "model_smoke_latest.json"
 
 def main() -> int:
     configure_utf8_console()
-    inputs = load_locked_inputs(CONTRACT)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--contract", type=Path, default=CONTRACT)
+    args = parser.parse_args()
+    inputs = load_locked_inputs(args.contract)
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is unavailable; refusing the intended RTX 4050 smoke test")
     device = torch.device("cuda")

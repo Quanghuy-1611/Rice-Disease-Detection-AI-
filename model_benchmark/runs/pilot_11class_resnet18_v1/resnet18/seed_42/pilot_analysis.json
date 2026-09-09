@@ -1,0 +1,223 @@
+{
+  "scope": "exploratory train/validation only; no test evaluation",
+  "best_epoch": 5,
+  "stage": "finetune",
+  "validation": {
+    "loss": 0.6372961381268574,
+    "accuracy": 0.7740315638450502,
+    "macro_precision": 0.8123427259742543,
+    "macro_recall": 0.7685043681115951,
+    "macro_f1": 0.7672328241117836
+  },
+  "train": {
+    "loss": 0.5795939173174307,
+    "accuracy": 0.7998462720983859,
+    "macro_precision": 0.7960245805458317,
+    "macro_recall": 0.7958339681856877,
+    "macro_f1": 0.7956753387732299
+  },
+  "per_class": [
+    {
+      "label": "bacterial_leaf_blight",
+      "support": 90,
+      "precision": 0.6730769230769231,
+      "recall": 0.3888888888888889,
+      "f1": 0.49295774647887325
+    },
+    {
+      "label": "blast",
+      "support": 134,
+      "precision": 0.5350877192982456,
+      "recall": 0.9104477611940298,
+      "f1": 0.6740331491712708
+    },
+    {
+      "label": "brown_planthopper",
+      "support": 135,
+      "precision": 0.95,
+      "recall": 0.9851851851851852,
+      "f1": 0.9672727272727272
+    },
+    {
+      "label": "brown_spot",
+      "support": 135,
+      "precision": 0.84375,
+      "recall": 0.4,
+      "f1": 0.5427135678391961
+    },
+    {
+      "label": "dead_heart",
+      "support": 135,
+      "precision": 0.9453125,
+      "recall": 0.8962962962962963,
+      "f1": 0.9201520912547527
+    },
+    {
+      "label": "golden_apple_snail",
+      "support": 94,
+      "precision": 0.9894736842105263,
+      "recall": 1.0,
+      "f1": 0.9947089947089947
+    },
+    {
+      "label": "leaf_roller",
+      "support": 135,
+      "precision": 0.9241379310344827,
+      "recall": 0.9925925925925926,
+      "f1": 0.9571428571428572
+    },
+    {
+      "label": "normal",
+      "support": 134,
+      "precision": 0.8941176470588236,
+      "recall": 0.5671641791044776,
+      "f1": 0.6940639269406393
+    },
+    {
+      "label": "stem_borer",
+      "support": 135,
+      "precision": 1.0,
+      "recall": 0.9037037037037037,
+      "f1": 0.9494163424124513
+    },
+    {
+      "label": "tungro",
+      "support": 134,
+      "precision": 0.6785714285714286,
+      "recall": 0.5671641791044776,
+      "f1": 0.6178861788617885
+    },
+    {
+      "label": "weeds",
+      "support": 133,
+      "precision": 0.5022421524663677,
+      "recall": 0.8421052631578947,
+      "f1": 0.6292134831460674
+    }
+  ],
+  "top_confusions": [
+    {
+      "true": "normal",
+      "predicted": "weeds",
+      "count": 50,
+      "percent_of_true": 0.373134328358209
+    },
+    {
+      "true": "brown_spot",
+      "predicted": "blast",
+      "count": 35,
+      "percent_of_true": 0.25925925925925924
+    },
+    {
+      "true": "tungro",
+      "predicted": "blast",
+      "count": 34,
+      "percent_of_true": 0.2537313432835821
+    },
+    {
+      "true": "bacterial_leaf_blight",
+      "predicted": "weeds",
+      "count": 22,
+      "percent_of_true": 0.24444444444444444
+    },
+    {
+      "true": "brown_spot",
+      "predicted": "tungro",
+      "count": 17,
+      "percent_of_true": 0.1259259259259259
+    },
+    {
+      "true": "bacterial_leaf_blight",
+      "predicted": "blast",
+      "count": 15,
+      "percent_of_true": 0.16666666666666666
+    },
+    {
+      "true": "tungro",
+      "predicted": "weeds",
+      "count": 14,
+      "percent_of_true": 0.1044776119402985
+    },
+    {
+      "true": "brown_spot",
+      "predicted": "weeds",
+      "count": 14,
+      "percent_of_true": 0.1037037037037037
+    },
+    {
+      "true": "brown_spot",
+      "predicted": "bacterial_leaf_blight",
+      "count": 12,
+      "percent_of_true": 0.08888888888888889
+    },
+    {
+      "true": "weeds",
+      "predicted": "blast",
+      "count": 11,
+      "percent_of_true": 0.08270676691729323
+    },
+    {
+      "true": "stem_borer",
+      "predicted": "leaf_roller",
+      "count": 9,
+      "percent_of_true": 0.06666666666666667
+    },
+    {
+      "true": "bacterial_leaf_blight",
+      "predicted": "brown_spot",
+      "count": 7,
+      "percent_of_true": 0.07777777777777778
+    },
+    {
+      "true": "bacterial_leaf_blight",
+      "predicted": "tungro",
+      "count": 7,
+      "percent_of_true": 0.07777777777777778
+    },
+    {
+      "true": "dead_heart",
+      "predicted": "blast",
+      "count": 6,
+      "percent_of_true": 0.044444444444444446
+    },
+    {
+      "true": "dead_heart",
+      "predicted": "weeds",
+      "count": 6,
+      "percent_of_true": 0.044444444444444446
+    },
+    {
+      "true": "blast",
+      "predicted": "weeds",
+      "count": 5,
+      "percent_of_true": 0.03731343283582089
+    },
+    {
+      "true": "normal",
+      "predicted": "blast",
+      "count": 5,
+      "percent_of_true": 0.03731343283582089
+    },
+    {
+      "true": "tungro",
+      "predicted": "bacterial_leaf_blight",
+      "count": 5,
+      "percent_of_true": 0.03731343283582089
+    },
+    {
+      "true": "weeds",
+      "predicted": "normal",
+      "count": 4,
+      "percent_of_true": 0.03007518796992481
+    },
+    {
+      "true": "blast",
+      "predicted": "tungro",
+      "count": 4,
+      "percent_of_true": 0.029850746268656716
+    }
+  ],
+  "test_evaluated": false,
+  "duration_seconds": 288.6316196999978,
+  "checkpoint_sha256": "e3d2b0013fac88ec4cebd093d41cd68ea2b425afaed86741db7f2e1f9a0fff85"
+}

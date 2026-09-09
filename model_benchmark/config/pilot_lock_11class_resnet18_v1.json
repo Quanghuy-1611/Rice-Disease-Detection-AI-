@@ -1,0 +1,27 @@
+{
+  "schema_version": "riceai-campaign-lock/v1",
+  "campaign_id": "rice_11class_resnet18_internal_pilot_v1",
+  "created_at_utc": "2026-09-08T02:45:48.6560155Z",
+  "contract_sha256": "4b8be5b6061953890236800185a20ac95007602843cea2893dc643a412eed1c5",
+  "split_manifest_sha256": "b2d62ff3387e155242427ad089b67ad20adfac7ebe3837ff6cfbf4e55cc19401",
+  "scope": "exploratory_train_validation_only_no_test_access",
+  "models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "models_to_train": [
+    "resnet18"
+  ],
+  "training_seeds": [
+    42
+  ],
+  "code_sha256": {
+    "model_benchmark/src/benchmark_common.py": "f645da43436aad0823f07ca67f65d1c3c39fc0877bf97e95489f4d48d1c48103",
+    "model_benchmark/src/model_factory.py": "4b44c67a1ba7a4ec1198781ef8dda5be8f982225fc4e862148499e487acbccf7",
+    "model_benchmark/src/train_backbone.py": "35865468d756e8d348aa31ef8165794981c4677b4d7516aece8969f2003457b9"
+  }
+}

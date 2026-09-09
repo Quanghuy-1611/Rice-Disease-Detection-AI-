@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "completed_models": [
+    "mobilenetv2",
+    "mobilenetv3large",
+    "resnet18",
+    "efficientnetb0",
+    "shufflenetv2_1_0x",
+    "densenet121"
+  ],
+  "seeds": [
+    42,
+    123,
+    2026
+  ],
+  "pid": 8184,
+  "external_test_evaluated": false,
+  "updated_at_utc": "2026-09-09T11:26:23.564679+00:00"
+}

@@ -1,0 +1,791 @@
+{
+  "status": "blocked_before_test_predictions",
+  "image_count": 1100,
+  "file_hash_errors": [],
+  "external_pairs_phash_le8": 14,
+  "external_pairs_phash_le12": 128,
+  "candidate_pairs_for_review": [
+    {
+      "a": "brown_planthopper/brown_planthopper_008.jpg",
+      "b": "brown_planthopper/brown_planthopper_009.jpg",
+      "distance": 2,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_010.jpg",
+      "b": "brown_planthopper/brown_planthopper_011.jpg",
+      "distance": 4,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_012.jpg",
+      "b": "brown_planthopper/brown_planthopper_014.jpg",
+      "distance": 2,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_017.jpg",
+      "b": "brown_planthopper/brown_planthopper_018.jpg",
+      "distance": 6,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_029.jpg",
+      "b": "brown_planthopper/brown_planthopper_030.jpg",
+      "distance": 4,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_032.jpg",
+      "b": "brown_planthopper/brown_planthopper_033.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_022.jpg",
+      "b": "brown_planthopper/brown_planthopper_034.jpg",
+      "distance": 6,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_039.jpg",
+      "b": "brown_planthopper/brown_planthopper_041.jpg",
+      "distance": 2,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_039.jpg",
+      "b": "brown_planthopper/brown_planthopper_044.jpg",
+      "distance": 2,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_041.jpg",
+      "b": "brown_planthopper/brown_planthopper_044.jpg",
+      "distance": 2,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_046.jpg",
+      "b": "brown_planthopper/brown_planthopper_047.jpg",
+      "distance": 2,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_060.jpg",
+      "b": "brown_planthopper/brown_planthopper_062.jpg",
+      "distance": 6,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_045.jpg",
+      "b": "brown_planthopper/brown_planthopper_065.jpg",
+      "distance": 4,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_008.jpg",
+      "b": "brown_planthopper/brown_planthopper_067.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_009.jpg",
+      "b": "brown_planthopper/brown_planthopper_067.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_069.jpg",
+      "b": "brown_planthopper/brown_planthopper_070.jpg",
+      "distance": 8,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_050.jpg",
+      "b": "brown_planthopper/brown_planthopper_076.jpg",
+      "distance": 2,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_017.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_013.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_001.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_014.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_011.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_014.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_011.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_026.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_022.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_028.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_034.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_035.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_022.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_041.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_037.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_042.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_014.jpg",
+      "b": "blast/blast_012.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_013.jpg",
+      "b": "blast/blast_015.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_026.jpg",
+      "b": "blast/blast_016.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_029.jpg",
+      "b": "blast/blast_020.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_021.jpg",
+      "b": "blast/blast_025.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_019.jpg",
+      "b": "blast/blast_030.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_027.jpg",
+      "b": "blast/blast_033.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_031.jpg",
+      "b": "blast/blast_033.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_002.jpg",
+      "b": "blast/blast_034.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_016.jpg",
+      "b": "blast/blast_034.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_038.jpg",
+      "b": "blast/blast_038.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_015.jpg",
+      "b": "blast/blast_040.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_034.jpg",
+      "b": "blast/blast_040.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_039.jpg",
+      "b": "blast/blast_040.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_038.jpg",
+      "b": "blast/blast_054.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_002.jpg",
+      "b": "blast/blast_058.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_059.jpg",
+      "b": "blast/blast_061.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_004.jpg",
+      "b": "blast/blast_062.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_010.jpg",
+      "b": "blast/blast_062.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_065.jpg",
+      "b": "blast/blast_067.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_037.jpg",
+      "b": "blast/blast_070.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_041.jpg",
+      "b": "blast/blast_072.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_083.jpg",
+      "b": "blast/blast_089.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_003.jpg",
+      "b": "brown_spot/brown_spot_014.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_001.jpg",
+      "b": "brown_spot/brown_spot_018.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_028.jpg",
+      "b": "brown_spot/brown_spot_024.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_011.jpg",
+      "b": "brown_spot/brown_spot_030.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_029.jpg",
+      "b": "brown_spot/brown_spot_032.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_011.jpg",
+      "b": "brown_spot/brown_spot_036.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "brown_spot/brown_spot_035.jpg",
+      "b": "brown_spot/brown_spot_037.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "brown_spot/brown_spot_035.jpg",
+      "b": "brown_spot/brown_spot_039.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_008.jpg",
+      "b": "brown_spot/brown_spot_040.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_007.jpg",
+      "b": "brown_spot/brown_spot_044.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "brown_spot/brown_spot_057.jpg",
+      "b": "brown_spot/brown_spot_059.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_013.jpg",
+      "b": "brown_spot/brown_spot_060.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_042.jpg",
+      "b": "brown_spot/brown_spot_060.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "brown_spot/brown_spot_059.jpg",
+      "b": "brown_spot/brown_spot_061.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "brown_spot/brown_spot_063.jpg",
+      "b": "brown_spot/brown_spot_065.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_066.jpg",
+      "b": "brown_spot/brown_spot_076.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_012.jpg",
+      "b": "brown_spot/brown_spot_084.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "brown_spot/brown_spot_085.jpg",
+      "b": "brown_spot/brown_spot_089.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "blast/blast_016.jpg",
+      "b": "brown_spot/brown_spot_090.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_029.jpg",
+      "b": "brown_spot/brown_spot_096.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_031.jpg",
+      "b": "brown_spot/brown_spot_096.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "brown_spot/brown_spot_030.jpg",
+      "b": "brown_spot/brown_spot_096.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_020.jpg",
+      "b": "normal/normal_006.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_033.jpg",
+      "b": "normal/normal_009.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_038.jpg",
+      "b": "normal/normal_042.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_024.jpg",
+      "b": "normal/normal_051.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_024.jpg",
+      "b": "normal/normal_051.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "blast/blast_042.jpg",
+      "b": "normal/normal_051.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "normal/normal_040.jpg",
+      "b": "normal/normal_058.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "normal/normal_049.jpg",
+      "b": "normal/normal_061.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "normal/normal_030.jpg",
+      "b": "normal/normal_063.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "normal/normal_049.jpg",
+      "b": "normal/normal_064.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "brown_spot/brown_spot_100.jpg",
+      "b": "normal/normal_066.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "normal/normal_024.jpg",
+      "b": "normal/normal_087.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "normal/normal_094.jpg",
+      "b": "normal/normal_097.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "normal/normal_094.jpg",
+      "b": "normal/normal_100.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "normal/normal_097.jpg",
+      "b": "normal/normal_100.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_014.jpg",
+      "b": "tungro/tungro_016.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_019.jpg",
+      "b": "tungro/tungro_021.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_019.jpg",
+      "b": "tungro/tungro_023.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_021.jpg",
+      "b": "tungro/tungro_023.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_022.jpg",
+      "b": "tungro/tungro_023.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_030.jpg",
+      "b": "tungro/tungro_032.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_034.jpg",
+      "b": "tungro/tungro_036.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_040.jpg",
+      "b": "tungro/tungro_041.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_042.jpg",
+      "b": "tungro/tungro_043.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_046.jpg",
+      "b": "tungro/tungro_047.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_047.jpg",
+      "b": "tungro/tungro_048.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_052.jpg",
+      "b": "tungro/tungro_053.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_056.jpg",
+      "b": "tungro/tungro_057.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_049.jpg",
+      "b": "tungro/tungro_058.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_057.jpg",
+      "b": "tungro/tungro_058.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_063.jpg",
+      "b": "tungro/tungro_064.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_068.jpg",
+      "b": "tungro/tungro_070.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_077.jpg",
+      "b": "tungro/tungro_078.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "tungro/tungro_080.jpg",
+      "b": "tungro/tungro_081.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "normal/normal_091.jpg",
+      "b": "tungro/tungro_092.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "leaf_roller/leaf_roller_030.jpg",
+      "b": "leaf_roller/leaf_roller_040.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "leaf_roller/leaf_roller_072.jpg",
+      "b": "leaf_roller/leaf_roller_074.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "leaf_roller/leaf_roller_074.jpg",
+      "b": "leaf_roller/leaf_roller_075.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "leaf_roller/leaf_roller_085.jpg",
+      "b": "leaf_roller/leaf_roller_086.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_002.jpg",
+      "b": "stem_borer/stem_borer_014.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_014.jpg",
+      "b": "stem_borer/stem_borer_015.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_020.jpg",
+      "b": "stem_borer/stem_borer_021.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_009.jpg",
+      "b": "stem_borer/stem_borer_033.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_014.jpg",
+      "b": "stem_borer/stem_borer_040.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_047.jpg",
+      "b": "stem_borer/stem_borer_049.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_017.jpg",
+      "b": "stem_borer/stem_borer_068.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_018.jpg",
+      "b": "stem_borer/stem_borer_074.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "stem_borer/stem_borer_070.jpg",
+      "b": "stem_borer/stem_borer_078.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "brown_planthopper/brown_planthopper_035.jpg",
+      "b": "stem_borer/stem_borer_084.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "weeds/weeds_003.jpg",
+      "b": "weeds/weeds_014.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "weeds/weeds_004.jpg",
+      "b": "weeds/weeds_026.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "weeds/weeds_016.jpg",
+      "b": "weeds/weeds_027.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "weeds/weeds_025.jpg",
+      "b": "weeds/weeds_036.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "weeds/weeds_080.jpg",
+      "b": "weeds/weeds_091.jpg",
+      "distance": 10,
+      "same_label": true
+    },
+    {
+      "a": "golden_apple_snail/golden_apple_snail_044.jpg",
+      "b": "golden_apple_snail/golden_apple_snail_046.jpg",
+      "distance": 12,
+      "same_label": true
+    },
+    {
+      "a": "leaf_roller/leaf_roller_015.jpg",
+      "b": "golden_apple_snail/golden_apple_snail_083.jpg",
+      "distance": 10,
+      "same_label": false
+    },
+    {
+      "a": "stem_borer/stem_borer_064.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_047.jpg",
+      "distance": 12,
+      "same_label": false
+    },
+    {
+      "a": "bacterial_leaf_blight/bacterial_leaf_blight_072.jpg",
+      "b": "bacterial_leaf_blight/bacterial_leaf_blight_073.jpg",
+      "distance": 10,
+      "same_label": true
+    }
+  ],
+  "visually_reviewed_crop_pair": [
+    "stem_borer/stem_borer_031.jpg",
+    "stem_borer/stem_borer_040.jpg"
+  ],
+  "interpretation": "Similarity pairs are candidates, not confirmed duplicates. The named crop pair appears to show the same photograph with different cropping. Requires group-aware assessment before iid statistical inference.",
+  "cross_split_gate_failure": {
+    "external_phash_le8_count": 2,
+    "min_distance": 8,
+    "sha_overlap": 0,
+    "pixel_overlap": 0
+  },
+  "cross_split_visual_review": "Two cross-label pairs are visually different images with similar layouts; these are not confirmed duplicate leaks.",
+  "training_label_review_flag": "train/leaf_roller/leaf_roller_004208.jpg: butterfly-like insect on purple flower; needs expert label confirmation.",
+  "test_predictions_produced": false
+}
