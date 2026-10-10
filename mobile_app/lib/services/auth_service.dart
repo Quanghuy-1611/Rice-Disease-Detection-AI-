@@ -30,6 +30,7 @@ class AuthService extends ChangeNotifier {
       final token = await _storage.read(key: 'jwt_token');
       final user = await _auth.authStateChanges().first;
       _isAuthenticated = token != null && user != null && user.emailVerified;
+      if (_isAuthenticated) _reportHeartbeat();
       if (!_isAuthenticated && token != null) {
         await _storage.delete(key: 'jwt_token');
       }
@@ -236,9 +237,21 @@ class AuthService extends ChangeNotifier {
       }
       await _storage.write(key: 'jwt_token', value: accessToken);
       _isAuthenticated = true;
+      _reportHeartbeat();
     } catch (error) {
       _isAuthenticated = false;
       rethrow;
+    }
+  }
+
+  Future<void> _reportHeartbeat() async {
+    try {
+      await _apiClient.post('/api/client/heartbeat', data: <String, dynamic>{
+        'platform': defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
+        'app_version': await _apiClient.getAppVersion(),
+      });
+    } catch (_) {
+      // Monitoring must not block sign-in or offline use.
     }
   }
 

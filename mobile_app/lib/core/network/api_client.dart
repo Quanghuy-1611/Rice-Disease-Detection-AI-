@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../config/environment_config.dart';
 import '../errors/api_exception.dart';
@@ -12,8 +13,12 @@ class ApiClient {
 
   late final Dio _dio;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  String _appVersion = 'unknown';
 
   ApiClient._internal() {
+    PackageInfo.fromPlatform().then((info) {
+      _appVersion = '${info.version}+${info.buildNumber}';
+    }).catchError((_) {});
     _dio = Dio(
       BaseOptions(
         baseUrl: EnvironmentConfig.apiBaseUrl,
@@ -33,6 +38,8 @@ class ApiClient {
           if (token != null) {
             options.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
           }
+          options.headers['X-RiceAI-Client'] = Platform.isIOS ? 'ios' : 'android';
+          options.headers['X-RiceAI-Version'] = _appVersion;
           return handler.next(options);
         },
         onResponse: (response, handler) {
@@ -46,6 +53,15 @@ class ApiClient {
   }
 
   Dio get dio => _dio;
+  Future<String> getAppVersion() async {
+    if (_appVersion == 'unknown') {
+      try {
+        final info = await PackageInfo.fromPlatform();
+        _appVersion = '${info.version}+${info.buildNumber}';
+      } catch (_) {}
+    }
+    return _appVersion;
+  }
 
   /// Helper method for GET requests
   Future<dynamic> get(String path,
