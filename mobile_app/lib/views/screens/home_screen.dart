@@ -10,12 +10,14 @@ import '../../services/connectivity_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/offline_queue_service.dart';
 import '../../services/prediction_service.dart';
+import '../../services/auth_service.dart';
 import '../widgets/app_card.dart';
 import '../widgets/section_title.dart';
 import 'analysis_screen.dart';
 import 'camera_screen.dart';
 import 'history_screen.dart';
 import 'notifications_screen.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,16 +33,30 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final _predictionService = PredictionService();
   StreamSubscription<bool>? _connectionSubscription;
   Future<List<Map<String, dynamic>>>? _recentHistory;
+  bool? _lastAuthenticated;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _connectionSubscription = _connectivityService.onConnectionChanged.listen((connected) {
+    _connectionSubscription =
+        _connectivityService.onConnectionChanged.listen((connected) {
       if (connected) unawaited(_syncOfflineQueue());
     });
-    _recentHistory = _predictionService.getHistory();
     unawaited(_syncOfflineQueue());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final signedIn = context.watch<AuthService>().isAuthenticated;
+    if (_lastAuthenticated != signedIn) {
+      _lastAuthenticated = signedIn;
+      _recentHistory = signedIn
+          ? _predictionService.getHistory()
+          : Future.value(const <Map<String, dynamic>>[]);
+      if (signedIn) unawaited(_syncOfflineQueue());
+    }
   }
 
   @override
@@ -52,10 +68,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Future<void> _syncOfflineQueue() async {
     try {
+      if (!context.read<AuthService>().isAuthenticated) return;
       if (!await _connectivityService.isConnected) return;
       final result = await _offlineQueueService.retryPending();
       if (result.sent > 0 && mounted) {
-        await context.read<NotificationService>().addQueueSynced(count: result.sent);
+        await context
+            .read<NotificationService>()
+            .addQueueSynced(count: result.sent);
         _reloadRecentHistory();
       }
     } catch (_) {
@@ -71,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _openCamera(BuildContext context) async {
+    if (!await _requireEmailLogin(context) || !context.mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => CameraScreen(analysisMode: _analysisMode),
@@ -80,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _pickFromGallery(BuildContext context) async {
+    if (!await _requireEmailLogin(context) || !context.mounted) return;
     final imageFile = await ImageService().pickFromGallery();
     if (imageFile == null || !context.mounted) return;
 
@@ -96,14 +117,26 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   void _reloadRecentHistory() {
     if (!mounted) return;
-    setState(() => _recentHistory = _predictionService.getHistory());
+    setState(() => _recentHistory = context.read<AuthService>().isAuthenticated
+        ? _predictionService.getHistory()
+        : Future.value(const <Map<String, dynamic>>[]));
   }
 
   Future<void> _openHistory(BuildContext context) async {
+    if (!await _requireEmailLogin(context) || !context.mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const HistoryScreen()),
     );
     _reloadRecentHistory();
+  }
+
+  Future<bool> _requireEmailLogin(BuildContext context) async {
+    if (context.read<AuthService>().isAuthenticated) return true;
+    final signedIn = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(builder: (_) => const LoginScreen()),
+    );
+    if (signedIn == true) _reloadRecentHistory();
+    return signedIn == true;
   }
 
   @override
@@ -492,12 +525,6 @@ class _AnalysisModeSelector extends StatelessWidget {
             label: 'Basic · Grad-CAM',
             onTap: () => onChanged('basic'),
           ),
-          _ModeChoice(
-            selected: value == 'plus',
-            icon: Icons.auto_awesome_outlined,
-            label: 'Plus · Agri-CAM',
-            onTap: () => onChanged('plus'),
-          ),
         ],
       ),
     );
@@ -617,7 +644,8 @@ class _RecentHistory extends StatelessWidget {
   final VoidCallback onOpenHistory;
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<List<Map<String, dynamic>>>(
+  Widget build(BuildContext context) =>
+      FutureBuilder<List<Map<String, dynamic>>>(
         future: future,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
@@ -688,77 +716,78 @@ class _RecentCard extends StatelessWidget {
       child: Container(
         width: 150,
         decoration: BoxDecoration(
-        color: AppTheme.cardSolid,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.borderBeige),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: AppTheme.moss.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // Thumbnail
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(17)),
-            child: Container(
-              height: 72,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: index % 2 == 0
-                      ? <Color>[
-                          const Color(0xFF2B6B44),
-                          const Color(0xFF8BC34A)
-                        ]
-                      : <Color>[
-                          const Color(0xFF4A7B3A),
-                          const Color(0xFF9CCC65)
-                        ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+          color: AppTheme.cardSolid,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppTheme.borderBeige),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: AppTheme.moss.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // Thumbnail
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(17)),
+              child: Container(
+                height: 72,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: index % 2 == 0
+                        ? <Color>[
+                            const Color(0xFF2B6B44),
+                            const Color(0xFF8BC34A)
+                          ]
+                        : <Color>[
+                            const Color(0xFF4A7B3A),
+                            const Color(0xFF9CCC65)
+                          ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(Icons.eco_rounded, color: Colors.white, size: 34),
                 ),
               ),
-              child: const Center(
-                child: Icon(Icons.eco_rounded, color: Colors.white, size: 34),
-              ),
             ),
-          ),
 
-          // Info
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  item['prediction']?.toString() ?? 'Không xác định',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w800,
-                    color: AppTheme.textPrimary,
+            // Info
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    item['prediction']?.toString() ?? 'Không xác định',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  _formatDate(
-                    DateTime.tryParse(item['created_at']?.toString() ?? ''),
+                  const SizedBox(height: 3),
+                  Text(
+                    _formatDate(
+                      DateTime.tryParse(item['created_at']?.toString() ?? ''),
+                    ),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: AppTheme.textMuted,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: AppTheme.textMuted,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );
@@ -793,7 +822,7 @@ class _AiScopeCard extends StatelessWidget {
           const SizedBox(width: 14),
           const Expanded(
             child: Text(
-              'AI hỗ trợ nhận diện 19 nhóm bệnh và đối tượng trên ruộng lúa.',
+              'AI hỗ trợ nhận diện 7 nhóm bệnh và đối tượng trên ruộng lúa.',
               style: TextStyle(
                 fontSize: 13,
                 color: AppTheme.textSecondary,

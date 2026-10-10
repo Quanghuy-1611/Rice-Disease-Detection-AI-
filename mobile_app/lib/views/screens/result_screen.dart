@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../core/config/environment_config.dart';
+import '../../core/config/seven_class_catalog.dart';
 import '../../core/theme/app_theme.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -188,28 +189,6 @@ class _MedicalReportHeader extends StatelessWidget {
   final Map<String, dynamic> agriCam;
   final bool isPlus;
 
-  static const Map<String, String> _vietnameseNames = <String, String>{
-    'bacterial_leaf_blight': 'Bạc lá vi khuẩn',
-    'bacterial_leaf_streak': 'Sọc lá vi khuẩn',
-    'bacterial_panicle_blight': 'Bạc bông vi khuẩn',
-    'beetle': 'Bọ cánh cứng hại lúa',
-    'blast': 'Đạo ôn',
-    'brown_planthopper': 'Rầy nâu',
-    'brown_spot': 'Đốm nâu',
-    'dead_heart': 'Dảnh héo',
-    'downy_mildew': 'Sương mai',
-    'golden_apple_snail': 'Ốc bươu vàng',
-    'leaf_roller': 'Sâu cuốn lá',
-    'leaf_smut': 'Lem lép hạt / than lá',
-    'normal': 'Lúa khỏe mạnh',
-    'sheath_blight': 'Khô vằn',
-    'southern_black_streaked_dwarf': 'Lùn sọc đen phương nam',
-    'stem_borer': 'Sâu đục thân',
-    'tungro': 'Vàng lùn Tungro',
-    'weeds': 'Cỏ dại',
-    'whitebacked_planthopper': 'Rầy lưng trắng',
-  };
-
   @override
   Widget build(BuildContext context) {
     final classId = predictionData['prediction']?.toString() ?? 'unknown';
@@ -247,7 +226,7 @@ class _MedicalReportHeader extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            _vietnameseNames[classId] ?? classId,
+            SevenClassCatalog.names[classId] ?? classId,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: AppTheme.textPrimary,
                   fontWeight: FontWeight.w900,

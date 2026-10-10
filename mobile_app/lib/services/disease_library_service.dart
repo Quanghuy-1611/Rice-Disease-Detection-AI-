@@ -1,4 +1,5 @@
 import '../core/network/api_client.dart';
+import '../core/config/seven_class_catalog.dart';
 import '../models/disease_model.dart';
 
 /// Nguồn dữ liệu của Cẩm nang là API FastAPI; không giữ tên bệnh mẫu trên app.
@@ -10,10 +11,15 @@ class DiseaseLibraryService {
     if (response is Map &&
         response['success'] == true &&
         response['data'] is List) {
-      return (response['data'] as List)
+      final diseases = (response['data'] as List)
           .whereType<Map>()
           .map((item) => _fromApi(Map<String, dynamic>.from(item)))
-          .toList(growable: false);
+          .where((disease) => SevenClassCatalog.ids.contains(disease.id))
+          .toList();
+      diseases.sort((a, b) => SevenClassCatalog.ids
+          .indexOf(a.id)
+          .compareTo(SevenClassCatalog.ids.indexOf(b.id)));
+      return diseases;
     }
     throw Exception('Máy chủ trả về dữ liệu cẩm nang không hợp lệ.');
   }

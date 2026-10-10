@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../services/auth_service.dart';
 
-/// Ba lối vào không phụ thuộc SMS: email thật có xác minh, Google và khách.
+/// Đăng nhập email đã xác minh, cùng luồng đăng ký như trên web.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isRegistering = false;
   bool _obscurePassword = true;
   String _errorMessage = '';
+  String _noticeMessage = '';
 
   @override
   void dispose() {
@@ -29,11 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showError(String message) {
-    if (mounted) setState(() => _errorMessage = message);
+    if (mounted) {
+      setState(() {
+        _errorMessage = message;
+        _noticeMessage = '';
+      });
+    }
   }
 
   void _finish() {
-    if (mounted) Navigator.of(context).pop();
+    if (mounted) Navigator.of(context).pop(true);
   }
 
   Future<void> _submitEmail() async {
@@ -52,7 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
       _showError('Vui lòng nhập họ tên.');
       return;
     }
-    setState(() => _errorMessage = '');
+    setState(() {
+      _errorMessage = '';
+      _noticeMessage = '';
+    });
     final auth = context.read<AuthService>();
     if (_isRegistering) {
       await auth.registerWithEmail(
@@ -70,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           setState(() {
             _isRegistering = false;
-            _errorMessage =
+            _noticeMessage =
                 'Hãy xác minh email trước, sau đó đăng nhập bằng mật khẩu vừa tạo.';
           });
         },
@@ -85,19 +94,51 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _signInGoogle() async {
-    setState(() => _errorMessage = '');
-    await context.read<AuthService>().signInWithGoogle(
+  Future<void> _resetPassword() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      _showError('Nhập email hợp lệ trước khi đặt lại mật khẩu.');
+      return;
+    }
+    setState(() {
+      _errorMessage = '';
+      _noticeMessage = '';
+    });
+    await context.read<AuthService>().sendPasswordReset(
+          email: email,
           onError: _showError,
-          onSuccess: _finish,
+          onSent: () {
+            if (mounted) {
+              setState(() => _noticeMessage =
+                  'Nếu email đã có tài khoản, bạn sẽ nhận được thư đặt lại mật khẩu.');
+            }
+          },
         );
   }
 
-  Future<void> _tryGuest() async {
-    setState(() => _errorMessage = '');
-    await context.read<AuthService>().signInAsGuest(
+  Future<void> _resendVerification() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty ||
+        !email.contains('@') ||
+        _passwordController.text.isEmpty) {
+      _showError('Nhập email và mật khẩu để gửi lại thư xác minh.');
+      return;
+    }
+    setState(() {
+      _errorMessage = '';
+      _noticeMessage = '';
+    });
+    await context.read<AuthService>().resendVerificationEmail(
+          email: email,
+          password: _passwordController.text,
           onError: _showError,
-          onSuccess: _finish,
+          onFinished: (verified) {
+            if (mounted) {
+              setState(() => _noticeMessage = verified
+                  ? 'Email đã được xác minh. Bạn có thể đăng nhập.'
+                  : 'Đã gửi lại thư xác minh. Hãy kiểm tra hộp thư và mục spam.');
+            }
+          },
         );
   }
 
@@ -117,7 +158,21 @@ class _LoginScreenState extends State<LoginScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 10, 24, 28),
           children: <Widget>[
+            Center(
+              child: Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: AppTheme.moss,
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: const Icon(Icons.mail_outline_rounded,
+                    color: Colors.white, size: 38),
+              ),
+            ),
+            const SizedBox(height: 20),
             Text(title,
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: AppTheme.textPrimary,
                       fontWeight: FontWeight.w900,
@@ -126,7 +181,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               _isRegistering
                   ? 'Dùng email thật. RiceAI sẽ gửi liên kết xác minh trước khi bạn có thể đăng nhập.'
-                  : 'Đăng nhập để đồng bộ lịch sử quét và hồ sơ giữa các thiết bị.',
+                  : 'Dùng email đã xác minh để lưu lịch sử chẩn đoán của bạn.',
+              textAlign: TextAlign.center,
               style: const TextStyle(
                   color: AppTheme.textSecondary, fontSize: 14, height: 1.45),
             ),
@@ -135,7 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _nameController,
                 textCapitalization: TextCapitalization.words,
-                decoration: _decoration('Họ và tên', Icons.person_outline_rounded),
+                decoration:
+                    _decoration('Họ và tên', Icons.person_outline_rounded),
               ),
               const SizedBox(height: 14),
             ],
@@ -143,16 +200,19 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               autofillHints: const <String>[AutofillHints.email],
-              decoration: _decoration('Email', Icons.alternate_email_rounded),
+              decoration: _decoration('Email', Icons.mail_outline_rounded),
             ),
             const SizedBox(height: 14),
             TextField(
               controller: _passwordController,
               obscureText: _obscurePassword,
               autofillHints: <String>[
-                _isRegistering ? AutofillHints.newPassword : AutofillHints.password,
+                _isRegistering
+                    ? AutofillHints.newPassword
+                    : AutofillHints.password,
               ],
-              decoration: _decoration('Mật khẩu', Icons.lock_outline_rounded).copyWith(
+              decoration:
+                  _decoration('Mật khẩu', Icons.lock_outline_rounded).copyWith(
                 suffixIcon: IconButton(
                   tooltip: _obscurePassword ? 'Hiện mật khẩu' : 'Ẩn mật khẩu',
                   icon: Icon(_obscurePassword
@@ -168,6 +228,12 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(_errorMessage,
                   style: const TextStyle(
                       color: AppTheme.errorRed, fontSize: 13, height: 1.35)),
+            ],
+            if (_noticeMessage.isNotEmpty) ...<Widget>[
+              const SizedBox(height: 12),
+              Text(_noticeMessage,
+                  style: const TextStyle(
+                      color: AppTheme.moss, fontSize: 13, height: 1.35)),
             ],
             const SizedBox(height: 22),
             FilledButton(
@@ -188,53 +254,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: const TextStyle(
                           fontWeight: FontWeight.w800, fontSize: 16)),
             ),
+            if (!_isRegistering)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: auth.isLoading ? null : _resetPassword,
+                    child: const Text('Quên mật khẩu?'),
+                  ),
+                  TextButton(
+                    onPressed: auth.isLoading ? null : _resendVerification,
+                    child: const Text('Gửi lại thư xác minh'),
+                  ),
+                ],
+              ),
             TextButton(
               onPressed: auth.isLoading
                   ? null
                   : () => setState(() {
                         _isRegistering = !_isRegistering;
                         _errorMessage = '';
+                        _noticeMessage = '';
                       }),
               child: Text(_isRegistering
                   ? 'Đã có tài khoản? Đăng nhập'
-                  : 'Chưa có tài khoản? Đăng ký'),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Row(children: <Widget>[
-                Expanded(child: Divider()),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('hoặc',
-                        style: TextStyle(color: AppTheme.textMuted))),
-                Expanded(child: Divider()),
-              ]),
-            ),
-            OutlinedButton.icon(
-              onPressed: auth.isLoading ? null : _signInGoogle,
-              icon: const Icon(Icons.g_mobiledata_rounded, size: 30),
-              label: const Text('Tiếp tục với Google',
-                  style: TextStyle(fontWeight: FontWeight.w800)),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(54),
-                foregroundColor: AppTheme.textPrimary,
-                side: const BorderSide(color: AppTheme.moss),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextButton.icon(
-              onPressed: auth.isLoading ? null : _tryGuest,
-              icon: const Icon(Icons.explore_outlined),
-              label: const Text('Dùng thử không cần tài khoản'),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Chế độ dùng thử không dùng email và dữ liệu không gắn với một tài khoản cá nhân.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: AppTheme.textMuted, fontSize: 11, height: 1.4),
+                  : 'Chưa có tài khoản? Đăng ký ngay'),
             ),
           ],
         ),

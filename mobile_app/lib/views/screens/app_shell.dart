@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../services/auth_service.dart';
 import 'ai_assistant_screen.dart';
 import 'camera_screen.dart';
 import 'guide_screen.dart';
 import 'home_screen.dart';
+import 'login_screen.dart';
 import 'profile_screen.dart';
 
 /// AppShell – khung ngoài chứa BottomNavigationBar
@@ -32,8 +35,14 @@ class _AppShellState extends State<AppShell>
     setState(() => _currentIndex = index);
   }
 
-  void _onScanFabTapped() {
+  Future<void> _onScanFabTapped() async {
     HapticFeedback.mediumImpact();
+    if (!context.read<AuthService>().isAuthenticated) {
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(builder: (_) => const LoginScreen()),
+      );
+      if (signedIn != true || !mounted) return;
+    }
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const CameraScreen()),
     );

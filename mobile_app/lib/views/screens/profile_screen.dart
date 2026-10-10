@@ -23,12 +23,16 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   Future<Map<String, dynamic>?>? _profileFuture;
+  bool? _lastAuthenticated;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final auth = context.read<AuthService>();
-    _profileFuture ??= auth.getProfile();
+    final auth = context.watch<AuthService>();
+    if (_lastAuthenticated != auth.isAuthenticated) {
+      _lastAuthenticated = auth.isAuthenticated;
+      _profileFuture = auth.isAuthenticated ? auth.getProfile() : null;
+    }
   }
 
   Future<void> _clearCache() async {
@@ -181,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 26),
           const Center(
               child: Text(
-                  'RiceAI • Phiên bản thử nghiệm\nHỗ trợ nhận diện 19 nhóm bệnh và đối tượng lúa',
+                  'RiceAI • Phiên bản thử nghiệm\nHỗ trợ nhận diện 7 nhóm bệnh và đối tượng lúa',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: AppTheme.textMuted, fontSize: 11, height: 1.5))),
@@ -191,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _openLogin() => Navigator.of(context)
-      .push(MaterialPageRoute<void>(builder: (_) => const LoginScreen()));
+      .push<bool>(MaterialPageRoute<bool>(builder: (_) => const LoginScreen()));
 
   void _showLanguageInfo() => showDialog<void>(
         context: context,
@@ -241,7 +245,7 @@ class _SignedOutHeader extends StatelessWidget {
                     style:
                         TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
                 SizedBox(height: 3),
-                Text('Đăng nhập bằng email hoặc Google để đồng bộ dữ liệu.',
+                Text('Đăng nhập bằng email đã xác minh để lưu dữ liệu.',
                     style:
                         TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
               ])),

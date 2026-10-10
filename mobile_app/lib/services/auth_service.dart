@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../core/network/api_client.dart';
+import '../core/errors/api_exception.dart';
 
 /// Xác thực bằng Firebase (email, Google hoặc khách), sau đó đổi Firebase ID
 /// token lấy JWT của FastAPI. Email/mật khẩu bắt buộc xác minh email trước khi
@@ -25,7 +26,17 @@ class AuthService extends ChangeNotifier {
   FirebaseAuth get _auth => FirebaseAuth.instance;
 
   Future<void> _restoreSession() async {
-    _isAuthenticated = await _storage.read(key: 'jwt_token') != null;
+    try {
+      final token = await _storage.read(key: 'jwt_token');
+      final user = await _auth.authStateChanges().first;
+      _isAuthenticated = token != null && user != null && user.emailVerified;
+      if (!_isAuthenticated && token != null) {
+        await _storage.delete(key: 'jwt_token');
+      }
+    } catch (error) {
+      debugPrint('RiceAI session restore failed: $error');
+      _isAuthenticated = false;
+    }
     notifyListeners();
   }
 
@@ -50,9 +61,17 @@ class AuthService extends ChangeNotifier {
       await _completeFirebaseSignIn(user);
       onSuccess();
     } on FirebaseAuthException catch (error) {
+      await _clearFailedSignIn();
       onError(_firebaseErrorMessage(error));
+    } on ApiException catch (error) {
+      await _clearFailedSignIn();
+      onError(error.message);
+    } on StateError catch (error) {
+      await _clearFailedSignIn();
+      onError(error.message);
     } catch (error) {
-      onError('Đăng nhập chưa hoàn tất: $error');
+      await _clearFailedSignIn();
+      onError('Đăng nhập chưa hoàn tất. Vui lòng thử lại.');
     } finally {
       _setLoading(false);
     }
@@ -78,12 +97,70 @@ class AuthService extends ChangeNotifier {
       await _auth.signOut();
       onVerificationSent();
     } on FirebaseAuthException catch (error) {
+      await _auth.signOut();
       onError(_firebaseErrorMessage(error));
     } catch (error) {
+      await _auth.signOut();
       onError('Không thể tạo tài khoản: $error');
     } finally {
       _setLoading(false);
     }
+  }
+
+  Future<void> sendPasswordReset({
+    required String email,
+    required ValueChanged<String> onError,
+    required VoidCallback onSent,
+  }) async {
+    _setLoading(true);
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim());
+      onSent();
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'user-not-found') {
+        onSent();
+      } else {
+        onError(_firebaseErrorMessage(error));
+      }
+    } catch (error) {
+      onError('Không gửi được thư đặt lại mật khẩu: $error');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> resendVerificationEmail({
+    required String email,
+    required String password,
+    required ValueChanged<String> onError,
+    required ValueChanged<bool> onFinished,
+  }) async {
+    _setLoading(true);
+    try {
+      final user = (await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      ))
+          .user;
+      if (user == null) throw StateError('Firebase không trả về tài khoản.');
+      await user.reload();
+      final verified = _auth.currentUser?.emailVerified ?? false;
+      if (!verified) await _auth.currentUser!.sendEmailVerification();
+      onFinished(verified);
+    } on FirebaseAuthException catch (error) {
+      onError(_firebaseErrorMessage(error));
+    } catch (error) {
+      onError('Không gửi được thư xác minh: $error');
+    } finally {
+      await _auth.signOut();
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _clearFailedSignIn() async {
+    await _auth.signOut();
+    await _storage.delete(key: 'jwt_token');
+    _isAuthenticated = false;
   }
 
   Future<void> signInWithGoogle({
@@ -198,7 +275,9 @@ class AuthService extends ChangeNotifier {
   String _firebaseErrorMessage(FirebaseAuthException error) =>
       switch (error.code) {
         'invalid-email' => 'Email chưa đúng định dạng.',
-        'user-not-found' || 'wrong-password' || 'invalid-credential' =>
+        'user-not-found' ||
+        'wrong-password' ||
+        'invalid-credential' =>
           'Email hoặc mật khẩu chưa đúng.',
         'email-already-in-use' => 'Email này đã được đăng ký. Hãy đăng nhập.',
         'weak-password' => 'Mật khẩu cần có ít nhất 6 ký tự.',
@@ -206,7 +285,10 @@ class AuthService extends ChangeNotifier {
           'Phương thức đăng nhập này chưa được bật trong Firebase.',
         'account-exists-with-different-credential' =>
           'Email này đã dùng phương thức đăng nhập khác.',
-        'network-request-failed' => 'Không có kết nối đến Firebase. Hãy kiểm tra mạng.',
+        'network-request-failed' =>
+          'Không có kết nối đến Firebase. Hãy kiểm tra mạng.',
+        'too-many-requests' =>
+          'Bạn đã thử quá nhiều lần. Vui lòng đợi rồi thử lại.',
         _ => error.message ?? 'Firebase không thể xác thực (${error.code}).',
       };
 }
