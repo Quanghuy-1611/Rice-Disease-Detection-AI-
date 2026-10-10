@@ -1,6 +1,12 @@
 name: Build iOS IPA for sideloading
 
 on:
+  push:
+    branches:
+      - codex/ios-sideload
+    paths:
+      - '.github/workflows/ios-unsigned.yml'
+      - 'mobile_app/**'
   workflow_dispatch:
     inputs:
       api_base_url:
@@ -26,7 +32,7 @@ jobs:
         run: flutter pub get
       - name: Build unsigned iOS app
         env:
-          API_BASE_URL: ${{ inputs.api_base_url }}
+          API_BASE_URL: ${{ inputs.api_base_url || 'http://192.168.100.155:8015' }}
         run: flutter build ios --release --no-codesign --dart-define="API_BASE_URL=$API_BASE_URL"
       - name: Package IPA for signing on Windows
         run: |
