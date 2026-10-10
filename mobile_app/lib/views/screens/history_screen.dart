@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../core/config/environment_config.dart';
+import '../../core/config/seven_class_catalog.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/offline_queue_item.dart';
 import '../../services/offline_queue_service.dart';
@@ -41,7 +42,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     try {
       history = await _predictionService.getHistory();
     } catch (_) {
-      error = 'Không tải được lịch sử từ máy chủ. Bạn vẫn có thể xem ảnh chờ gửi.';
+      error =
+          'Không tải được lịch sử từ máy chủ. Bạn vẫn có thể xem ảnh chờ gửi.';
     }
     try {
       queue = await _queueService.getQueue();
@@ -134,9 +136,9 @@ class _HistoryTile extends StatelessWidget {
     final filename = item['image_filename']?.toString();
     final confidence = (item['confidence'] as num?)?.toDouble();
     final createdAt = DateTime.tryParse(item['created_at']?.toString() ?? '');
-    final confidenceText = confidence == null
-        ? '—'
-        : '${(confidence * 100).toStringAsFixed(1)}%';
+    final confidenceText =
+        confidence == null ? '—' : '${(confidence * 100).toStringAsFixed(1)}%';
+    final classId = item['prediction']?.toString() ?? '';
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -169,13 +171,14 @@ class _HistoryTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  item['prediction']?.toString() ?? 'Không xác định',
+                  SevenClassCatalog.names[classId] ?? 'Không xác định',
                   style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   '$confidenceText · ${_dateText(createdAt)}',
-                  style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                  style: const TextStyle(
+                      color: AppTheme.textSecondary, fontSize: 12),
                 ),
               ],
             ),
@@ -219,10 +222,13 @@ class _QueueList extends StatelessWidget {
               width: 48,
               height: 48,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined),
+              errorBuilder: (_, __, ___) =>
+                  const Icon(Icons.broken_image_outlined),
             ),
           ),
-          title: Text(item.analysisMode == 'plus' ? 'Plus · Agri-CAM' : 'Basic · Grad-CAM'),
+          title: Text(item.analysisMode == 'plus'
+              ? 'Plus · Agri-CAM'
+              : 'Basic · Grad-CAM'),
           subtitle: Text('Đã thử gửi ${item.retryCount} lần'),
           trailing: IconButton(
             onPressed: () => onDelete(item),
@@ -236,7 +242,8 @@ class _QueueList extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.icon, required this.title, required this.subtitle});
+  const _EmptyState(
+      {required this.icon, required this.title, required this.subtitle});
   final IconData icon;
   final String title;
   final String subtitle;
@@ -250,9 +257,14 @@ class _EmptyState extends StatelessWidget {
             children: <Widget>[
               Icon(icon, size: 44, color: AppTheme.moss),
               const SizedBox(height: 12),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17)),
+              Text(title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w900, fontSize: 17)),
               const SizedBox(height: 6),
-              Text(subtitle, textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.textSecondary, height: 1.4)),
+              Text(subtitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: AppTheme.textSecondary, height: 1.4)),
             ],
           ),
         ),

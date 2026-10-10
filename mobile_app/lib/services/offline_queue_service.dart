@@ -26,26 +26,39 @@ class OfflineQueueService {
     final databasePath = path.join(await getDatabasesPath(), _databaseName);
     _database = await openDatabase(
       databasePath,
-      version: 1,
+      version: 2,
       onCreate: (database, version) async {
         await database.execute('''
           CREATE TABLE $_table(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             local_path TEXT NOT NULL,
             analysis_mode TEXT NOT NULL,
+            severity TEXT NOT NULL DEFAULT 'low',
             created_at TEXT NOT NULL,
             retry_count INTEGER NOT NULL DEFAULT 0,
             status TEXT NOT NULL DEFAULT 'pending'
           )
         ''');
       },
+      onUpgrade: (database, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await database.execute(
+            "ALTER TABLE $_table ADD COLUMN severity TEXT NOT NULL DEFAULT 'low'",
+          );
+        }
+      },
     );
     return _database!;
   }
 
-  Future<OfflineQueueItem> addToQueue(File processedFile, String analysisMode) async {
+  Future<OfflineQueueItem> addToQueue(
+    File processedFile,
+    String analysisMode, {
+    String severity = 'low',
+  }) async {
     final documents = await getApplicationDocumentsDirectory();
-    final queueDirectory = Directory(path.join(documents.path, 'riceai_offline_queue'));
+    final queueDirectory =
+        Directory(path.join(documents.path, 'riceai_offline_queue'));
     await queueDirectory.create(recursive: true);
     final destination = File(path.join(
       queueDirectory.path,
@@ -55,6 +68,7 @@ class OfflineQueueService {
     final item = OfflineQueueItem(
       localPath: destination.path,
       analysisMode: analysisMode,
+      severity: severity,
       createdAt: DateTime.now().toUtc(),
     );
     final id = await (await _db).insert(_table, item.toMap()..remove('id'));
@@ -62,6 +76,7 @@ class OfflineQueueService {
       id: id,
       localPath: item.localPath,
       analysisMode: item.analysisMode,
+      severity: item.severity,
       createdAt: item.createdAt,
     );
   }
@@ -73,7 +88,8 @@ class OfflineQueueService {
         .toList();
   }
 
-  Future<QueueSyncResult> retryPending({PredictionService? predictionService}) async {
+  Future<QueueSyncResult> retryPending(
+      {PredictionService? predictionService}) async {
     if (_syncing) return const QueueSyncResult(sent: 0, failed: 0);
     _syncing = true;
     var sent = 0;
@@ -90,6 +106,7 @@ class OfflineQueueService {
           final result = await predictor.predictImage(
             file,
             analysisMode: item.analysisMode,
+            severity: item.severity,
           );
           if (result['success'] == true) {
             await _deleteRecord(item.id);

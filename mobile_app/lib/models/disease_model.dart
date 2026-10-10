@@ -27,13 +27,14 @@ class DiseaseInfo {
   final bool severityApplicable;
 }
 
-enum DiseaseCategory { leafDisease, pestInsect, weed, other }
+enum DiseaseCategory { leafDisease, pestInsect, weed, healthy, other }
 
 extension DiseaseCategoryLabel on DiseaseCategory {
   String get label => switch (this) {
         DiseaseCategory.leafDisease => 'Bệnh lá',
-        DiseaseCategory.pestInsect => 'Sâu hại',
+        DiseaseCategory.pestInsect => 'Sâu / ốc',
         DiseaseCategory.weed => 'Cỏ dại',
+        DiseaseCategory.healthy => 'Khỏe mạnh',
         DiseaseCategory.other => 'Khác',
       };
 }

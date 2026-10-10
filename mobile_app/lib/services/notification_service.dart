@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/app_notification.dart';
+import '../core/config/seven_class_catalog.dart';
 
 /// Hộp thư thông báo nội bộ: chỉ lưu sự kiện thật phát sinh từ app.
 class NotificationService extends ChangeNotifier {
@@ -41,10 +42,11 @@ class NotificationService extends ChangeNotifier {
 
   Future<void> addPrediction(
       {required String disease, required double confidence}) async {
+    final diseaseName = SevenClassCatalog.names[disease] ?? disease;
     await _add(
       title: 'Phân tích đã hoàn tất',
       message:
-          'Kết quả nhận diện: $disease (${confidence.toStringAsFixed(1)}%).',
+          'Kết quả nhận diện: $diseaseName (${(confidence * 100).toStringAsFixed(1)}%).',
       type: 'prediction',
     );
   }

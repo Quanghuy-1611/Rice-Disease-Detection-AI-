@@ -199,6 +199,9 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autocorrect: false,
+              enableSuggestions: false,
               autofillHints: const <String>[AutofillHints.email],
               decoration: _decoration('Email', Icons.mail_outline_rounded),
             ),
@@ -206,6 +209,10 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: _passwordController,
               obscureText: _obscurePassword,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) {
+                if (!auth.isLoading) _submitEmail();
+              },
               autofillHints: <String>[
                 _isRegistering
                     ? AutofillHints.newPassword
@@ -225,15 +232,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             if (_errorMessage.isNotEmpty) ...<Widget>[
               const SizedBox(height: 12),
-              Text(_errorMessage,
-                  style: const TextStyle(
-                      color: AppTheme.errorRed, fontSize: 13, height: 1.35)),
+              _AuthMessage(message: _errorMessage, isError: true),
             ],
             if (_noticeMessage.isNotEmpty) ...<Widget>[
               const SizedBox(height: 12),
-              Text(_noticeMessage,
-                  style: const TextStyle(
-                      color: AppTheme.moss, fontSize: 13, height: 1.35)),
+              _AuthMessage(message: _noticeMessage, isError: false),
             ],
             const SizedBox(height: 22),
             FilledButton(
@@ -255,8 +258,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontWeight: FontWeight.w800, fontSize: 16)),
             ),
             if (!_isRegistering)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: 8,
                 children: <Widget>[
                   TextButton(
                     onPressed: auth.isLoading ? null : _resetPassword,
@@ -293,4 +297,43 @@ class _LoginScreenState extends State<LoginScreen> {
         filled: true,
         fillColor: Colors.white,
       );
+}
+
+class _AuthMessage extends StatelessWidget {
+  const _AuthMessage({required this.message, required this.isError});
+
+  final String message;
+  final bool isError;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isError ? AppTheme.errorRed : AppTheme.moss;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isError ? const Color(0xFFFEF2F2) : const Color(0xFFF0FDF4),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.16)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(
+            isError
+                ? Icons.error_outline_rounded
+                : Icons.mark_email_read_outlined,
+            color: color,
+            size: 18,
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(color: color, fontSize: 13, height: 1.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -40,7 +40,7 @@ class _GuideScreenState extends State<GuideScreen> {
         backgroundColor: AppTheme.porcelain,
         appBar: AppBar(
             automaticallyImplyLeading: false,
-            title: const Text('Cẩm nang bệnh')),
+            title: const Text('Cẩm nang lúa')),
         body: FutureBuilder<List<DiseaseInfo>>(
           future: _future,
           builder: (context, snapshot) {
@@ -49,8 +49,7 @@ class _GuideScreenState extends State<GuideScreen> {
                   child: CircularProgressIndicator(color: AppTheme.moss));
             }
             if (snapshot.hasError) {
-              return _ErrorState(
-                  onRetry: _reload, error: snapshot.error.toString());
+              return _ErrorState(onRetry: _reload);
             }
             final all = snapshot.data ?? const <DiseaseInfo>[];
             final visible = all.where((disease) {
@@ -70,7 +69,7 @@ class _GuideScreenState extends State<GuideScreen> {
                     controller: _search,
                     onChanged: (value) => setState(() => _query = value.trim()),
                     decoration: InputDecoration(
-                      hintText: 'Tìm trong ${all.length} nhóm bệnh/đối tượng',
+                      hintText: 'Tìm trong ${all.length} nhóm nhận diện',
                       prefixIcon: const Icon(Icons.search_rounded),
                       suffixIcon: _query.isEmpty
                           ? null
@@ -94,14 +93,17 @@ class _GuideScreenState extends State<GuideScreen> {
                           label: 'Tất cả (${all.length})',
                           selected: _selected == null,
                           onTap: () => setState(() => _selected = null)),
-                      ...DiseaseCategory.values.map(
-                        (category) => _CategoryChip(
-                          label:
-                              '${category.label} (${all.where((d) => d.category == category).length})',
-                          selected: _selected == category,
-                          onTap: () => setState(() => _selected = category),
-                        ),
-                      ),
+                      ...DiseaseCategory.values
+                          .where((category) => all
+                              .any((disease) => disease.category == category))
+                          .map(
+                            (category) => _CategoryChip(
+                              label:
+                                  '${category.label} (${all.where((d) => d.category == category).length})',
+                              selected: _selected == category,
+                              onTap: () => setState(() => _selected = category),
+                            ),
+                          ),
                     ],
                   ),
                 ),
@@ -159,7 +161,20 @@ class _DiseaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLeaf = disease.category == DiseaseCategory.leafDisease;
-    final accent = isLeaf ? AppTheme.moss : AppTheme.warningOrange;
+    final accent = disease.category == DiseaseCategory.healthy
+        ? AppTheme.safeGreen
+        : isLeaf
+            ? AppTheme.moss
+            : AppTheme.warningOrange;
+    final icon = switch (disease.id) {
+      'weeds' => Icons.grass_rounded,
+      'golden_apple_snail' => Icons.water_drop_outlined,
+      'normal' => Icons.check_circle_outline_rounded,
+      _ => isLeaf ? Icons.eco_outlined : Icons.pest_control_rounded,
+    };
+    final greenCard = isLeaf ||
+        disease.category == DiseaseCategory.healthy ||
+        disease.category == DiseaseCategory.weed;
     return AppCard(
       padding: EdgeInsets.zero,
       onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
@@ -171,16 +186,13 @@ class _DiseaseCard extends StatelessWidget {
             height: 98,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: isLeaf
+                  colors: greenCard
                       ? const <Color>[AppTheme.moss, AppTheme.mossMid]
                       : const <Color>[Color(0xFF9A6A23), Color(0xFFC49D4B)]),
               borderRadius:
                   const BorderRadius.horizontal(left: Radius.circular(20)),
             ),
-            child: Icon(
-                isLeaf ? Icons.eco_outlined : Icons.pest_control_rounded,
-                color: Colors.white,
-                size: 34),
+            child: Icon(icon, color: Colors.white, size: 34),
           ),
           Expanded(
             child: Padding(
@@ -220,9 +232,8 @@ class _DiseaseCard extends StatelessWidget {
 }
 
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.onRetry, required this.error});
+  const _ErrorState({required this.onRetry});
   final VoidCallback onRetry;
-  final String error;
   @override
   Widget build(BuildContext context) => Center(
         child: Padding(
@@ -234,10 +245,9 @@ class _ErrorState extends StatelessWidget {
             const Text('Không tải được Cẩm nang',
                 style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
             const SizedBox(height: 6),
-            Text(error,
+            const Text('Kiểm tra kết nối mạng rồi thử lại.',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                    color: AppTheme.textSecondary, fontSize: 12)),
+                style: TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
             const SizedBox(height: 16),
             FilledButton.icon(
                 onPressed: onRetry,

@@ -25,12 +25,14 @@ class DiseaseLibraryService {
   }
 
   DiseaseInfo _fromApi(Map<String, dynamic> item) {
-    final category = switch (item['category']?.toString()) {
-      'leaf_disease' => DiseaseCategory.leafDisease,
-      'pest' => DiseaseCategory.pestInsect,
-      'weed' => DiseaseCategory.weed,
-      _ => DiseaseCategory.other,
-    };
+    final category = item['slug'] == 'normal'
+        ? DiseaseCategory.healthy
+        : switch (item['category']?.toString()) {
+            'leaf_disease' => DiseaseCategory.leafDisease,
+            'pest' => DiseaseCategory.pestInsect,
+            'weed' => DiseaseCategory.weed,
+            _ => DiseaseCategory.other,
+          };
     String value(String key) => item[key]?.toString().trim() ?? '';
     return DiseaseInfo(
       id: value('slug'),

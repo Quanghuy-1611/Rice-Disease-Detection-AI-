@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/config/environment_config.dart';
 import '../../core/config/seven_class_catalog.dart';
 import '../../core/theme/app_theme.dart';
+import '../../models/ipm_advice.dart';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({
@@ -146,8 +147,9 @@ class ResultScreen extends StatelessWidget {
               ).animate().fade(delay: 160.ms),
               const SizedBox(height: 22),
               _IPMCard(
-                ipmAdvice: predictionData['ipm_advice']?.toString() ??
-                    'Chưa có thông tin khuyến nghị.',
+                ipmAdvice: IpmAdvice.fromApi(predictionData['ipm_advice']),
+                observedSeverity:
+                    predictionData['observed_severity']?.toString(),
               ).animate().fade(delay: 240.ms),
               const SizedBox(height: 26),
               FilledButton.icon(
@@ -211,13 +213,14 @@ class _MedicalReportHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: <Widget>[
               _StatusChip(
                 label: normal ? 'BÌNH THƯỜNG' : 'PHÁT HIỆN',
                 color: normal ? AppTheme.safeGreen : AppTheme.warningOrange,
               ),
-              const SizedBox(width: 8),
               _StatusChip(
                 label: isPlus ? 'PLUS · AGRI-CAM' : 'BASIC · GRAD-CAM',
                 color: AppTheme.moss,
@@ -234,7 +237,7 @@ class _MedicalReportHeader extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            '$classId · ${predictionData['model_family'] ?? 'MobileNetV3Large'}',
+            'Phân tích bằng ${predictionData['model_family'] ?? 'MobileNetV3-Large'}',
             style: const TextStyle(
               color: AppTheme.textSecondary,
               fontWeight: FontWeight.w600,
@@ -244,8 +247,21 @@ class _MedicalReportHeader extends StatelessWidget {
           const Divider(height: 1),
           const SizedBox(height: 16),
           _MetricRow(label: 'Độ tin cậy phân loại', value: confidenceText),
-          const SizedBox(height: 14),
-          _SeverityStatus(agriCam: agriCam, isPlus: isPlus),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: LinearProgressIndicator(
+              value: confidence.clamp(0.0, 1.0),
+              minHeight: 7,
+              backgroundColor: AppTheme.borderBeige,
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(AppTheme.safeGreen),
+            ),
+          ),
+          if (isPlus) ...<Widget>[
+            const SizedBox(height: 14),
+            _SeverityStatus(agriCam: agriCam, isPlus: isPlus),
+          ],
         ],
       ),
     );
@@ -285,11 +301,15 @@ class _MetricRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(label,
-              style: const TextStyle(
-                  color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+          Expanded(
+            child: Text(label,
+                style: const TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600)),
+          ),
+          const SizedBox(width: 8),
           Text(value,
               style: const TextStyle(
                   color: AppTheme.moss, fontWeight: FontWeight.w900)),
@@ -432,42 +452,167 @@ class _ImageExplanation extends StatelessWidget {
 }
 
 class _IPMCard extends StatelessWidget {
-  const _IPMCard({required this.ipmAdvice});
+  const _IPMCard({required this.ipmAdvice, required this.observedSeverity});
 
-  final String ipmAdvice;
+  final IpmAdvice ipmAdvice;
+  final String? observedSeverity;
+
+  @override
+  Widget build(BuildContext context) {
+    final alert = ipmAdvice.thresholdReached;
+    final accent = alert ? AppTheme.errorRed : AppTheme.safeGreen;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: alert ? const Color(0xFFFEF2F2) : const Color(0xFFF0FDF4),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: accent.withValues(alpha: 0.2)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Icon(
+                alert
+                    ? Icons.warning_amber_rounded
+                    : Icons.check_circle_outline,
+                color: accent,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Tư vấn chuẩn IPHM',
+                      style: TextStyle(
+                        color: accent,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    if (observedSeverity != null) ...<Widget>[
+                      const SizedBox(height: 3),
+                      Text(
+                        'Mức độ bạn quan sát: ${switch (observedSeverity) {
+                          'high' => 'Cao',
+                          'medium' => 'Trung bình',
+                          _ => 'Ít / Thấp',
+                        }}',
+                        style: const TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 8),
+                    Text(
+                      ipmAdvice.recommendation.isEmpty
+                          ? 'Chưa có thông tin khuyến nghị.'
+                          : ipmAdvice.recommendation,
+                      style: const TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (ipmAdvice.organicMethods.isNotEmpty) ...<Widget>[
+          const SizedBox(height: 14),
+          _AdviceMethodsCard(
+            title: 'Sinh học / Hữu cơ / Canh tác',
+            icon: Icons.spa_outlined,
+            accent: AppTheme.safeGreen,
+            methods: ipmAdvice.organicMethods,
+          ),
+        ],
+        if (ipmAdvice.chemicalMethods.isNotEmpty) ...<Widget>[
+          const SizedBox(height: 14),
+          _AdviceMethodsCard(
+            title: 'Hóa học (sử dụng đúng ngưỡng)',
+            icon: Icons.science_outlined,
+            accent: AppTheme.errorRed,
+            methods: ipmAdvice.chemicalMethods,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _AdviceMethodsCard extends StatelessWidget {
+  const _AdviceMethodsCard({
+    required this.title,
+    required this.icon,
+    required this.accent,
+    required this.methods,
+  });
+
+  final String title;
+  final IconData icon;
+  final Color accent;
+  final List<String> methods;
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(22),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: AppTheme.moss,
-          borderRadius: BorderRadius.circular(24),
+          color: AppTheme.cardSolid,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppTheme.borderBeige),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Row(
+            Row(
               children: <Widget>[
-                Icon(Icons.eco_rounded, color: AppTheme.neonLeaf),
-                SizedBox(width: 10),
-                Text(
-                  'Khuyến nghị IPM',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900),
+                Icon(icon, color: accent, size: 22),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: AppTheme.textPrimary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-            Text(
-              ipmAdvice,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.88),
-                height: 1.5,
-                fontSize: 14,
+            const SizedBox(height: 12),
+            for (final method in methods) ...<Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 7),
+                    child: Icon(Icons.circle, color: accent, size: 6),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      method,
+                      style: const TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontSize: 13.5,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
+              const SizedBox(height: 8),
+            ],
           ],
         ),
       );

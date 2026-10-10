@@ -5,6 +5,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/config/environment_config.dart';
+import '../../core/config/seven_class_catalog.dart';
 import '../../services/image_service.dart';
 import '../../services/connectivity_service.dart';
 import '../../services/notification_service.dart';
@@ -27,7 +29,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  String _analysisMode = 'basic';
+  final String _analysisMode = 'basic';
   final _connectivityService = ConnectivityService();
   final _offlineQueueService = OfflineQueueService();
   final _predictionService = PredictionService();
@@ -164,10 +166,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 child: _HeroCard(
                   onCameraTap: () => unawaited(_openCamera(context)),
                   onGalleryTap: () => _pickFromGallery(context),
-                  analysisMode: _analysisMode,
-                  onAnalysisModeChanged: (value) {
-                    setState(() => _analysisMode = value);
-                  },
                 )
                     .animate(delay: 60.ms)
                     .fade(duration: 400.ms)
@@ -331,14 +329,10 @@ class _HeroCard extends StatelessWidget {
   const _HeroCard({
     required this.onCameraTap,
     required this.onGalleryTap,
-    required this.analysisMode,
-    required this.onAnalysisModeChanged,
   });
 
   final VoidCallback onCameraTap;
   final VoidCallback onGalleryTap;
-  final String analysisMode;
-  final ValueChanged<String> onAnalysisModeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -437,10 +431,7 @@ class _HeroCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  _AnalysisModeSelector(
-                    value: analysisMode,
-                    onChanged: onAnalysisModeChanged,
-                  ),
+                  const _BasicBadge(),
                   const SizedBox(height: 16),
 
                   // Action buttons
@@ -499,86 +490,44 @@ class _HeroCard extends StatelessWidget {
   }
 }
 
-class _AnalysisModeSelector extends StatelessWidget {
-  const _AnalysisModeSelector({
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String value;
-  final ValueChanged<String> onChanged;
+class _BasicBadge extends StatelessWidget {
+  const _BasicBadge();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(3),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
       ),
-      child: Row(
+      child: const Row(
         children: <Widget>[
-          _ModeChoice(
-            selected: value == 'basic',
-            icon: Icons.visibility_outlined,
-            label: 'Basic · Grad-CAM',
-            onTap: () => onChanged('basic'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ModeChoice extends StatelessWidget {
-  const _ModeChoice({
-    required this.selected,
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final bool selected;
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Material(
-        color: selected
-            ? Colors.white.withValues(alpha: 0.16)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(9),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(9),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Icon(Icons.auto_awesome_rounded, color: AppTheme.neonLeaf, size: 20),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(icon,
-                    color: selected ? AppTheme.neonLeaf : Colors.white70,
-                    size: 15),
-                const SizedBox(width: 5),
-                Flexible(
-                  child: Text(
-                    label,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10.5,
-                      fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                    ),
+                Text(
+                  'RICEAI BASIC',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1,
                   ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Nhận diện 7 nhóm · Giải thích bằng Grad-CAM',
+                  style: TextStyle(color: Colors.white70, fontSize: 11),
                 ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -665,7 +614,6 @@ class _RecentHistory extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (context, index) => _RecentCard(
                 item: items[index],
-                index: index,
                 onTap: onOpenHistory,
               ),
             ),
@@ -689,7 +637,7 @@ class _EmptyHistoryCard extends StatelessWidget {
             SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Chưa có lượt quét nào trên thiết bị này. Hãy chụp hoặc chọn ảnh lá lúa để bắt đầu.',
+                'Chưa có lượt quét. Hãy chụp hoặc chọn ảnh để bắt đầu phân tích.',
                 style: TextStyle(color: AppTheme.textSecondary, height: 1.4),
               ),
             ),
@@ -701,16 +649,16 @@ class _EmptyHistoryCard extends StatelessWidget {
 class _RecentCard extends StatelessWidget {
   const _RecentCard({
     required this.item,
-    required this.index,
     required this.onTap,
   });
 
   final Map<String, dynamic> item;
-  final int index;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final filename = item['image_filename']?.toString();
+    final classId = item['prediction']?.toString() ?? '';
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -730,30 +678,26 @@ class _RecentCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Thumbnail
+            // The same photo appears in the full history list.
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(17)),
-              child: Container(
+              child: SizedBox(
                 height: 72,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: index % 2 == 0
-                        ? <Color>[
-                            const Color(0xFF2B6B44),
-                            const Color(0xFF8BC34A)
-                          ]
-                        : <Color>[
-                            const Color(0xFF4A7B3A),
-                            const Color(0xFF9CCC65)
-                          ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: const Center(
-                  child: Icon(Icons.eco_rounded, color: Colors.white, size: 34),
-                ),
+                width: double.infinity,
+                child: filename == null || filename.isEmpty
+                    ? const ColoredBox(
+                        color: AppTheme.cardBeige,
+                        child: Icon(Icons.eco_outlined, color: AppTheme.moss),
+                      )
+                    : Image.network(
+                        '${EnvironmentConfig.apiBaseUrl}/uploads/$filename',
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const ColoredBox(
+                          color: AppTheme.cardBeige,
+                          child: Icon(Icons.eco_outlined, color: AppTheme.moss),
+                        ),
+                      ),
               ),
             ),
 
@@ -764,7 +708,7 @@ class _RecentCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    item['prediction']?.toString() ?? 'Không xác định',
+                    SevenClassCatalog.names[classId] ?? 'Không xác định',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

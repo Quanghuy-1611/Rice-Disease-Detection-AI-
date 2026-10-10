@@ -145,9 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Icons.history_rounded,
             title: 'Lịch sử quét',
             subtitle: 'Xem lượt đã phân tích và ảnh đang chờ gửi',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const HistoryScreen()),
-            ),
+            onTap: _openHistory,
           ),
           _SettingTile(
             icon: Icons.dns_outlined,
@@ -196,6 +194,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _openLogin() => Navigator.of(context)
       .push<bool>(MaterialPageRoute<bool>(builder: (_) => const LoginScreen()));
+
+  Future<void> _openHistory() async {
+    if (!context.read<AuthService>().isAuthenticated) {
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(builder: (_) => const LoginScreen()),
+      );
+      if (signedIn != true || !mounted) return;
+    }
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(builder: (_) => const HistoryScreen()),
+    );
+  }
 
   void _showLanguageInfo() => showDialog<void>(
         context: context,

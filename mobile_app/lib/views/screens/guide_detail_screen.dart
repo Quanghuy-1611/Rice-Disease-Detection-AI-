@@ -13,7 +13,17 @@ class GuideDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isLeaf = disease.category == DiseaseCategory.leafDisease;
-    final Color accent = isLeaf ? AppTheme.moss : AppTheme.warningOrange;
+    final Color accent = disease.category == DiseaseCategory.healthy
+        ? AppTheme.safeGreen
+        : isLeaf
+            ? AppTheme.moss
+            : AppTheme.warningOrange;
+    final heroIcon = switch (disease.category) {
+      DiseaseCategory.healthy => Icons.check_circle_outline_rounded,
+      DiseaseCategory.weed => Icons.grass_rounded,
+      DiseaseCategory.pestInsect => Icons.pest_control_rounded,
+      _ => Icons.eco_rounded,
+    };
 
     return Scaffold(
       backgroundColor: AppTheme.porcelain,
@@ -42,7 +52,7 @@ class GuideDetailScreen extends StatelessWidget {
                       right: -20,
                       bottom: -20,
                       child: Icon(
-                        isLeaf ? Icons.eco_rounded : Icons.bug_report_rounded,
+                        heroIcon,
                         size: 200,
                         color: Colors.white.withValues(alpha: 0.06),
                       ),
@@ -100,14 +110,6 @@ class GuideDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            actions: <Widget>[
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.bookmark_border_rounded),
-                tooltip: 'Lưu',
-              ),
-              const SizedBox(width: 8),
-            ],
           ),
 
           // ── Content ───────────────────────────────
@@ -166,7 +168,8 @@ class GuideDetailScreen extends StatelessWidget {
                   delay: 200,
                 ),
 
-                if (!disease.severityApplicable) ...<Widget>[
+                if (!disease.severityApplicable &&
+                    disease.category != DiseaseCategory.healthy) ...<Widget>[
                   const SizedBox(height: 16),
                   AppCard(
                     color: AppTheme.cardBeige,
@@ -177,7 +180,7 @@ class GuideDetailScreen extends StatelessWidget {
                         const SizedBox(width: 10),
                         const Expanded(
                           child: Text(
-                            'Đánh giá mức độ tổn thương lá: Không áp dụng cho sâu hại.',
+                            'Đánh giá mức độ tổn thương lá không áp dụng cho nhóm này.',
                             style: TextStyle(
                               color: AppTheme.textSecondary,
                               fontSize: 12,
