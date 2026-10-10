@@ -1,0 +1,42 @@
+name: Build iOS IPA for sideloading
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: 'Backend URL reachable from the iPhone (for example http://192.168.1.10:8000)'
+        required: true
+        type: string
+
+jobs:
+  build-ios:
+    runs-on: macos-15
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: mobile_app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.7'
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build unsigned iOS app
+        env:
+          API_BASE_URL: ${{ inputs.api_base_url }}
+        run: flutter build ios --release --no-codesign --dart-define="API_BASE_URL=$API_BASE_URL"
+      - name: Package IPA for signing on Windows
+        run: |
+          mkdir -p build/ios/unsigned/Payload
+          cp -R build/ios/iphoneos/Runner.app build/ios/unsigned/Payload/
+          cd build/ios/unsigned
+          zip -qry ../RiceAI-unsigned.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RiceAI-unsigned-IPA
+          path: mobile_app/build/ios/RiceAI-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 7

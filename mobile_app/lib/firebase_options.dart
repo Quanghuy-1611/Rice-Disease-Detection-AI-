@@ -23,10 +23,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -62,6 +59,16 @@ class DefaultFirebaseOptions {
     messagingSenderId: '915835874142',
     projectId: 'riceai-production',
     storageBucket: 'riceai-production.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDkslBObDtlDTXrmZVIHKj0oZQM7CQWze0',
+    appId: '1:915835874142:ios:372a01c634ebe5f766fdcf',
+    messagingSenderId: '915835874142',
+    projectId: 'riceai-production',
+    storageBucket: 'riceai-production.firebasestorage.app',
+    iosBundleId: 'com.quanghuy1611.riceai',
+    iosClientId: '915835874142-vnv37bjva42n5c19765klf0ignni6kdc.apps.googleusercontent.com',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
