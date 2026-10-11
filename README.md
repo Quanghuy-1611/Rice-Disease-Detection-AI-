@@ -35,6 +35,8 @@ Basic nhận một ảnh/lượt và có 15 lượt/tháng. Plus nhận 1–5 �
 
 Trang gói sử dụng cho phép gửi yêu cầu Plus; hệ thống hiện **chưa tích hợp cổng thanh toán**. Admin có thể kích hoạt thủ công sau khi xác minh thanh toán bên ngoài, hoặc cấp quyền thử nghiệm. Việc gửi yêu cầu không tự trừ tiền.
 
+Gợi ý xử lý từ ảnh chỉ là bước kiểm tra ban đầu, không tự xác định ngưỡng cần phun thuốc. Xem [phạm vi hướng dẫn IPM](docs/IPM_GUIDANCE.md).
+
 Các script nghiên cứu được gọi từ thư mục gốc, ví dụ:
 
 ```powershell
