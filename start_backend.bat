@@ -9,8 +9,8 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%PORT%') do (
 
 cd /d "%~dp0backend"
 if exist "%~dp0.venv\Scripts\python.exe" (
-    "%~dp0.venv\Scripts\python.exe" -m uvicorn app.main:app --host 127.0.0.1 --port %PORT%
+    "%~dp0.venv\Scripts\python.exe" -m uvicorn app.main:app --host 0.0.0.0 --port %PORT%
 ) else (
-    python -m uvicorn app.main:app --host 127.0.0.1 --port %PORT%
+    python -m uvicorn app.main:app --host 0.0.0.0 --port %PORT%
 )
 pause

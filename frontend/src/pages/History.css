@@ -1,71 +1,35 @@
-
-/* Enhanced History CSS */
 .history-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 13px;
+  margin: 25px 0 23px;
 }
-
 .stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: 15px;
-  padding: 1.5rem;
-  text-align: center;
-  transition: transform 0.3s ease;
+  min-height: 108px;
+  padding: 18px 20px;
+  border: 1px solid #e1e9dc;
+  border-radius: 14px;
+  background: #f8faf6;
 }
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  background: #ffffff;
-}
-
-.stat-card h4 {
-  margin: 0 0 0.5rem 0;
-  color: var(--text-muted);
-  font-size: 1rem;
-}
-
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: var(--primary-dark);
-}
-
-.disease-val { color: var(--danger); }
-.healthy-val { color: var(--success); }
-
+.stat-card h4 { margin: 0 0 7px; color: #6e8676; font-size: .81rem; font-weight: 700; }
+.stat-value { color: #1e5136; font-size: 2rem; font-weight: 800; line-height: 1.2; }
+.disease-val { color: #9b6541; }
+.healthy-val { color: #38845a; }
 .btn-export {
-  background: var(--primary);
-  border: 1px solid var(--primary-dark);
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
+  padding: 8px 13px;
+  border: 1px solid #cde1cd;
+  border-radius: 8px;
+  background: #e9f3e8;
+  color: #245e3a;
+  font-size: .8rem;
+  font-weight: 700;
 }
-
-.btn-export:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
-}
-
-.badge-healthy {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-  border: 1px solid #10b981;
-}
-
-.badge-disease {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid #ef4444;
-}
-
-.table-responsive {
-  overflow-x: auto;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.btn-export:hover { background: #dcebdc; }
+.table-responsive { overflow-x: auto; border: 1px solid #e2e9dc; border-radius: 13px; }
+@media(max-width:700px) {
+  .history-stats { gap: 8px; }
+  .stat-card { min-height: 100px; padding: 12px; }
+  .stat-card h4 { font-size: .72rem; }
+  .stat-value { font-size: 1.5rem; }
+  .history-table { min-width: 670px; }
 }

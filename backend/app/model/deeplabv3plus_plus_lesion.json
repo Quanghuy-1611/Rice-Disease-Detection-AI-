@@ -1,0 +1,82 @@
+{
+  "history": [
+    {
+      "epoch": 1,
+      "train": {
+        "loss": 1.147658700918093,
+        "dice": 0.5037979360813181,
+        "iou": 0.33671784595847165,
+        "healthy_any_false_positive_rate": 0.804
+      },
+      "validation": {
+        "loss": 0.8040864305179929,
+        "dice": 0.6075275221345097,
+        "iou": 0.4362940968612777,
+        "healthy_any_false_positive_rate": 0.615
+      }
+    },
+    {
+      "epoch": 2,
+      "train": {
+        "loss": 0.7569221251730923,
+        "dice": 0.6902449010526245,
+        "iou": 0.5270030264492658,
+        "healthy_any_false_positive_rate": 0.506
+      },
+      "validation": {
+        "loss": 0.632285771906247,
+        "dice": 0.7396413014400746,
+        "iou": 0.5868498406724864,
+        "healthy_any_false_positive_rate": 0.105
+      }
+    },
+    {
+      "epoch": 3,
+      "train": {
+        "loss": 0.6463427142748323,
+        "dice": 0.7337767596395779,
+        "iou": 0.5795003094641614,
+        "healthy_any_false_positive_rate": 0.279
+      },
+      "validation": {
+        "loss": 0.6195394342634948,
+        "dice": 0.6963078008950542,
+        "iou": 0.5341044468725874,
+        "healthy_any_false_positive_rate": 0.04
+      }
+    },
+    {
+      "epoch": 4,
+      "train": {
+        "loss": 0.601461440153595,
+        "dice": 0.747287474933728,
+        "iou": 0.5965354859800691,
+        "healthy_any_false_positive_rate": 0.2652652652652653
+      },
+      "validation": {
+        "loss": 0.4833559931108826,
+        "dice": 0.7121135237016027,
+        "iou": 0.5529319057284746,
+        "healthy_any_false_positive_rate": 0.01
+      }
+    },
+    {
+      "epoch": 5,
+      "train": {
+        "loss": 0.47109171076377027,
+        "dice": 0.753365874631541,
+        "iou": 0.6043199518614765,
+        "healthy_any_false_positive_rate": 0.06606606606606606
+      },
+      "validation": {
+        "loss": 0.43897365101746727,
+        "dice": 0.7759083815401079,
+        "iou": 0.6338646305873148,
+        "healthy_any_false_positive_rate": 0.01
+      }
+    }
+  ],
+  "best_validation_dice": 0.7759083815401079,
+  "paired_train": 5745,
+  "paired_validation": 1387
+}

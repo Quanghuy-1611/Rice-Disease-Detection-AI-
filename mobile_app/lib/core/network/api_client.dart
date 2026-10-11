@@ -38,7 +38,8 @@ class ApiClient {
           if (token != null) {
             options.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
           }
-          options.headers['X-RiceAI-Client'] = Platform.isIOS ? 'ios' : 'android';
+          options.headers['X-RiceAI-Client'] =
+              Platform.isIOS ? 'ios' : 'android';
           options.headers['X-RiceAI-Version'] = _appVersion;
           return handler.next(options);
         },
@@ -77,11 +78,15 @@ class ApiClient {
 
   /// Helper method for POST requests
   Future<dynamic> post(String path,
-      {dynamic data, Map<String, dynamic>? queryParameters}) async {
+      {dynamic data,
+      Map<String, dynamic>? queryParameters,
+      Duration? receiveTimeout}) async {
     _ensureConfigured();
     try {
-      final response =
-          await _dio.post(path, data: data, queryParameters: queryParameters);
+      final response = await _dio.post(path,
+          data: data,
+          queryParameters: queryParameters,
+          options: Options(receiveTimeout: receiveTimeout));
       return response.data;
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -105,7 +110,7 @@ class ApiClient {
         401 || 403 => 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
         408 => 'Máy chủ phản hồi quá lâu. Vui lòng thử lại.',
         final code? when code >= 500 =>
-          'Máy chủ đang bận. Vui lòng thử lại sau ít phút.',
+          'Đang có nhiều ảnh chờ phân tích. Vui lòng thử lại sau vài giây.',
         _ => _extractErrorMessage(e.response?.data),
       };
       return ApiException(
@@ -117,8 +122,10 @@ class ApiClient {
       final message = switch (e.type) {
         DioExceptionType.connectionTimeout ||
         DioExceptionType.receiveTimeout ||
-        DioExceptionType.sendTimeout => 'Kết nối máy chủ quá lâu. Vui lòng thử lại.',
-        DioExceptionType.connectionError => 'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.',
+        DioExceptionType.sendTimeout =>
+          'Kết nối máy chủ quá lâu. Vui lòng thử lại.',
+        DioExceptionType.connectionError =>
+          'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.',
         _ => 'Không kết nối được máy chủ. Kiểm tra mạng và thử lại.',
       };
       return ApiException(

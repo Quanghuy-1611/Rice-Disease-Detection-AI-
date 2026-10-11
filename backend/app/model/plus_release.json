@@ -1,0 +1,27 @@
+{
+  "validated": true,
+  "created_at_utc": "2026-10-11T14:55:35.864710+00:00",
+  "consensus_rule": "both_classifiers_same_label_and_each_softmax_at_least_0.95",
+  "weights_sha256": {
+    "mobilenetv3large_7class_seed42.pt": "1271e3b0cdd52e0d077fadc0d3796e0cf70dfcecc3f1e747e40da6d5adf86aae",
+    "swin_tiny_plus_7class.pt": "6670aa6ed9bcefa800aa7d1a204d14346a48a208a4bb2831fbaf7454e2df3446",
+    "deeplabv3plus_plus_lesion.pt": "f6dc5f6abe2723aad281e36d1b43a33ee9c257cfbb4131890243822318ffad0d"
+  },
+  "external_audit": {
+    "known_coverage": 0.5771428571428572,
+    "accepted_accuracy": 0.9925742574257426,
+    "unseen_rejection": 0.955,
+    "tungro_accepted": 16,
+    "tungro_accepted_accuracy": 0.875
+  },
+  "mask_validation": {
+    "dice": 0.7759083815401079,
+    "healthy_false_positive_rate": 0.01
+  },
+  "limitations": [
+    "External audit is post-hoc for the stricter consensus rule, not a fresh blind test.",
+    "Predictions outside the trained seven groups can still be wrong.",
+    "Tungro coverage remains low and needs more independently labelled images.",
+    "Lesion segmentation was validated on RiceSeg-5932 leaf disease masks only."
+  ]
+}

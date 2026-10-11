@@ -1,16 +1,27 @@
-# React + Vite
+# RiceAI Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Web React/Vite để phân loại ảnh cây lúa theo 7 lớp bằng API FastAPI. Backend mặc định ở `http://127.0.0.1:8015`; proxy được cấu hình trong `vite.config.js`.
 
-Currently, two official plugins are available:
+## Chạy tại máy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Khởi động backend theo `backend/README_7_CLASS.md`, sau đó trong thư mục `frontend` chạy:
 
-## React Compiler
+```powershell
+npm ci
+npm run dev -- --host 127.0.0.1 --port 5174
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Nếu cổng 5174 đang được dùng, chọn cổng khác. Nếu backend dùng địa chỉ khác, đặt `VITE_API_TARGET` trước khi chạy Vite.
 
-## Expanding the Oxlint configuration
+## Đăng nhập bằng email
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Web dùng Firebase Authentication cùng dự án với ứng dụng di động. Người dùng đăng ký bằng địa chỉ email có thể nhận thư, mở liên kết xác minh trong hộp thư, rồi đăng nhập. Sau khi xác minh, web đổi Firebase ID token lấy phiên API tại `/api/auth/firebase/exchange`. Có thể gửi lại thư xác minh hoặc yêu cầu đặt lại mật khẩu tại trang đăng nhập.
+
+Firebase Console của dự án cần bật phương thức Email/Password và cho phép miền chạy web trong Authorized domains. Backend cần tệp Firebase Admin credentials theo hướng dẫn của backend. Không đặt mật khẩu hoặc Admin credentials vào mã frontend.
+
+## Kiểm tra
+
+```powershell
+npm run lint
+npm run build
+```

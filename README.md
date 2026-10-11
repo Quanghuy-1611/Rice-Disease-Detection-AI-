@@ -1,88 +1,48 @@
-# 🌾 Rice Leaf Disease Detection AI
+# RiceAI — nhận diện bệnh cây lúa
 
-![Rice AI Banner](https://img.shields.io/badge/AI-MobileNetV2-blue) ![Explainable AI](https://img.shields.io/badge/Explainable_AI-Grad--CAM-orange) ![FastAPI](https://img.shields.io/badge/Backend-FastAPI-green) ![Edge Device](https://img.shields.io/badge/Mobile-TFLite-red)
+Dự án gồm API FastAPI, giao diện web React, ứng dụng Flutter và bộ công cụ nghiên cứu mô hình. Các tập dữ liệu, checkpoint và kết quả thí nghiệm nằm trong `research/` và `model_benchmark/`; không nên xóa khi chưa đối chiếu chiến dịch huấn luyện tương ứng.
 
-> **Nhận diện bệnh lúa bằng Trí tuệ Nhân tạo (AI) với khả năng Giải thích mô hình (XAI).**
+## Cấu trúc
 
-Dự án này là một hệ thống AI toàn diện giúp nhận diện và chẩn đoán **17 loại bệnh** và sâu hại phổ biến trên cây lúa. Hệ thống không chỉ cung cấp dự đoán với độ chính xác cao mà còn tích hợp công nghệ **Grad-CAM (Gradient-weighted Class Activation Mapping)** để "giải thích" lý do AI đưa ra quyết định bằng cách khoanh vùng (bôi đỏ) chính xác vị trí vết bệnh trên lá.
+| Thư mục | Nội dung |
+| --- | --- |
+| `backend/` | API, dữ liệu ứng dụng và mô hình triển khai |
+| `frontend/` | Giao diện web React/Vite |
+| `mobile_app/` | Ứng dụng Flutter |
+| `model_benchmark/` | Mã huấn luyện, cấu hình, kết quả đánh giá |
+| `research/` | Dữ liệu, split, khóa thí nghiệm và ghi chép nghiên cứu |
+| `docs/reports/` | Tài liệu Word và báo cáo dự án |
+| `docs/archives/` | Gói lưu trữ kết quả |
+| `scripts/reports/` | Script tạo và chỉnh sửa báo cáo |
+| `scripts/runs/` | Lệnh train và đánh giá mô hình |
+| `scripts/maintenance/` | Script bảo trì |
+| `tools/` | Công cụ dữ liệu và báo cáo phụ trợ |
 
----
+## Chạy ứng dụng
 
-## 🌟 Tính năng nổi bật
+Yêu cầu Python và Node.js. Từ thư mục gốc:
 
-- ⚡ **Siêu nhẹ & Tốc độ cao:** Mô hình cốt lõi (MobileNetV2) được tinh chỉnh và lượng hóa (quantization) xuống chuẩn `.tflite` với dung lượng chỉ **2.8MB**, sẵn sàng chạy offline trên các thiết bị di động (Edge Devices) mà không cần kết nối internet.
-- 🔍 **Giải thích mô hình (Explainable AI):** Trực quan hóa bản đồ nhiệt (Heatmap) giúp kỹ sư nông nghiệp và nông dân hiểu rõ tại sao AI lại chẩn đoán ra loại bệnh đó.
-- 🎯 **Độ chính xác cao:** Độ chính xác trung bình (Accuracy) đạt **> 84%** trên tập dữ liệu kiểm thử thực tế khó (850 ảnh).
-- 🌐 **Hệ sinh thái đa nền tảng:**
-  - **Backend:** Cung cấp API suy luận siêu tốc bằng FastAPI.
-  - **Mobile App / Web:** Giao diện trực quan để quét ảnh bệnh lúa ngoài đồng ruộng.
-
----
-
-## 📊 Đánh giá định lượng (Quantitative Results)
-*Kết quả đánh giá trên tập dữ liệu chưa từng thấy (Unseen Data) với 850 ảnh thực tế (17 lớp bệnh x 50 ảnh/lớp).*
-
-| Chỉ số | Kết quả thực tế | Ý nghĩa |
-|---|:---:|---|
-| **Accuracy (Độ chính xác)** | **84.0%** | Tỉ lệ dự đoán đúng lớp bệnh cao và ổn định, bao phủ được phần lớn các loại sâu bệnh. |
-| **Confidence (Độ tự tin)** | **82.1%** | AI đưa ra quyết định một cách dứt khoát, không đoán mò. |
-| **Activation Area (Độ khoanh vùng)** | **22.2%** | Grad-CAM tập trung chính xác vào ~20% diện tích ảnh (khu vực chứa vết bệnh thực sự), ít bị nhiễu. |
-
-> **Điểm sáng:** Các loại sâu hại như *Rầy nâu (brown_planthopper)*, *Ốc bươu vàng (golden_apple_snail)*, *Sâu cuốn lá (leaf_roller)* đạt độ chính xác lên đến **96% - 100%**.
-
----
-
-## 🛠️ Kiến trúc hệ thống (Tech Stack)
-
-- **Mô hình AI:** TensorFlow 2 / Keras, MobileNetV2 (Transfer Learning), TFLite.
-- **Explainable AI:** Grad-CAM.
-- **Backend API:** FastAPI (Python), Uvicorn.
-- **Xử lý ảnh:** OpenCV, Pillow, Numpy.
-- **Dữ liệu:** SQLite.
-
----
-
-## 🚀 Hướng dẫn cài đặt & Chạy (Local Setup)
-
-### 1. Yêu cầu hệ thống
-- Python 3.9+
-- Git
-
-### 2. Cài đặt
-
-Clone dự án về máy:
-```bash
-git clone https://github.com/Quanghuy-1611/Rice-Disease-Detection-AI.git
-cd Rice-Disease-Detection-AI
-```
-
-Tạo môi trường ảo và cài đặt thư viện:
-```bash
+```powershell
 python -m venv .venv
-# Kích hoạt môi trường (Windows)
-.venv\Scripts\activate
-# Cài đặt thư viện
-pip install -r backend/requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
+cd frontend
+npm ci
 ```
 
-### 3. Chạy Backend (FastAPI)
-```bash
-cd backend
-uvicorn app.main:app --reload
-```
-API sẽ chạy tại địa chỉ: `http://localhost:8000`
+Chạy `start_backend.bat` và `start_frontend.bat` trong hai cửa sổ riêng. API dùng cổng 8015 và lắng nghe trên cả localhost lẫn mạng LAN để ứng dụng iPhone có thể chẩn đoán qua Wi-Fi; web dùng cổng 5173. `START_RICEAI.bat` khởi động cả hai. iPhone và laptop cần cùng mạng, laptop phải bật và địa chỉ IP LAN phải khớp với `API_BASE_URL` lúc build ứng dụng iOS. Đăng nhập bằng email đã xác minh qua Firebase; vai trò Admin/Employee được quản lý trong cơ sở dữ liệu backend.
 
----
+Basic nhận một ảnh/lượt và có 15 lượt/tháng. Plus nhận 1–5 ảnh/lượt và có 80 lượt/tháng; Admin/Employee không bị giới hạn. Plus dùng hai mô hình phân loại cùng một nhãn và DeepLabV3+ hỗ trợ lọc bản đồ nhiệt cho bệnh lá. Cả hai chế độ có thể trả lời **chưa đủ chắc chắn**. Plus chỉ bật khi ba checkpoint khớp manifest kiểm định `backend/app/model/plus_release.json`; sau khi train lại phải kiểm định, tạo manifest mới và khởi động lại backend. Xem [kiểm định Plus và kế hoạch bổ sung ảnh](docs/PLUS_VALIDATION_AND_NEXT_IMAGES.md).
 
-## 📁 Cấu trúc thư mục chính
+Trang gói sử dụng cho phép gửi yêu cầu Plus; hệ thống hiện **chưa tích hợp cổng thanh toán**. Admin có thể kích hoạt thủ công sau khi xác minh thanh toán bên ngoài, hoặc cấp quyền thử nghiệm. Việc gửi yêu cầu không tự trừ tiền.
 
-```text
-├── backend/            # Backend API (FastAPI) + SQLite DB + model.keras
-├── research/           # Notebooks, Scripts huấn luyện model và phân tích
-├── tools/              # Các công cụ script hỗ trợ xử lý dataset
-├── .gitignore          # Bỏ qua các file model lớn và dataset
-└── README.md
+Các script nghiên cứu được gọi từ thư mục gốc, ví dụ:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\runs\RUN_RESEARCH_7_CLASSES.ps1
 ```
 
----
-*Dự án này được phát triển bởi [Quanghuy-1611](https://github.com/Quanghuy-1611).*
+Các script này có thể cần `model_benchmark/.venv312`, CUDA và dữ liệu nghiên cứu tại máy. Xem [hướng dẫn benchmark](model_benchmark/README.md) và [hướng dẫn backend 7 lớp](backend/README_7_CLASS.md) trước khi chạy.
+
+## Ghi chú về dữ liệu
+
+`.venv/`, cache, file cài đặt và output tạm không thuộc mã nguồn. Mô hình, dữ liệu nghiên cứu và kết quả đánh giá có giá trị tái lập; cần xem xét riêng trước khi dọn dung lượng.

@@ -242,7 +242,7 @@ class _AnalysisScreenState extends State<AnalysisScreen>
               isReady
                   ? 'Chọn mức độ bạn quan sát tại ruộng trước khi phân tích.'
                   : widget.analysisMode == 'plus'
-                      ? 'Plus tạo thêm Agri-CAM và kiểm tra vùng lá.'
+                      ? 'Plus đối chiếu nhiều mô hình trước khi đưa ra kết luận.'
                       : 'Basic dùng Grad-CAM để giải thích dự đoán.',
               textAlign: TextAlign.center,
               style:

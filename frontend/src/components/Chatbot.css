@@ -220,3 +220,8 @@
 .message-bubble.user .message-content strong {
   color: #fff;
 }
+
+/* Basic visual refresh */
+.chatbot-toggle{right:24px;bottom:24px;padding:11px 16px;background:#214c34;border:1px solid #41694b;border-radius:12px;box-shadow:0 10px 25px #173b2d30;font-size:.85rem}.chatbot-toggle:hover{background:#306d49;box-shadow:0 12px 28px #173b2d40;transform:translateY(-2px)}
+.chatbot-window{right:24px;bottom:84px;border-color:#dce8d9;border-radius:18px;box-shadow:0 20px 60px #15352034}.chatbot-header{background:#214b35}.message-bubble.bot{background:#f0f5ec}.message-bubble.user{background:#2d6544;box-shadow:none}.chatbot-send-btn{background:#245a3d}
+@media(max-width:480px){.chatbot-toggle{right:14px;bottom:14px}.chatbot-window{right:0;bottom:0}}

@@ -76,10 +76,9 @@ function Chatbot() {
       <div className={`chatbot-window ${isOpen ? 'open' : ''}`}>
         <div className="chatbot-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '1.5rem' }}>👨‍🌾</span>
             <div>
               <h3 style={{ fontSize: '1rem', margin: 0, color: 'white' }}>Chuyên gia RiceAI</h3>
-              <p style={{ fontSize: '0.8rem', margin: 0, color: '#a7f3d0' }}>Luôn sẵn sàng hỗ trợ</p>
+              <p style={{ fontSize: '0.8rem', margin: 0, color: '#a7f3d0' }}>Hỏi đáp về cây lúa</p>
             </div>
           </div>
           <button className="chatbot-close" onClick={() => setIsOpen(false)}>×</button>

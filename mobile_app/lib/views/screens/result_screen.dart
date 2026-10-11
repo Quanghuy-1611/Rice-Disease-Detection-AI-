@@ -18,14 +18,6 @@ class ResultScreen extends StatelessWidget {
   final Map<String, dynamic> predictionData;
   final File imageFile;
 
-  Map<String, dynamic> get _agriCam {
-    final raw = predictionData['agri_cam'];
-    return raw is Map ? Map<String, dynamic>.from(raw) : <String, dynamic>{};
-  }
-
-  bool get _isPlus =>
-      predictionData['analysis_mode'] == 'plus' && _agriCam.isNotEmpty;
-
   List<_ResultTab> get _tabs {
     final tabs = <_ResultTab>[
       const _ResultTab(
@@ -41,29 +33,6 @@ class ResultScreen extends StatelessWidget {
         urlKey: 'heatmap_url',
       ));
     }
-    if (_isPlus) {
-      if (_agriCam['ai_heatmap_url'] != null) {
-        tabs.add(const _ResultTab(
-          title: 'H_AI',
-          caption: 'Bản đồ Grad-CAM++ đa tầng trước khi áp ràng buộc vùng lá.',
-          urlKey: 'ai_heatmap_url',
-        ));
-      }
-      if (_agriCam['leaf_mask_url'] != null) {
-        tabs.add(const _ResultTab(
-          title: 'Mask lá',
-          caption: 'Vùng lá được giữ lại từ mô xanh, vàng úa và mô hoại tử.',
-          urlKey: 'leaf_mask_url',
-        ));
-      }
-      if (_agriCam['hybrid_heatmap_url'] != null) {
-        tabs.add(const _ResultTab(
-          title: 'Agri-CAM',
-          caption: 'Vùng AI quan tâm sau khi được ràng buộc theo vùng lá.',
-          urlKey: 'hybrid_heatmap_url',
-        ));
-      }
-    }
     return tabs;
   }
 
@@ -72,7 +41,7 @@ class ResultScreen extends StatelessWidget {
     if (tab.urlKey == 'heatmap_url') {
       return predictionData['heatmap_url']?.toString();
     }
-    return _agriCam[tab.urlKey]?.toString();
+    return null;
   }
 
   @override
@@ -99,8 +68,6 @@ class ResultScreen extends StatelessWidget {
             children: <Widget>[
               _MedicalReportHeader(
                 predictionData: predictionData,
-                agriCam: _agriCam,
-                isPlus: _isPlus,
               ).animate().fade().slideY(begin: 0.08, end: 0),
               const SizedBox(height: 22),
               if (tabs.length > 1) ...<Widget>[
@@ -146,11 +113,18 @@ class ResultScreen extends StatelessWidget {
                 ),
               ).animate().fade(delay: 160.ms),
               const SizedBox(height: 22),
-              _IPMCard(
-                ipmAdvice: IpmAdvice.fromApi(predictionData['ipm_advice']),
-                observedSeverity:
-                    predictionData['observed_severity']?.toString(),
-              ).animate().fade(delay: 240.ms),
+              if (predictionData['uncertain'] == true)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(predictionData['message']?.toString() ??
+                      'Ảnh chưa đủ rõ để kết luận. Hãy chụp lại hoặc hỏi chuyên gia.'),
+                )
+              else
+                _IPMCard(
+                  ipmAdvice: IpmAdvice.fromApi(predictionData['ipm_advice']),
+                  observedSeverity:
+                      predictionData['observed_severity']?.toString(),
+                ).animate().fade(delay: 240.ms),
               const SizedBox(height: 26),
               FilledButton.icon(
                 onPressed: () => Navigator.of(context).pop(),
@@ -167,7 +141,6 @@ class ResultScreen extends StatelessWidget {
     );
   }
 }
-
 class _ResultTab {
   const _ResultTab({
     required this.title,
@@ -183,13 +156,9 @@ class _ResultTab {
 class _MedicalReportHeader extends StatelessWidget {
   const _MedicalReportHeader({
     required this.predictionData,
-    required this.agriCam,
-    required this.isPlus,
   });
 
   final Map<String, dynamic> predictionData;
-  final Map<String, dynamic> agriCam;
-  final bool isPlus;
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +166,7 @@ class _MedicalReportHeader extends StatelessWidget {
     final confidence = (predictionData['confidence'] as num?)?.toDouble() ?? 0;
     final confidenceText = '${(confidence * 100).toStringAsFixed(1)}%';
     final normal = classId == 'normal';
+    final uncertain = predictionData['uncertain'] == true;
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
@@ -218,18 +188,18 @@ class _MedicalReportHeader extends StatelessWidget {
             runSpacing: 8,
             children: <Widget>[
               _StatusChip(
-                label: normal ? 'BÌNH THƯỜNG' : 'PHÁT HIỆN',
+                label: uncertain ? 'CẦN KIỂM TRA' : normal ? 'BÌNH THƯỜNG' : 'PHÁT HIỆN',
                 color: normal ? AppTheme.safeGreen : AppTheme.warningOrange,
               ),
               _StatusChip(
-                label: isPlus ? 'PLUS · AGRI-CAM' : 'BASIC · GRAD-CAM',
+                label: 'BASIC · GRAD-CAM',
                 color: AppTheme.moss,
               ),
             ],
           ),
           const SizedBox(height: 16),
           Text(
-            SevenClassCatalog.names[classId] ?? classId,
+            uncertain ? 'Chưa xác định' : SevenClassCatalog.names[classId] ?? classId,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: AppTheme.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -246,7 +216,7 @@ class _MedicalReportHeader extends StatelessWidget {
           const SizedBox(height: 20),
           const Divider(height: 1),
           const SizedBox(height: 16),
-          _MetricRow(label: 'Độ tin cậy phân loại', value: confidenceText),
+          _MetricRow(label: 'Mức tự tin của mô hình', value: confidenceText),
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(100),
@@ -258,9 +228,11 @@ class _MedicalReportHeader extends StatelessWidget {
                   const AlwaysStoppedAnimation<Color>(AppTheme.safeGreen),
             ),
           ),
-          if (isPlus) ...<Widget>[
-            const SizedBox(height: 14),
-            _SeverityStatus(agriCam: agriCam, isPlus: isPlus),
+          if (predictionData['scope_warning'] != null) ...<Widget>[
+            const SizedBox(height: 12),
+            Text(predictionData['scope_warning'].toString(),
+              style: const TextStyle(color: AppTheme.textSecondary,
+                fontSize: 12, height: 1.4)),
           ],
         ],
       ),
@@ -315,73 +287,6 @@ class _MetricRow extends StatelessWidget {
                   color: AppTheme.moss, fontWeight: FontWeight.w900)),
         ],
       );
-}
-
-class _SeverityStatus extends StatelessWidget {
-  const _SeverityStatus({required this.agriCam, required this.isPlus});
-
-  final Map<String, dynamic> agriCam;
-  final bool isPlus;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!isPlus) {
-      return const _MetricRow(
-        label: 'Mức độ tổn thương',
-        value: 'Có trong gói Plus',
-      );
-    }
-    final severity = (agriCam['severity_percent'] as num?)?.toDouble();
-    final reliability = agriCam['reliability']?.toString();
-    if (severity != null) {
-      final reliabilityText =
-          reliability == 'reliable' ? 'Đáng tin cậy' : 'Cần kiểm tra lại';
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _MetricRow(
-            label: 'Mức độ tổn thương',
-            value: '${severity.toStringAsFixed(1)}%',
-          ),
-          const SizedBox(height: 5),
-          Text(
-            reliabilityText,
-            style: TextStyle(
-              color: reliability == 'reliable'
-                  ? AppTheme.safeGreen
-                  : AppTheme.warningOrange,
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      );
-    }
-
-    final message = switch (reliability) {
-      'not_applicable' => 'Không áp dụng cho nhóm sâu hại, ốc hoặc cỏ.',
-      'review_required' => 'Cần chụp lại hoặc nhờ cán bộ kiểm tra.',
-      _ => 'Đang hiệu chuẩn trên dữ liệu thực địa — chưa công bố % tổn thương.',
-    };
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Mức độ tổn thương',
-          style: TextStyle(
-              color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          message,
-          style: const TextStyle(
-              color: AppTheme.textPrimary,
-              fontWeight: FontWeight.w700,
-              height: 1.35),
-        ),
-      ],
-    );
-  }
 }
 
 class _ImageExplanation extends StatelessWidget {

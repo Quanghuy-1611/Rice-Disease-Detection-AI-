@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -9,18 +13,46 @@ import '../core/errors/api_exception.dart';
 /// Xác thực bằng Firebase (email, Google hoặc khách), sau đó đổi Firebase ID
 /// token lấy JWT của FastAPI. Email/mật khẩu bắt buộc xác minh email trước khi
 /// được đổi token cho máy chủ.
-class AuthService extends ChangeNotifier {
+class AuthService extends ChangeNotifier with WidgetsBindingObserver {
   final ApiClient _apiClient = ApiClient();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   bool _isLoading = false;
   bool _isAuthenticated = false;
+  Timer? _heartbeatTimer;
 
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _isAuthenticated;
 
   AuthService() {
+    WidgetsBinding.instance.addObserver(this);
     _restoreSession();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _startHeartbeat();
+    } else {
+      _heartbeatTimer?.cancel();
+      _heartbeatTimer = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _heartbeatTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _startHeartbeat() {
+    if (!_isAuthenticated) return;
+    _heartbeatTimer?.cancel();
+    unawaited(_reportHeartbeat());
+    _heartbeatTimer = Timer.periodic(
+      const Duration(seconds: 45), (_) => unawaited(_reportHeartbeat()),
+    );
   }
 
   FirebaseAuth get _auth => FirebaseAuth.instance;
@@ -30,7 +62,7 @@ class AuthService extends ChangeNotifier {
       final token = await _storage.read(key: 'jwt_token');
       final user = await _auth.authStateChanges().first;
       _isAuthenticated = token != null && user != null && user.emailVerified;
-      if (_isAuthenticated) _reportHeartbeat();
+      if (_isAuthenticated) _startHeartbeat();
       if (!_isAuthenticated && token != null) {
         await _storage.delete(key: 'jwt_token');
       }
@@ -237,7 +269,7 @@ class AuthService extends ChangeNotifier {
       }
       await _storage.write(key: 'jwt_token', value: accessToken);
       _isAuthenticated = true;
-      _reportHeartbeat();
+      _startHeartbeat();
     } catch (error) {
       _isAuthenticated = false;
       rethrow;
@@ -246,9 +278,19 @@ class AuthService extends ChangeNotifier {
 
   Future<void> _reportHeartbeat() async {
     try {
+      if (!_isAuthenticated) return;
+      var clientId = await _storage.read(key: 'client_instance_id');
+      if (clientId == null || clientId.isEmpty) {
+        final random = Random.secure();
+        clientId = List.generate(16,
+          (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+        ).join();
+        await _storage.write(key: 'client_instance_id', value: clientId);
+      }
       await _apiClient.post('/api/client/heartbeat', data: <String, dynamic>{
         'platform': defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
         'app_version': await _apiClient.getAppVersion(),
+        'client_id': clientId,
       });
     } catch (_) {
       // Monitoring must not block sign-in or offline use.
@@ -276,6 +318,8 @@ class AuthService extends ChangeNotifier {
 
   Future<void> logout() async {
     _setLoading(true);
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
     try {
       await _auth.signOut();
     } finally {

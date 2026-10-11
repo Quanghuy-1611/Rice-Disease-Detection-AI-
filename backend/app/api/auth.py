@@ -107,25 +107,11 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 
 @router.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email này đã được đăng ký.")
-    
-    hashed_password = get_password_hash(user.password)
-    new_user = User(email=user.email, hashed_password=hashed_password, full_name=user.full_name)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "Đăng ký thành công!"}
+    raise HTTPException(status_code=410, detail="Hãy đăng ký bằng Firebase và xác minh email.")
 
 @router.post("/login", response_model=Token)
 def login(user: UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="Sai email hoặc mật khẩu")
-    
-    access_token = create_access_token(data={"sub": user.email, "role": db_user.role})
-    return {"access_token": access_token, "token_type": "bearer", "full_name": db_user.full_name, "role": db_user.role}
+    raise HTTPException(status_code=410, detail="Hãy đăng nhập bằng Firebase với email đã xác minh.")
 
 @router.post("/firebase/exchange", response_model=Token)
 def firebase_exchange(req: FirebaseExchange, db: Session = Depends(get_db)):
@@ -138,7 +124,11 @@ def firebase_exchange(req: FirebaseExchange, db: Session = Depends(get_db)):
             ),
         )
     try:
-        decoded_token = firebase_auth.verify_id_token(req.id_token)
+        # Allow small clock differences between this machine and Firebase.
+        # Firebase Admin still verifies the token signature, issuer and expiry.
+        decoded_token = firebase_auth.verify_id_token(
+            req.id_token, clock_skew_seconds=30
+        )
         uid = str(decoded_token.get("uid") or "")
         provider = decoded_token.get("firebase", {}).get("sign_in_provider")
         email = decoded_token.get("email")
@@ -153,7 +143,10 @@ def firebase_exchange(req: FirebaseExchange, db: Session = Depends(get_db)):
     except Exception as e:
         if isinstance(e, HTTPException):
             raise e
-        raise HTTPException(status_code=401, detail=f"Xác thực Firebase thất bại: {str(e)}")
+        raise HTTPException(
+            status_code=401,
+            detail="Phiên Firebase không hợp lệ hoặc đã hết hạn. Hãy đăng nhập lại; nếu lỗi lặp lại, hãy đồng bộ giờ trên máy chủ.",
+        ) from e
 
     # Firebase anonymous users vẫn có một định danh ổn định. Lưu nó dưới một
     # email nội bộ để mô hình User hiện tại không phải nới lỏng ràng buộc email.

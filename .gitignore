@@ -61,9 +61,12 @@ duplicates.txt
 .gradle/
 **/.gradle/
 **/.venv/
+model_benchmark/.venv312/
 **/node_modules/
 **/.dart_tool/
 **/build/
 .chart-data-*/
 model_benchmark/.tmp*/
+model_benchmark/swin_t-704ceda3.pth
 *.inspect.ndjson
+output/

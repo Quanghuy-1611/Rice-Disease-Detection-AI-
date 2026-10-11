@@ -20,6 +20,7 @@ import 'camera_screen.dart';
 import 'history_screen.dart';
 import 'notifications_screen.dart';
 import 'login_screen.dart';
+import 'plus_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,7 +36,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final _predictionService = PredictionService();
   StreamSubscription<bool>? _connectionSubscription;
   Future<List<Map<String, dynamic>>>? _recentHistory;
+  Future<Map<String, dynamic>>? _planStatus;
   bool? _lastAuthenticated;
+  bool _plusReady = false;
 
   @override
   void initState() {
@@ -46,6 +49,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       if (connected) unawaited(_syncOfflineQueue());
     });
     unawaited(_syncOfflineQueue());
+    _predictionService.isPlusReady().then((ready) {
+      if (mounted) setState(() => _plusReady = ready);
+    }).catchError((_) {});
   }
 
   @override
@@ -57,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       _recentHistory = signedIn
           ? _predictionService.getHistory()
           : Future.value(const <Map<String, dynamic>>[]);
+      _planStatus = signedIn ? _predictionService.getPlan() : null;
       if (signedIn) unawaited(_syncOfflineQueue());
     }
   }
@@ -119,9 +126,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   void _reloadRecentHistory() {
     if (!mounted) return;
-    setState(() => _recentHistory = context.read<AuthService>().isAuthenticated
-        ? _predictionService.getHistory()
-        : Future.value(const <Map<String, dynamic>>[]));
+    setState(() {
+      final signedIn = context.read<AuthService>().isAuthenticated;
+      _recentHistory = signedIn
+          ? _predictionService.getHistory()
+          : Future.value(const <Map<String, dynamic>>[]);
+      _planStatus = signedIn ? _predictionService.getPlan() : null;
+    });
   }
 
   Future<void> _openHistory(BuildContext context) async {
@@ -172,6 +183,44 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     .slideY(begin: 0.06),
               ),
             ),
+
+            if (_planStatus != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                  child: FutureBuilder<Map<String, dynamic>>(
+                    future: _planStatus,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return const SizedBox.shrink();
+                      final plan = snapshot.data!;
+                      final unlimited = plan['unlimited'] == true;
+                      final kind = plan['plan'] == 'plus' ? 'Plus' : 'Basic';
+                      final limits = Map<String, dynamic>.from(plan['limits'] as Map);
+                      return Container(
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: AppTheme.cardSolid,
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: AppTheme.borderBeige),
+                        ),
+                        child: Row(children: <Widget>[
+                          const Icon(Icons.stars_rounded, color: AppTheme.moss),
+                          const SizedBox(width: 11),
+                          Expanded(child: Text(unlimited
+                              ? 'Tài khoản nhân viên · không giới hạn lượt'
+                              : '$kind · còn ${plan['remaining']}/${limits[plan['plan']]} lượt tháng này',
+                            style: const TextStyle(fontWeight: FontWeight.w700,
+                              color: AppTheme.textPrimary))),
+                          if (_plusReady && plan['plan'] == 'plus')
+                            TextButton(onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(builder: (_) => const PlusScreen())),
+                              child: const Text('Mở Plus')),
+                        ]),
+                      );
+                    },
+                  ),
+                ),
+              ),
 
             // ── Recent Results ───────────────────────
             SliverToBoxAdapter(
@@ -788,13 +837,13 @@ class _SafetyNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const Icon(Icons.info_outline_rounded,
+        Icon(Icons.info_outline_rounded,
             color: AppTheme.textMuted, size: 15),
-        const SizedBox(width: 8),
-        const Expanded(
+        SizedBox(width: 8),
+        Expanded(
           child: Text(
             'Kết quả AI là thông tin hỗ trợ. Hãy đối chiếu điều kiện ruộng và tư vấn chuyên môn trước khi xử lý.',
             style: TextStyle(

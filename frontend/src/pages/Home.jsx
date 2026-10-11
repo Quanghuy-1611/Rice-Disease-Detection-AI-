@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { DISEASES } from './DiseaseLibrary';
+import { Link } from 'react-router-dom';
+import { DISEASES } from '../data/diseases';
 import './Home.css';
 
 const UploadIcon = () => (
@@ -45,12 +46,35 @@ function Home() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [severity, setSeverity] = useState('low');
+  const [plan, setPlan] = useState(null);
   
   const fileInputRef = useRef(null);
+  useEffect(() => () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    axios.get('/api/plans/me', { headers: { Authorization: `Bearer ${token}` } })
+      .then(({ data }) => setPlan(data)).catch(() => {});
+  }, []);
+
+  const isSupportedImage = (file) => {
+    if (!file) return false;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setError('Chọn ảnh JPG, PNG hoặc WEBP.');
+      return false;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Ảnh vượt quá giới hạn 10 MB.');
+      return false;
+    }
+    return true;
+  };
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
+    if (isSupportedImage(file)) {
       processFile(file);
     }
   };
@@ -73,13 +97,18 @@ function Home() {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
+    if (isSupportedImage(file)) {
       processFile(file);
     }
   };
 
   const analyzeImage = async () => {
     if (!selectedImage) return;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('Vui lòng đăng nhập bằng email đã xác minh để phân tích ảnh.');
+      return;
+    }
     setIsAnalyzing(true);
     setError(null);
     
@@ -87,19 +116,19 @@ function Home() {
     formData.append('file', selectedImage);
     formData.append('severity', severity);
     
-    const token = localStorage.getItem('token');
-    
     try {
       const response = await axios.post('/api/predict', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': token ? `Bearer ${token}` : ''
+          Authorization: `Bearer ${token}`,
+          'X-RiceAI-Client': 'web',
+          'X-RiceAI-Version': 'web',
         }
       });
       setResult(response.data);
+      if (response.data.plan) setPlan(response.data.plan);
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        setError('Vui lòng Đăng nhập để sử dụng chức năng phân tích.');
+      if (err.response && [401, 403].includes(err.response.status)) {
+        setError('Phiên đăng nhập đã hết hạn hoặc không có quyền. Vui lòng đăng nhập lại.');
       } else {
         setError(err.response?.data?.detail || 'Lỗi khi kết nối đến server.');
       }
@@ -115,20 +144,23 @@ function Home() {
 
   return (
     <div className="home-container">
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Bảo Vệ Mùa Màng Cùng <span className="highlight">RiceAI</span></h1>
-          <p>Tải ảnh chụp lá lúa lên để AI chẩn đoán bệnh tức thì. Khoanh vùng chính xác, độ tin cậy cao, giải pháp tức thời.</p>
+          <span className="hero-eyebrow">RICEAI BASIC · CHẨN ĐOÁN TỪ ẢNH</span>
+          <h1>Hiểu rõ cây lúa.<br /><span>Chăm đúng lúc.</span></h1>
+          <p>Chọn một ảnh cây lúa để xem kết quả nhận diện, vùng ảnh mô hình chú ý và gợi ý xử lý trong cùng một nơi.</p>
           <div className="hero-features">
-            <span>⚡ Tốc độ &lt; 1s</span>
-            <span>🎯 Chính xác 95%</span>
-            <span>🤖 Trợ lý AI 24/7</span>
+            <span><b>01</b> Tải ảnh</span>
+            <span><b>02</b> Nhận diện</span>
+            <span><b>03</b> Xem gợi ý</span>
           </div>
         </div>
+        <div className="hero-visual" aria-hidden="true"><div className="hero-orbit"><img src="/riceai-logo.png" alt="" /></div></div>
       </section>
 
       <div className="glass-panel main-panel">
+        <div className="panel-heading"><div><span className="section-kicker">BƯỚC ĐẦU TIÊN</span><h2>Phân tích ảnh cây lúa</h2><p>Ảnh rõ nét, đủ sáng sẽ giúp mô hình đọc được đặc điểm tốt hơn.</p></div><span className="panel-format">JPG · PNG · WEBP</span></div>
+        {plan && <p className="basic-plan-status" role="status">{plan.unlimited ? 'Tài khoản nhân viên · không giới hạn lượt' : `${plan.plan === 'plus' ? 'Plus' : 'Basic'} · Còn ${plan.remaining} / ${plan.limits[plan.plan]} lượt trong tháng ${plan.period}`}{!plan.unlimited && plan.remaining === 0 && <> · <Link to="/plans">Xem gói sử dụng</Link></>}</p>}
         {!previewUrl ? (
           <>
             <div className="upload-section">
@@ -137,47 +169,29 @@ function Home() {
                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
-                onClick={() => fileInputRef.current.click()}
+                onClick={() => fileInputRef.current?.click()}
+                onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); fileInputRef.current?.click(); } }}
+                role="button"
+                tabIndex={0}
+                aria-label="Chọn ảnh JPG, PNG hoặc WEBP để phân tích"
               >
                 <UploadIcon />
-                <div className="upload-text">Nhấp để chọn ảnh hoặc kéo thả vào đây</div>
-                <div className="upload-hint">Định dạng hỗ trợ: JPG, PNG, WEBP</div>
-                <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" style={{ display: 'none' }} />
+                <div className="upload-copy"><div className="upload-text">Kéo ảnh vào đây hoặc nhấp để chọn</div><div className="upload-hint">Tối đa 10 MB · Chụp gần lá, thân hoặc bông lúa cần kiểm tra</div></div>
+                <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/jpeg,image/png,image/webp" style={{ display: 'none' }} />
               </div>
+              {error && <div className="auth-error" role="alert" style={{ marginTop: '12px' }}>{error}</div>}
             </div>
 
           </>
         ) : (
           <div className="preview-section">
-            <div className="image-preview-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
-              <img src={previewUrl} alt="Preview" className="image-preview" />
+            <div className="image-preview-wrapper">
+              <img src={previewUrl} alt="Ảnh cây lúa đã chọn" className="image-preview" />
               {/* Heatmap Overlay (Grad-CAM) */}
               {result && result.heatmap_url && (
-                <div 
-                  className="heatmap-overlay"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    pointerEvents: 'none',
-                    animation: 'fadeIn 1s ease-in-out'
-                  }}
-                >
+                <div className="heatmap-overlay">
                   <img src={result.heatmap_url} alt="Heatmap" style={{width: '100%', height: '100%', objectFit: 'contain', opacity: 0.85}} />
-                  <span style={{
-                    position: 'absolute',
-                    top: '10px',
-                    left: '10px',
-                    backgroundColor: '#ef4444',
-                    color: '#fff',
-                    padding: '4px 10px',
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                  }}>
+                  <span className="heatmap-label">
                     {DISEASE_NAMES[result.prediction] || result.prediction}
                   </span>
                 </div>
@@ -186,16 +200,16 @@ function Home() {
             
             {!result && !error && (
               <div className="analyze-actions-container">
-                <div className="severity-selector" style={{margin: '20px 0', textAlign: 'left', padding: '15px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-color)'}}>
-                  <label style={{display: 'block', fontWeight: 'bold', marginBottom: '10px', color: 'var(--text-main)'}}>Mức độ lây lan / Mật độ dịch hại (Ước lượng):</label>
-                  <div style={{display: 'flex', gap: '15px', color: 'var(--text-muted)'}}>
-                    <label style={{display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer'}}>
+                <div className="severity-selector">
+                  <p>Mức độ bạn tự quan sát trên ruộng <small>(dùng để gợi ý xử lý)</small></p>
+                  <div className="severity-options">
+                    <label>
                       <input type="radio" name="severity" value="low" checked={severity === 'low'} onChange={(e) => setSeverity(e.target.value)} /> Ít / Thấp
                     </label>
-                    <label style={{display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer'}}>
+                    <label>
                       <input type="radio" name="severity" value="medium" checked={severity === 'medium'} onChange={(e) => setSeverity(e.target.value)} /> Trung bình
                     </label>
-                    <label style={{display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer'}}>
+                    <label>
                       <input type="radio" name="severity" value="high" checked={severity === 'high'} onChange={(e) => setSeverity(e.target.value)} /> Cao / Nghiêm trọng
                     </label>
                   </div>
@@ -205,7 +219,7 @@ function Home() {
                   <button className="btn-secondary" onClick={() => processFile(null)} disabled={isAnalyzing}>
                     Chọn ảnh khác
                   </button>
-                  <button className="btn-primary" onClick={analyzeImage} disabled={isAnalyzing}>
+                  <button className="btn-primary" onClick={analyzeImage} disabled={isAnalyzing || (!plan?.unlimited && plan?.remaining === 0)}>
                     {isAnalyzing ? <><div className="loader"></div> Đang phân tích...</> : <><ScanIcon /> Phân tích ngay</>}
                   </button>
                 </div>
@@ -213,34 +227,37 @@ function Home() {
             )}
 
             {error && (
-              <div style={{color: '#ef4444', marginTop: '10px', textAlign: 'center'}}>
-                ⚠️ {error} <br/>
-                <button className="btn-secondary" onClick={() => processFile(null)} style={{marginTop: '16px'}}>Quay lại</button>
+                <div className="analysis-error" role="alert">
+                {error}<br/>
+                <button className="btn-secondary" onClick={() => processFile(null)}>Chọn ảnh khác</button>
               </div>
             )}
 
             {result && (
               <div className="detailed-result-card">
                 <div className="result-header">
-                  <h3>Phiếu Chẩn Đoán</h3>
+                  <h3>Kết quả chẩn đoán</h3>
                   <div className={`result-disease ${result.prediction === 'normal' ? 'healthy' : ''}`}>
-                    {DISEASE_NAMES[result.prediction] || result.prediction}
+                    {result.uncertain ? 'Chưa xác định' : DISEASE_NAMES[result.prediction] || result.prediction}
                   </div>
                 </div>
+
                 
                 <div className="confidence-container">
-                  <div className="confidence-text">Độ tin cậy của AI: {(result.confidence * 100).toFixed(1)}%</div>
+                  <div className="confidence-text">Mức tự tin của mô hình: {(result.confidence * 100).toFixed(1)}%</div>
                   <div className="confidence-bar">
                     <div className="confidence-fill" style={{ width: `${(result.confidence * 100)}%` }}></div>
                   </div>
                 </div>
+                {result.uncertain && <div className="analysis-error" role="status">{result.message}</div>}
+                {result.scope_warning && <p className="result-scope-warning">{result.scope_warning}</p>}
 
                 {result.ipm_advice ? (
                   <div className="disease-widgets">
                     <div className="widget severity-widget" style={{ gridColumn: '1 / -1', background: result.ipm_advice.threshold_reached ? '#fef2f2' : '#f0fdf4' }}>
                       <span className="widget-icon">{result.ipm_advice.threshold_reached ? '⚠️' : '✅'}</span>
                       <div className="widget-content">
-                        <strong style={{color: result.ipm_advice.threshold_reached ? '#b91c1c' : '#15803d'}}>Tư vấn chuẩn IPHM:</strong>
+                          <strong style={{color: result.ipm_advice.threshold_reached ? '#b91c1c' : '#15803d'}}>Khuyến nghị IPM:</strong>
                         <p style={{marginTop: '5px', color: '#334155'}}>{result.ipm_advice.recommendation}</p>
                       </div>
                     </div>
@@ -321,6 +338,7 @@ function Home() {
           </div>
         )}
       </div>
+      <div className="home-footnote"><span className="footnote-mark">i</span><p>RiceAI đưa ra gợi ý tham khảo từ ảnh. Hãy kiểm tra thực tế trên ruộng trước khi quyết định biện pháp xử lý.</p></div>
     </div>
   );
 }
