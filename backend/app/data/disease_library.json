@@ -9,7 +9,7 @@
     "symptoms": "Vết bệnh bắt đầu từ mép lá, màu vàng nhạt, sau chuyển sang trắng xám.",
     "favorable_conditions": "Nhiệt độ cao, độ ẩm cao, bón thừa đạm.",
     "prevention": "Sử dụng giống kháng, bón phân cân đối, sạ thưa.",
-    "ipm_advice": "Ngừng bón đạm khi phát hiện bệnh, phun thuốc gốc đồng hoặc thuốc trừ vi khuẩn đặc hiệu.",
+    "ipm_advice": "Kiểm tra nhiều cây và theo dõi mức lan rộng. Bón phân cân đối, tránh thừa đạm; nếu triệu chứng tăng nhanh, hỏi cán bộ bảo vệ thực vật để xác nhận trước khi xử lý.",
     "severity_applicable": true,
     "sources": [
       {
@@ -94,7 +94,7 @@
     "symptoms": "Vết bệnh hình bầu dục màu nâu, có thể bao quanh bởi viền vàng nhỏ.",
     "favorable_conditions": "Đất thiếu dinh dưỡng (thiếu Kali, Magie, kẽm), đất ngộ độc hữu cơ.",
     "prevention": "Bón phân đầy đủ, cải tạo đất, cung cấp đủ nước.",
-    "ipm_advice": "Bổ sung phân bón lá (Kali, kẽm) và dùng thuốc trừ nấm phổ rộng.",
+    "ipm_advice": "Đối chiếu vết đốm trên nhiều lá và kiểm tra điều kiện dinh dưỡng của ruộng. Chỉ điều chỉnh phân bón theo tình trạng đất và khuyến cáo địa phương sau khi xác nhận ngoài ruộng.",
     "severity_applicable": true,
     "sources": [],
     "updated_at": "2026-08-23T00:00:00Z"
@@ -138,8 +138,8 @@
     "overview": "Ốc bươu vàng là dịch hại ăn thực vật cực kỳ nguy hiểm cho lúa non.",
     "symptoms": "Lúa non bị cắn ngang thân, mất trắng theo từng mảng lớn.",
     "favorable_conditions": "Ruộng ngập nước sớm, cỏ dại nhiều.",
-    "prevention": "Bắt ốc bằng tay, vét rãnh thoát nước, thả vịt.",
-    "ipm_advice": "Dùng bả mồi, thuốc diệt ốc trước khi sạ hoặc khi mới sạ.",
+    "prevention": "Kiểm tra ốc và ổ trứng, thu gom khi phù hợp; quản lý nước theo giai đoạn lúa và điều kiện ruộng.",
+    "ipm_advice": "Quan sát ốc, ổ trứng và cây mạ bị cắn ở nhiều điểm. Ưu tiên thu gom ốc, ổ trứng và kiểm tra đường nước vào ruộng trước khi chọn biện pháp khác.",
     "severity_applicable": false,
     "sources": [],
     "updated_at": "2026-08-23T00:00:00Z"
@@ -169,7 +169,7 @@
     "symptoms": "Lá bị cuốn dọc, trắng bệch, giảm khả năng quang hợp.",
     "favorable_conditions": "Ruộng bón thừa đạm, sạ dày, lá xanh đậm.",
     "prevention": "Cân đối phân bón, không sạ quá dày.",
-    "ipm_advice": "Chỉ phun thuốc khi sâu tuổi nhỏ (1-2) và mật độ quá cao.",
+    "ipm_advice": "Mở lá cuốn để kiểm tra sâu non và quan sát mức hại ở nhiều điểm; không quyết định phun thuốc chỉ từ một ảnh. Theo dõi thêm thiên địch và hỏi cán bộ bảo vệ thực vật nếu hại lan rộng.",
     "severity_applicable": true,
     "sources": [],
     "updated_at": "2026-08-23T00:00:00Z"
@@ -199,7 +199,7 @@
     "symptoms": "Lá lúa xanh tốt, không có đốm hay biểu hiện bất thường.",
     "favorable_conditions": "Điều kiện canh tác tối ưu.",
     "prevention": "Tiếp tục duy trì chăm sóc đúng kỹ thuật.",
-    "ipm_advice": "Không cần can thiệp.",
+    "ipm_advice": "Ảnh chưa cho thấy dấu hiệu bất thường rõ trong các nhóm RiceAI nhận diện. Tiếp tục quan sát cây trực tiếp và chụp thêm nếu xuất hiện triệu chứng lạ.",
     "severity_applicable": false,
     "sources": [],
     "updated_at": "2026-08-23T00:00:00Z"
@@ -258,8 +258,8 @@
     "overview": "Bệnh do phức hợp 2 loại virus gây ra, truyền qua rầy xanh.",
     "symptoms": "Cây lúa lùn đi rõ rệt, lá có màu cam vàng từ chóp lá.",
     "favorable_conditions": "Sự xuất hiện của rầy xanh đuôi đen mang mầm bệnh.",
-    "prevention": "Tiêu diệt rầy xanh, dùng giống kháng.",
-    "ipm_advice": "Quản lý rầy xanh là biện pháp duy nhất vì chưa có thuốc trị virus.",
+    "prevention": "Theo dõi rầy xanh và sử dụng giống phù hợp theo khuyến cáo địa phương.",
+    "ipm_advice": "Kiểm tra thêm cây thấp lùn, lá vàng và sự hiện diện của rầy xanh. Nếu nghi Tungro, liên hệ cán bộ bảo vệ thực vật để xác nhận và hướng dẫn quản lý nguồn lây.",
     "severity_applicable": true,
     "sources": [],
     "updated_at": "2026-08-23T00:00:00Z"
@@ -274,7 +274,7 @@
     "symptoms": "Xuất hiện cỏ lồng vực, cỏ đuôi phụng, cỏ chác lác trong ruộng.",
     "favorable_conditions": "Đất không làm kỹ, ruộng khô nước sớm.",
     "prevention": "Làm đất kỹ, quản lý nước tốt.",
-    "ipm_advice": "Sử dụng thuốc trừ cỏ tiền nảy mầm hoặc hậu nảy mầm.",
+    "ipm_advice": "Quan sát mật độ và loại cỏ. Khi phù hợp, ưu tiên nhổ tay hoặc làm cỏ cơ giới ở khu vực có cỏ; biện pháp khác cần xét giai đoạn lúa và loại cỏ.",
     "severity_applicable": false,
     "sources": [],
     "updated_at": "2026-08-23T00:00:00Z"

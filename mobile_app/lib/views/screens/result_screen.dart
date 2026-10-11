@@ -191,7 +191,7 @@ class _MedicalReportHeader extends StatelessWidget {
                 label: uncertain ? 'CẦN KIỂM TRA' : normal ? 'BÌNH THƯỜNG' : 'PHÁT HIỆN',
                 color: normal ? AppTheme.safeGreen : AppTheme.warningOrange,
               ),
-              _StatusChip(
+              const _StatusChip(
                 label: 'BASIC · GRAD-CAM',
                 color: AppTheme.moss,
               ),
@@ -309,7 +309,7 @@ class _ImageExplanation extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
             child: DecoratedBox(
-              decoration: BoxDecoration(color: AppTheme.cardSolid),
+              decoration: const BoxDecoration(color: AppTheme.cardSolid),
               child: url == null
                   ? Image.file(imageFile,
                       fit: BoxFit.cover, width: double.infinity)

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../core/config/environment_config.dart';
 import '../../core/config/seven_class_catalog.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/server_time.dart';
 import '../../models/offline_queue_item.dart';
 import '../../services/offline_queue_service.dart';
 import '../../services/prediction_service.dart';
@@ -135,10 +136,12 @@ class _HistoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final filename = item['image_filename']?.toString();
     final confidence = (item['confidence'] as num?)?.toDouble();
-    final createdAt = DateTime.tryParse(item['created_at']?.toString() ?? '');
-    final confidenceText =
-        confidence == null ? '—' : '${(confidence * 100).toStringAsFixed(1)}%';
+    final createdAt = parseServerTime(item['created_at']);
     final classId = item['prediction']?.toString() ?? '';
+    final confidenceText =
+        confidence == null || classId == 'uncertain'
+            ? 'Chưa kết luận'
+            : '${(confidence * 100).toStringAsFixed(1)}%';
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(

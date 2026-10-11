@@ -15,6 +15,7 @@
 .stat-value { color: #1e5136; font-size: 2rem; font-weight: 800; line-height: 1.2; }
 .disease-val { color: #9b6541; }
 .healthy-val { color: #38845a; }
+.badge-uncertain { color: #5b6970; background: #edf1f2; }
 .btn-export {
   padding: 8px 13px;
   border: 1px solid #cde1cd;

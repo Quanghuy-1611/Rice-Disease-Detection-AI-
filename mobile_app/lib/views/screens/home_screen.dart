@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/config/environment_config.dart';
 import '../../core/config/seven_class_catalog.dart';
+import '../../core/utils/server_time.dart';
 import '../../services/image_service.dart';
 import '../../services/connectivity_service.dart';
 import '../../services/notification_service.dart';
@@ -769,7 +770,7 @@ class _RecentCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     _formatDate(
-                      DateTime.tryParse(item['created_at']?.toString() ?? ''),
+                       parseServerTime(item['created_at']),
                     ),
                     style: const TextStyle(
                       fontSize: 10,

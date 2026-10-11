@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { DISEASES } from '../data/diseases';
 import { clearSession } from '../auth/session';
 import './History.css';
 
@@ -25,6 +24,7 @@ const DISEASE_NAMES = {
   "whitebacked_planthopper": "Rầy phấn trắng",
   "southern_black_streaked_dwarf": "Bệnh Lùn sọc đen"
 };
+const dateText = (value) => value ? new Date(/[zZ]|[+-]\d{2}:\d{2}$/.test(value) ? value : `${value}Z`).toLocaleString('vi-VN') : '—';
 
 function History() {
   const [history, setHistory] = useState([]);
@@ -64,9 +64,8 @@ function History() {
   const handleExportPDF = (item) => {
     if (exporting) return;
     setExportError('');
-    const diseaseInfo = DISEASES.find(d => d.id === item.prediction);
     setExporting(true);
-    setPrintData({ item, diseaseInfo });
+    setPrintData({ item });
   };
 
   useEffect(() => {
@@ -121,7 +120,7 @@ function History() {
             <div className="stat-value">{history.length}</div>
           </div>
           <div className="stat-card">
-            <h4>Phát hiện bệnh</h4>
+            <h4>Có dấu hiệu bất thường</h4>
             <div className="stat-value disease-val">
               {history.filter(h => h.prediction !== 'normal' && h.prediction !== 'uncertain').length}
             </div>
@@ -161,15 +160,15 @@ function History() {
               {history.map((item) => (
                 <tr key={item.id}>
                   <td style={{ color: 'var(--text-dim)' }}>
-                    {new Date(item.created_at).toLocaleString('vi-VN')}
+                    {dateText(item.created_at)}
                   </td>
                   <td>{item.image_filename}</td>
                   <td>
-                    <span className={`badge ${item.prediction === 'normal' ? 'badge-healthy' : 'badge-disease'}`}>
+                    <span className={`badge ${item.prediction === 'normal' ? 'badge-healthy' : item.prediction === 'uncertain' ? 'badge-uncertain' : 'badge-disease'}`}>
                       {item.prediction === 'uncertain' ? 'Chưa xác định' : (DISEASE_NAMES[item.prediction] || item.prediction)}
                     </span>
                   </td>
-                  <td>{(item.confidence * 100).toFixed(1)}%</td>
+                  <td>{item.prediction === 'uncertain' ? '—' : `${(item.confidence * 100).toFixed(1)}%`}</td>
                   <td>
                     <button 
                       className="btn-export" 
@@ -202,7 +201,7 @@ function History() {
               </div>
               <div style={{ textAlign: 'right', fontSize: '13px', color: '#64748b' }}>
                 <p style={{ margin: '0 0 5px 0' }}><strong>Mã phiếu:</strong> #{printData.item.id.toString().padStart(6, '0')}</p>
-                <p style={{ margin: '0 0 5px 0' }}><strong>Ngày tạo:</strong> {new Date(printData.item.created_at).toLocaleString('vi-VN')}</p>
+                <p style={{ margin: '0 0 5px 0' }}><strong>Ngày tạo:</strong> {dateText(printData.item.created_at)}</p>
                 <p style={{ margin: 0 }}><strong>Nguồn:</strong> Lịch sử tài khoản RiceAI</p>
               </div>
             </div>
@@ -232,24 +231,23 @@ function History() {
                 <div style={{ padding: '15px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                   <h4 style={{ margin: '0 0 10px 0', color: '#334155' }}>KẾT QUẢ AI PHÂN TÍCH</h4>
                   <p style={{ fontSize: '18px', margin: '0 0 10px 0' }}>
-                    Tên bệnh: <strong style={{ color: printData.item.prediction === 'normal' ? '#10b981' : '#ef4444', fontSize: '20px' }}>
+                    Kết quả: <strong style={{ color: printData.item.prediction === 'normal' ? '#10b981' : printData.item.prediction === 'uncertain' ? '#64748b' : '#ef4444', fontSize: '20px' }}>
                       {printData.item.prediction === 'uncertain' ? 'Chưa xác định' : DISEASE_NAMES[printData.item.prediction]}
                     </strong>
                   </p>
                   <p style={{ fontSize: '15px', margin: '0 0 10px 0' }}>
-                    Độ tin cậy: <strong>{(printData.item.confidence * 100).toFixed(1)}%</strong>
+                    Độ tin cậy: <strong>{printData.item.prediction === 'uncertain' ? 'Không kết luận' : `${(printData.item.confidence * 100).toFixed(1)}%`}</strong>
                   </p>
-                  {/* Biểu đồ thanh ngang */}
-                  <div style={{ width: '100%', height: '8px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
+                  {printData.item.prediction !== 'uncertain' && <div style={{ width: '100%', height: '8px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
                     <div style={{ 
                       width: `${printData.item.confidence * 100}%`, 
                       height: '100%', 
                       backgroundColor: printData.item.prediction === 'normal' ? '#10b981' : '#ef4444' 
                     }}></div>
-                  </div>
+                  </div>}
                 </div>
                 
-                {printData.diseaseInfo && printData.item.prediction !== 'normal' && (
+                {printData.item.prediction !== 'normal' && printData.item.prediction !== 'uncertain' && (
                   <div style={{ padding: '15px', background: '#fff1f2', borderRadius: '8px', border: '1px solid #ffe4e6', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ fontSize: '24px' }}>🚨</div>
                     <div>
@@ -260,34 +258,6 @@ function History() {
                 )}
               </div>
             </div>
-
-            {/* Phác đồ chi tiết */}
-            {printData.diseaseInfo && printData.item.prediction !== 'normal' && (
-              <>
-                <div style={{ marginBottom: '20px' }}>
-                  <h3 style={{ color: '#0f172a', borderBottom: '2px solid #e2e8f0', paddingBottom: '8px', margin: '0 0 10px 0', fontSize: '18px' }}>
-                    1. Tác nhân & Triệu chứng
-                  </h3>
-                  <div style={{ background: '#f1f5f9', padding: '12px', borderRadius: '6px' }}>
-                    <p style={{ margin: '0 0 8px 0', color: '#334155', lineHeight: '1.5' }}><strong>Nguyên nhân:</strong> {printData.diseaseInfo.cause}</p>
-                    <p style={{ margin: 0, color: '#334155', lineHeight: '1.5' }}><strong>Triệu chứng:</strong> {printData.diseaseInfo.symptoms}</p>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '20px' }}>
-                  <h3 style={{ color: '#0f172a', borderBottom: '2px solid #e2e8f0', paddingBottom: '8px', margin: '0 0 10px 0', fontSize: '18px' }}>
-                    2. Thông tin xử lý tham khảo
-                  </h3>
-                  <div style={{ padding: '0 12px' }}>
-                    <ul style={{ paddingLeft: '20px', color: '#334155', lineHeight: '1.6', margin: 0 }}>
-                      {printData.diseaseInfo.treatment.map((t, idx) => (
-                        <li key={idx} style={{ marginBottom: '6px' }}>{t}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </>
-            )}
 
             <div style={{ marginTop: '32px', borderTop: '2px solid #e2e8f0', paddingTop: '14px', color: '#64748b', fontSize: '12px' }}>
               Phiếu tham khảo được xuất từ lịch sử RiceAI. Kết quả AI cần đối chiếu với quan sát thực tế trước khi áp dụng biện pháp xử lý.

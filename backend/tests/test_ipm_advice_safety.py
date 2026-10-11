@@ -1,6 +1,7 @@
 """A photo or user-selected severity cannot establish a treatment threshold."""
 
 from app.api.ipm_advisor import get_ipm_advice
+from app.api.disease_library import load_disease_library
 from app.api.seven_class_model import CLASSES
 
 
@@ -14,6 +15,14 @@ def check():
             assert "phun ngay" not in advice["recommendation"].lower()
             assert "rút cạn nước" not in advice["recommendation"].lower()
     assert "Bạn báo" in get_ipm_advice("brown_spot", "high")["recommendation"]
+    library = load_disease_library()
+    assert {item["slug"] for item in library} == set(CLASSES)
+    for item in library:
+        advice = item["ipm_advice"].lower()
+        assert advice
+        assert "phun thuốc khi" not in advice
+        assert "dùng thuốc" not in advice
+        assert "thuốc diệt" not in advice
 
 
 if __name__ == "__main__":

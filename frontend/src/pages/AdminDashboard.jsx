@@ -16,9 +16,10 @@ const LABELS = {
   bacterial_leaf_blight: 'Bạc lá vi khuẩn', brown_spot: 'Đốm nâu',
   golden_apple_snail: 'Ốc bươu vàng', leaf_roller: 'Sâu cuốn lá',
   normal: 'Lúa khỏe', tungro: 'Tungro', weeds: 'Cỏ dại',
+  uncertain: 'Chưa xác định',
   blast: 'Đạo ôn (dữ liệu cũ)', sheath_blight: 'Khô vằn (dữ liệu cũ)',
 };
-const dateText = (value) => value ? new Date(value).toLocaleString('vi-VN') : '—';
+const dateText = (value) => value ? new Date(/[zZ]|[+-]\d{2}:\d{2}$/.test(value) ? value : `${value}Z`).toLocaleString('vi-VN') : '—';
 const api = (path, options = {}) => axios({
   url: `/api/admin${path}`,
   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -214,7 +215,7 @@ function AdminDashboard() {
             </div>
             <div className="admin-panel"><h2>Chẩn đoán gần đây</h2>
               <div className="admin-table-wrap"><table><thead><tr><th>Thời gian</th><th>Người dùng</th><th>Kết quả</th><th>Độ tin cậy</th></tr></thead>
-                <tbody>{stats.recent_scans.map((item) => <tr key={item.id}><td>{dateText(item.created_at)}</td><td>{item.user}</td><td>{LABELS[item.prediction] || item.prediction}</td><td>{Math.round(item.confidence * 100)}%</td></tr>)}</tbody></table></div>
+                <tbody>{stats.recent_scans.map((item) => <tr key={item.id}><td>{dateText(item.created_at)}</td><td>{item.user}</td><td>{LABELS[item.prediction] || item.prediction}</td><td>{item.prediction === 'uncertain' ? '—' : `${Math.round(item.confidence * 100)}%`}</td></tr>)}</tbody></table></div>
               {!stats.recent_scans.length && <p className="admin-muted">Chưa có dữ liệu.</p>}
             </div>
           </div>
