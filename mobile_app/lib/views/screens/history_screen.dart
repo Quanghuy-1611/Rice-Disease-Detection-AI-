@@ -138,10 +138,9 @@ class _HistoryTile extends StatelessWidget {
     final confidence = (item['confidence'] as num?)?.toDouble();
     final createdAt = parseServerTime(item['created_at']);
     final classId = item['prediction']?.toString() ?? '';
-    final confidenceText =
-        confidence == null || classId == 'uncertain'
-            ? 'Chưa kết luận'
-            : '${(confidence * 100).toStringAsFixed(1)}%';
+    final confidenceText = confidence == null || classId == 'uncertain'
+        ? 'Chưa kết luận'
+        : '${(confidence * 100).toStringAsFixed(1)}%';
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -230,7 +229,7 @@ class _QueueList extends StatelessWidget {
             ),
           ),
           title: Text(item.analysisMode == 'plus'
-              ? 'Plus · Agri-CAM'
+              ? 'Plus · Nhiều ảnh'
               : 'Basic · Grad-CAM'),
           subtitle: Text('Đã thử gửi ${item.retryCount} lần'),
           trailing: IconButton(

@@ -1,15 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../services/auth_service.dart';
+import '../../services/prediction_service.dart';
 import 'ai_assistant_screen.dart';
 import 'camera_screen.dart';
 import 'guide_screen.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
+import 'plus_screen.dart';
 
 /// AppShell – khung ngoài chứa BottomNavigationBar
 class AppShell extends StatefulWidget {
@@ -20,19 +24,126 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   int _currentIndex = 0;
+  final _predictionService = PredictionService();
+  bool? _lastAuthenticated;
+  bool? _sessionPlus;
+  bool? _accountPlus;
+  bool _staffUnlimited = false;
+  bool _loadingPlan = false;
+  String? _planError;
+  bool _restartNoticeShown = false;
+  int _planGeneration = 0;
 
-  static const List<Widget> _screens = <Widget>[
-    HomeScreen(),
-    AiAssistantScreen(),
-    GuideScreen(),
-    ProfileScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final authenticated = context.watch<AuthService>().isAuthenticated;
+    if (_lastAuthenticated == authenticated) return;
+    _lastAuthenticated = authenticated;
+    _planGeneration++;
+    _restartNoticeShown = false;
+    if (authenticated) {
+      _sessionPlus = null;
+      _loadingPlan = true;
+      unawaited(_loadPlan());
+    } else {
+      _sessionPlus = false;
+      _accountPlus = false;
+      _staffUnlimited = false;
+      _loadingPlan = false;
+      _planError = null;
+    }
+  }
+
+  Future<void> _loadPlan() async {
+    final generation = _planGeneration;
+    try {
+      final plan = await _predictionService.getPlan();
+      if (!mounted ||
+          generation != _planGeneration ||
+          !context.read<AuthService>().isAuthenticated) {
+        return;
+      }
+      setState(() {
+        _accountPlus = plan['plan'] == 'plus';
+        _sessionPlus = _accountPlus;
+        _staffUnlimited = plan['unlimited'] == true;
+        _loadingPlan = false;
+        _planError = null;
+      });
+    } catch (_) {
+      if (!mounted ||
+          generation != _planGeneration ||
+          !context.read<AuthService>().isAuthenticated) {
+        return;
+      }
+      setState(() {
+        _loadingPlan = false;
+        _planError =
+            'Chưa tải được gói tài khoản. Kiểm tra kết nối với máy chủ rồi thử lại.';
+      });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        _lastAuthenticated == true &&
+        _sessionPlus != null &&
+        !_restartNoticeShown) {
+      unawaited(_checkPlanChange());
+    }
+  }
+
+  Future<void> _checkPlanChange() async {
+    try {
+      final plan = await _predictionService.getPlan();
+      if (!mounted || !context.read<AuthService>().isAuthenticated) return;
+      if ((plan['plan'] == 'plus') == _accountPlus || _restartNoticeShown) {
+        return;
+      }
+      _restartNoticeShown = true;
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Gói tài khoản đã thay đổi'),
+          content: const Text(
+              'Hãy đóng hẳn RiceAI rồi mở lại để dùng giao diện của gói mới.'),
+          actions: <Widget>[
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Đã hiểu'),
+            ),
+          ],
+        ),
+      );
+    } catch (_) {
+      // Keep the current mode if the laptop is temporarily offline.
+    }
+  }
 
   void _onTabTapped(int index) {
     HapticFeedback.lightImpact();
     setState(() => _currentIndex = index);
+  }
+
+  void _switchStaffMode() {
+    if (!_staffUnlimited || _sessionPlus == null) return;
+    setState(() => _sessionPlus = !_sessionPlus!);
   }
 
   Future<void> _onScanFabTapped() async {
@@ -42,24 +153,64 @@ class _AppShellState extends State<AppShell>
         MaterialPageRoute<bool>(builder: (_) => const LoginScreen()),
       );
       if (signedIn != true || !mounted) return;
+      await _loadPlan();
     }
+    if (_sessionPlus == null) await _loadPlan();
+    if (!mounted || _sessionPlus == null) return;
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const CameraScreen()),
+      MaterialPageRoute<void>(
+          builder: (_) => _sessionPlus == true
+              ? const PlusScreen(openCameraOnStart: true)
+              : const CameraScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final authenticated = context.watch<AuthService>().isAuthenticated;
+    final screens = <Widget>[
+      HomeScreen(
+        plusMode: authenticated && _sessionPlus == true,
+        staffCanSwitch: authenticated && _staffUnlimited,
+        onSwitchMode: _switchStaffMode,
+      ),
+      const AiAssistantScreen(),
+      const GuideScreen(),
+      const ProfileScreen(),
+    ];
     return Scaffold(
       backgroundColor: AppTheme.porcelain,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: Stack(children: <Widget>[
+        IndexedStack(index: _currentIndex, children: screens),
+        if (authenticated && (_loadingPlan || _sessionPlus == null))
+          Positioned.fill(
+            child: ColoredBox(
+              color: AppTheme.porcelain,
+              child: _loadingPlan
+                  ? const Center(child: CircularProgressIndicator())
+                  : Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(_planError ?? 'Chưa tải được gói tài khoản.',
+                                textAlign: TextAlign.center),
+                            const SizedBox(height: 12),
+                            FilledButton(
+                                onPressed: () => unawaited(_loadPlan()),
+                                child: const Text('Thử lại')),
+                          ],
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+      ]),
       bottomNavigationBar: _BottomNav(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        onFabTap: _onScanFabTapped,
+        onFabTap: () => unawaited(_onScanFabTapped()),
       ),
     );
   }

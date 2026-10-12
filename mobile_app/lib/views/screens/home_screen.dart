@@ -24,7 +24,15 @@ import 'login_screen.dart';
 import 'plus_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen(
+      {super.key,
+      this.plusMode = false,
+      this.staffCanSwitch = false,
+      this.onSwitchMode});
+
+  final bool plusMode;
+  final bool staffCanSwitch;
+  final VoidCallback? onSwitchMode;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -39,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Future<List<Map<String, dynamic>>>? _recentHistory;
   Future<Map<String, dynamic>>? _planStatus;
   bool? _lastAuthenticated;
-  bool _plusReady = false;
 
   @override
   void initState() {
@@ -50,9 +57,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       if (connected) unawaited(_syncOfflineQueue());
     });
     unawaited(_syncOfflineQueue());
-    _predictionService.isPlusReady().then((ready) {
-      if (mounted) setState(() => _plusReady = ready);
-    }).catchError((_) {});
   }
 
   @override
@@ -100,17 +104,31 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _openCamera(BuildContext context) async {
+    final alreadySignedIn = context.read<AuthService>().isAuthenticated;
     if (!await _requireEmailLogin(context) || !context.mounted) return;
+    final plusMode = await _modeAfterLogin(context, alreadySignedIn);
+    if (!context.mounted || plusMode == null) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => CameraScreen(analysisMode: _analysisMode),
+        builder: (_) => plusMode
+            ? const PlusScreen(openCameraOnStart: true)
+            : CameraScreen(analysisMode: _analysisMode),
       ),
     );
     _reloadRecentHistory();
   }
 
   Future<void> _pickFromGallery(BuildContext context) async {
+    final alreadySignedIn = context.read<AuthService>().isAuthenticated;
     if (!await _requireEmailLogin(context) || !context.mounted) return;
+    final plusMode = await _modeAfterLogin(context, alreadySignedIn);
+    if (!context.mounted || plusMode == null) return;
+    if (plusMode) {
+      await Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => const PlusScreen(openGalleryOnStart: true)));
+      _reloadRecentHistory();
+      return;
+    }
     final imageFile = await ImageService().pickFromGallery();
     if (imageFile == null || !context.mounted) return;
 
@@ -153,6 +171,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return signedIn == true;
   }
 
+  Future<bool?> _modeAfterLogin(
+      BuildContext context, bool alreadySignedIn) async {
+    if (alreadySignedIn) return widget.plusMode;
+    try {
+      return (await _predictionService.getPlan())['plan'] == 'plus';
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Chưa tải được gói tài khoản. Vui lòng thử lại.')));
+      }
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,6 +208,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
                 child: _HeroCard(
+                  plusMode: widget.plusMode,
                   onCameraTap: () => unawaited(_openCamera(context)),
                   onGalleryTap: () => _pickFromGallery(context),
                 )
@@ -195,8 +228,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       if (!snapshot.hasData) return const SizedBox.shrink();
                       final plan = snapshot.data!;
                       final unlimited = plan['unlimited'] == true;
-                      final kind = plan['plan'] == 'plus' ? 'Plus' : 'Basic';
-                      final limits = Map<String, dynamic>.from(plan['limits'] as Map);
+                      final kind = widget.plusMode ? 'Plus' : 'Basic';
+                      final limits =
+                          Map<String, dynamic>.from(plan['limits'] as Map);
                       return Container(
                         padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
@@ -207,15 +241,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         child: Row(children: <Widget>[
                           const Icon(Icons.stars_rounded, color: AppTheme.moss),
                           const SizedBox(width: 11),
-                          Expanded(child: Text(unlimited
-                              ? 'Tài khoản nhân viên · không giới hạn lượt'
-                              : '$kind · còn ${plan['remaining']}/${limits[plan['plan']]} lượt tháng này',
-                            style: const TextStyle(fontWeight: FontWeight.w700,
-                              color: AppTheme.textPrimary))),
-                          if (_plusReady && plan['plan'] == 'plus')
-                            TextButton(onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute<void>(builder: (_) => const PlusScreen())),
-                              child: const Text('Mở Plus')),
+                          Expanded(
+                              child: Text(
+                                  unlimited
+                                      ? 'Tài khoản nhân viên · không giới hạn lượt'
+                                      : '$kind · còn ${plan['remaining']}/${limits[plan['plan']]} lượt tháng này',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.textPrimary))),
+                          if (widget.staffCanSwitch)
+                            TextButton(
+                              onPressed: widget.onSwitchMode,
+                              child: Text(
+                                  widget.plusMode ? 'Dùng Basic' : 'Dùng Plus'),
+                            ),
                         ]),
                       );
                     },
@@ -377,10 +416,12 @@ class _HomeHeader extends StatelessWidget {
 
 class _HeroCard extends StatelessWidget {
   const _HeroCard({
+    required this.plusMode,
     required this.onCameraTap,
     required this.onGalleryTap,
   });
 
+  final bool plusMode;
   final VoidCallback onCameraTap;
   final VoidCallback onGalleryTap;
 
@@ -472,7 +513,9 @@ class _HeroCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Phát hiện sớm bệnh hại lúa với AI',
+                    plusMode
+                        ? 'Đối chiếu nhiều ảnh trước khi kết luận'
+                        : 'Phát hiện sớm bệnh hại lúa với AI',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.75),
                       fontSize: 13,
@@ -481,7 +524,7 @@ class _HeroCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  const _BasicBadge(),
+                  _PlanBadge(plusMode: plusMode),
                   const SizedBox(height: 16),
 
                   // Action buttons
@@ -490,7 +533,9 @@ class _HeroCard extends StatelessWidget {
                       Expanded(
                         child: _HeroCta(
                           icon: Icons.camera_alt_rounded,
-                          label: 'Chụp ảnh\nlá lúa',
+                          label: plusMode
+                              ? 'Chụp ảnh\ncây lúa'
+                              : 'Chụp ảnh\nlá lúa',
                           isPrimary: true,
                           onTap: onCameraTap,
                         ),
@@ -540,8 +585,10 @@ class _HeroCard extends StatelessWidget {
   }
 }
 
-class _BasicBadge extends StatelessWidget {
-  const _BasicBadge();
+class _PlanBadge extends StatelessWidget {
+  const _PlanBadge({required this.plusMode});
+
+  final bool plusMode;
 
   @override
   Widget build(BuildContext context) {
@@ -552,27 +599,30 @@ class _BasicBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
       ),
-      child: const Row(
+      child: Row(
         children: <Widget>[
-          Icon(Icons.auto_awesome_rounded, color: AppTheme.neonLeaf, size: 20),
-          SizedBox(width: 10),
+          const Icon(Icons.auto_awesome_rounded,
+              color: AppTheme.neonLeaf, size: 20),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'RICEAI BASIC',
-                  style: TextStyle(
+                  plusMode ? 'RICEAI PLUS' : 'RICEAI BASIC',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1,
                   ),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
-                  'Nhận diện 7 nhóm · Giải thích bằng Grad-CAM',
-                  style: TextStyle(color: Colors.white70, fontSize: 11),
+                  plusMode
+                      ? 'Tối đa 5 ảnh · Đối chiếu kết quả · Grad-CAM'
+                      : 'Một ảnh mỗi lượt · Giải thích bằng Grad-CAM',
+                  style: const TextStyle(color: Colors.white70, fontSize: 11),
                 ),
               ],
             ),
@@ -770,7 +820,7 @@ class _RecentCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     _formatDate(
-                       parseServerTime(item['created_at']),
+                      parseServerTime(item['created_at']),
                     ),
                     style: const TextStyle(
                       fontSize: 10,
@@ -841,8 +891,7 @@ class _SafetyNote extends StatelessWidget {
     return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Icon(Icons.info_outline_rounded,
-            color: AppTheme.textMuted, size: 15),
+        Icon(Icons.info_outline_rounded, color: AppTheme.textMuted, size: 15),
         SizedBox(width: 8),
         Expanded(
           child: Text(
