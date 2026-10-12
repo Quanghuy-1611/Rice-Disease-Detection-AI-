@@ -238,7 +238,7 @@ function AdminDashboard() {
         {tab === 'mobile' && <section className="admin-columns">
           <div className="admin-panel"><h2>Người dùng và thiết bị đang hoạt động</h2><p className="admin-muted">{live ? `${live.active_users} người dùng trên ${live.active_devices} thiết bị · ghi nhận trong 2 phút gần nhất · cập nhật ${dateText(live.sampled_at)}` : 'Chưa lấy được trạng thái hiện tại.'}</p>
             <div className="admin-live-grid"><div><strong>{live?.by_platform?.web ?? '—'}</strong><span>Web</span></div><div><strong>{live?.by_platform?.ios ?? '—'}</strong><span>iPhone</span></div><div><strong>{live?.by_platform?.android ?? '—'}</strong><span>Android</span></div></div>
-            <p className="admin-muted">App iPhone cần bản cập nhật có nhịp báo trạng thái để xuất hiện trong số liệu trực tiếp.</p>
+            <p className="admin-muted">Chỉ tính thiết bị đang mở ứng dụng và kết nối được máy chủ.</p>
           </div>
           <div className="admin-panel"><h2>Phiên bản đã ghi nhận</h2><p className="admin-muted">Tổng hợp 500 sự kiện gần nhất khi app mở phiên đăng nhập, đổi phiên bản hoặc gửi chẩn đoán. Mã thiết bị ngẫu nhiên chỉ được lưu dưới dạng băm.</p>
             <div className="admin-table-wrap"><table><thead><tr><th>Nền tảng</th><th>Phiên bản</th><th>Sự kiện</th></tr></thead><tbody>
