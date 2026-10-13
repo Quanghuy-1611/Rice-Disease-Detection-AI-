@@ -10,6 +10,7 @@ const firebaseConfig = {
 };
 
 export const auth = getAuth(initializeApp(firebaseConfig));
+auth.languageCode = 'vi';
 
 export function authErrorMessage(error) {
   const messages = {

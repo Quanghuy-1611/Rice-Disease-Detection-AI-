@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
           onSent: () {
             if (mounted) {
               setState(() => _noticeMessage =
-                  'Nếu email đã có tài khoản, bạn sẽ nhận được thư đặt lại mật khẩu.');
+                  'Nếu email có tài khoản, bạn sẽ nhận được thư đặt lại mật khẩu RiceAI. Mở liên kết trong thư để tạo mật khẩu mới; mật khẩu hộp thư của bạn không đổi.');
             }
           },
         );

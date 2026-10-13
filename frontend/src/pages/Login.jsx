@@ -53,7 +53,7 @@ function Login() {
     setNotice('');
     try {
       await sendPasswordResetEmail(auth, email.trim());
-      setNotice('Nếu email đã có tài khoản, bạn sẽ nhận được thư đặt lại mật khẩu.');
+      setNotice('Nếu email có tài khoản, bạn sẽ nhận được thư đặt lại mật khẩu RiceAI. Mở liên kết trong thư để tạo mật khẩu mới; mật khẩu hộp thư của bạn không đổi.');
     } catch (err) {
       setError(authErrorMessage(err));
     } finally {

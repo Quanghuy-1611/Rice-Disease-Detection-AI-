@@ -129,6 +129,7 @@ class AuthService extends ChangeNotifier with WidgetsBindingObserver {
           .user;
       if (user == null) throw StateError('Firebase không tạo được tài khoản.');
       await user.updateDisplayName(fullName.trim());
+      await _auth.setLanguageCode('vi');
       await user.sendEmailVerification();
       await _auth.signOut();
       onVerificationSent();
@@ -150,6 +151,7 @@ class AuthService extends ChangeNotifier with WidgetsBindingObserver {
   }) async {
     _setLoading(true);
     try {
+      await _auth.setLanguageCode('vi');
       await _auth.sendPasswordResetEmail(email: email.trim());
       onSent();
     } on FirebaseAuthException catch (error) {
@@ -181,7 +183,10 @@ class AuthService extends ChangeNotifier with WidgetsBindingObserver {
       if (user == null) throw StateError('Firebase không trả về tài khoản.');
       await user.reload();
       final verified = _auth.currentUser?.emailVerified ?? false;
-      if (!verified) await _auth.currentUser!.sendEmailVerification();
+      if (!verified) {
+        await _auth.setLanguageCode('vi');
+        await _auth.currentUser!.sendEmailVerification();
+      }
       onFinished(verified);
     } on FirebaseAuthException catch (error) {
       onError(_firebaseErrorMessage(error));
