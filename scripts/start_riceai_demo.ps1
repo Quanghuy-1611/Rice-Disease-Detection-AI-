@@ -96,5 +96,13 @@ Write-Host "  API: http://127.0.0.1:8015/docs"
 foreach ($address in $lanAddresses) {
   Write-Host "  iPhone API: http://${address}:8015/docs"
 }
+$tailscaleExe = Join-Path $env:ProgramFiles 'Tailscale\tailscale.exe'
+if (Test-Path -LiteralPath $tailscaleExe) {
+  $serveStatus = & $tailscaleExe serve status 2>$null
+  $internetUrl = $serveStatus | Select-String -Pattern '^https://\S+' | Select-Object -First 1
+  if ($internetUrl) {
+    Write-Host "  Tailscale API: $($internetUrl.Matches[0].Value)/docs"
+  }
+}
 Write-Host 'Keep this laptop powered on while using RiceAI on iPhone.'
-Write-Host 'The iPhone must be able to open the iPhone API address in Safari.'
+Write-Host 'For Tailscale access, both devices must be connected to the same tailnet.'
