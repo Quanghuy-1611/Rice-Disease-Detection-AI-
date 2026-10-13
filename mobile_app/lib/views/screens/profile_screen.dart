@@ -12,6 +12,7 @@ import 'history_screen.dart';
 import 'login_screen.dart';
 import 'notifications_screen.dart';
 import 'profile_edit_screen.dart';
+import 'plan_screen.dart';
 import 'server_settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -122,6 +123,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> _openPlans() async {
+    if (!context.read<AuthService>().isAuthenticated) {
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(builder: (_) => const LoginScreen()),
+      );
+      if (signedIn != true || !mounted) return;
+    }
+    if (!mounted) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(builder: (_) => const PlanScreen()),
+    );
+  }
+
   void _showLanguageInfo() => showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
@@ -160,6 +174,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       MaterialPageRoute<bool>(
                           builder: (_) => const LoginScreen()),
                     )),
+          if (authenticated) ...<Widget>[
+            const SizedBox(height: 22),
+            _SettingsGroup(children: <Widget>[
+              _SettingRow(
+                icon: Icons.workspace_premium_outlined,
+                title: 'Gói sử dụng',
+                detail: 'Xem lượt còn lại và nâng cấp Plus',
+                onTap: _openPlans,
+              ),
+            ]),
+          ],
           const SizedBox(height: 28),
           const _SectionTitle('Hoạt động'),
           const SizedBox(height: 10),

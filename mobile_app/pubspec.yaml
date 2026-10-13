@@ -3,7 +3,7 @@ description: Rice Leaf Disease Detection & Severity App.
 
 publish_to: 'none'
 
-version: 1.1.0+6
+version: 1.1.0+7
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -57,3 +57,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/branding/riceai-app-icon-concept-v1.png
+    - assets/payment/riceai-bank-qr.png

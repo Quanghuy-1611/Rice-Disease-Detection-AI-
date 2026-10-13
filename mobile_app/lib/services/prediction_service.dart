@@ -23,6 +23,21 @@ class PredictionService {
     return Map<String, dynamic>.from(response as Map);
   }
 
+  Future<Map<String, dynamic>> getPlanCatalog() async {
+    final response = await _apiClient.get('/api/plans/catalog');
+    return Map<String, dynamic>.from(response as Map);
+  }
+
+  Future<Map<String, dynamic>> startPlusTrial() async {
+    final response = await _apiClient.post('/api/plans/start-trial');
+    return Map<String, dynamic>.from(response as Map);
+  }
+
+  Future<Map<String, dynamic>> requestPlusPayment() async {
+    final response = await _apiClient.post('/api/plans/request-plus');
+    return Map<String, dynamic>.from(response as Map);
+  }
+
   Future<bool> isPlusReady() async {
     final response = await _apiClient.get('/api/plans/catalog');
     return response is Map && response['plus_ready'] == true;

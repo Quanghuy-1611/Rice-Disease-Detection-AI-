@@ -22,6 +22,7 @@ import 'history_screen.dart';
 import 'notifications_screen.dart';
 import 'login_screen.dart';
 import 'plus_screen.dart';
+import 'plan_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen(
@@ -162,6 +163,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     _reloadRecentHistory();
   }
 
+  Future<void> _openPlans(BuildContext context) async {
+    if (!await _requireEmailLogin(context) || !context.mounted) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(builder: (_) => const PlanScreen()),
+    );
+    _reloadRecentHistory();
+  }
+
   Future<bool> _requireEmailLogin(BuildContext context) async {
     if (context.read<AuthService>().isAuthenticated) return true;
     final signedIn = await Navigator.of(context).push<bool>(
@@ -228,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       if (!snapshot.hasData) return const SizedBox.shrink();
                       final plan = snapshot.data!;
                       final unlimited = plan['unlimited'] == true;
-                      final kind = widget.plusMode ? 'Plus' : 'Basic';
+                      final kind = plan['plan'] == 'plus' ? 'Plus' : 'Basic';
                       final limits =
                           Map<String, dynamic>.from(plan['limits'] as Map);
                       return Container(
@@ -254,6 +263,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               onPressed: widget.onSwitchMode,
                               child: Text(
                                   widget.plusMode ? 'Dùng Basic' : 'Dùng Plus'),
+                            ),
+                          if (!unlimited && plan['plan'] == 'basic')
+                            TextButton(
+                              onPressed: () => _openPlans(context),
+                              child: const Text('Xem Plus'),
                             ),
                         ]),
                       );
