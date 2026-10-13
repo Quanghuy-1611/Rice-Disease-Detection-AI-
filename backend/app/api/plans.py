@@ -1,20 +1,24 @@
 """Server-side plan and monthly diagnosis limits shared by web and mobile."""
 
 from datetime import datetime, timedelta, timezone
+from calendar import monthrange
 from functools import lru_cache
 import hashlib
 import json
+import os
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import update
 from sqlalchemy.dialects.sqlite import insert
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.auth import get_current_user
 from app.database import get_db
-from app.models import AdminAudit, MonthlyUsage, PlanGrant, PlusRequest, User
+from app.models import (AdminAudit, MonthlyUsage, PlanGrant, PlusPaymentVerification,
+                        PlusRequest, PlusTrial, User)
 
 router = APIRouter()
 LIMITS = {"basic": 15, "plus": 80}
@@ -27,6 +31,26 @@ RELEASE_WEIGHTS = (
 )
 VIETNAM_TIME = timezone(timedelta(hours=7))
 _approved_runtime_fingerprints: tuple | None = None
+PAYMENT_BANK_ID = os.getenv("RICEAI_PAYMENT_BANK_ID", "970407")
+PAYMENT_ACCOUNT = os.getenv("RICEAI_PAYMENT_ACCOUNT", "19072045330011")
+PAYMENT_NAME = os.getenv("RICEAI_PAYMENT_NAME", "DAO VIET QUANG HUY")
+
+
+def one_month_after(start: datetime) -> datetime:
+    year = start.year + (start.month == 12)
+    month = start.month % 12 + 1
+    return start.replace(year=year, month=month,
+                         day=min(start.day, monthrange(year, month)[1]))
+
+
+def payment_code(request_id: int) -> str:
+    return f"RICEAI{request_id}"
+
+
+def _eligible_account(user: User) -> bool:
+    return user.role not in STAFF and not (
+        user.email.startswith("guest_") and user.email.endswith("@anonymous.riceai")
+    )
 
 
 def current_period(now: datetime | None = None) -> str:
@@ -79,7 +103,9 @@ def active_plan(db: Session, user: User, now: datetime | None = None) -> str:
         return "plus"
     now = now or datetime.utcnow()
     grant = db.get(PlanGrant, user.id)
-    return "plus" if grant and grant.valid_until > now else "basic"
+    trial = db.get(PlusTrial, user.id)
+    return "plus" if ((grant and grant.valid_until > now) or
+                      (trial and trial.valid_until > now)) else "basic"
 
 
 def plan_status(db: Session, user: User, now: datetime | None = None) -> dict:
@@ -92,7 +118,10 @@ def plan_status(db: Session, user: User, now: datetime | None = None) -> dict:
     usage = {row.plan: row.used for row in rows}
     unlimited = user.role in STAFF
     grant = db.get(PlanGrant, user.id) if not unlimited else None
+    trial = db.get(PlusTrial, user.id) if not unlimited else None
     pending = db.query(PlusRequest).filter_by(user_id=user.id, status="pending").first() if not unlimited else None
+    active_expiries = [item.valid_until for item in (grant, trial)
+                       if item and item.valid_until > now]
     return {
         "plan": plan,
         "unlimited": unlimited,
@@ -101,8 +130,13 @@ def plan_status(db: Session, user: User, now: datetime | None = None) -> dict:
         "used": {name: usage.get(name, 0) for name in LIMITS},
         "remaining": None if unlimited else max(0, LIMITS[plan] - usage.get(plan, 0)),
         "halfway_notice": plan == "plus" and not unlimited and usage.get("plus", 0) >= 40,
-        "valid_until": grant.valid_until.isoformat() + "Z" if grant and grant.valid_until > now else None,
-        "pending_request": {"id": pending.id, "price_vnd": pending.price_vnd} if pending else None,
+        "valid_until": max(active_expiries).isoformat() + "Z" if active_expiries else None,
+        "trial_available": _eligible_account(user) and trial is None and grant is None and plan == "basic",
+        "trial_active": bool(trial and trial.valid_until > now and
+                             not (grant and grant.valid_until > now)),
+        "trial_valid_until": trial.valid_until.isoformat() + "Z" if trial and trial.valid_until > now else None,
+        "pending_request": {"id": pending.id, "price_vnd": pending.price_vnd,
+                            "payment_code": payment_code(pending.id)} if pending else None,
     }
 
 
@@ -149,30 +183,58 @@ def catalog():
     return {
         "basic": {"images_per_request": 1, "requests_per_month": 15},
         "plus": {"images_per_request": 5, "requests_per_month": 80,
-                 "intro_price_vnd": 29000, "monthly_price_vnd": 49000},
-        "payment_status": "not_configured",
+                 "intro_price_vnd": 29000, "monthly_price_vnd": 49000,
+                 "trial_months": 1},
+        "payment_status": "manual_bank_transfer",
+        "payment_bank": {"bank_id": PAYMENT_BANK_ID,
+                         "account_number": PAYMENT_ACCOUNT,
+                         "account_name": PAYMENT_NAME},
         "plus_ready": plus_model_ready(),
     }
+
+
+@router.post("/start-trial")
+def start_trial(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    if not plus_model_ready():
+        raise HTTPException(503, "Plus chưa sẵn sàng để dùng thử.")
+    if not _eligible_account(user):
+        raise HTTPException(403, "Hãy đăng nhập bằng email đã xác minh để dùng thử Plus.")
+    if active_plan(db, user) == "plus":
+        raise HTTPException(409, "Tài khoản đang dùng Plus.")
+    if db.get(PlusTrial, user.id) or db.get(PlanGrant, user.id):
+        raise HTTPException(409, "Tài khoản không còn lượt dùng thử Plus.")
+    now = datetime.utcnow()
+    db.add(PlusTrial(user_id=user.id, started_at=now,
+                     valid_until=one_month_after(now)))
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(409, "Tài khoản đã sử dụng một lần dùng thử Plus.")
+    return plan_status(db, user)
 
 
 @router.post("/request-plus")
 def request_plus(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     if not plus_model_ready():
         raise HTTPException(503, "Plus chưa hoàn tất kiểm định mô hình nên chưa nhận yêu cầu thanh toán.")
-    if user.email.startswith("guest_") and user.email.endswith("@anonymous.riceai"):
+    if not _eligible_account(user):
         raise HTTPException(403, "Hãy đăng nhập bằng email đã xác minh để dùng Plus.")
-    if user.role in STAFF or active_plan(db, user) == "plus":
+    grant = db.get(PlanGrant, user.id)
+    if grant and grant.valid_until > datetime.utcnow():
         raise HTTPException(409, "Tài khoản đã có quyền sử dụng Plus.")
     pending = db.query(PlusRequest).filter_by(user_id=user.id, status="pending").first()
     if pending:
-        return {"request_id": pending.id, "status": "pending"}
+        return {"request_id": pending.id, "status": "pending",
+                "price_vnd": pending.price_vnd, "payment_code": payment_code(pending.id)}
     earlier = db.query(PlusRequest).filter_by(user_id=user.id, status="activated").first()
     price = 49000 if earlier else 29000
     order = PlusRequest(user_id=user.id, status="pending", price_vnd=price)
     db.add(order)
     db.commit()
     db.refresh(order)
-    return {"request_id": order.id, "status": "pending", "price_vnd": price}
+    return {"request_id": order.id, "status": "pending", "price_vnd": price,
+            "payment_code": payment_code(order.id)}
 
 
 @router.get("/requests")
@@ -182,11 +244,14 @@ def list_requests(db: Session = Depends(get_db), actor: User = Depends(get_curre
     requests = db.query(PlusRequest).order_by(PlusRequest.created_at.desc()).limit(200).all()
     return [{"id": row.id, "email": db.get(User, row.user_id).email,
              "user_id": row.user_id, "status": row.status, "price_vnd": row.price_vnd,
+             "payment_code": payment_code(row.id),
              "created_at": row.created_at.isoformat()} for row in requests]
 
 
 class ActivateRequest(BaseModel):
     payment_verified: bool
+    bank_reference: str = Field(min_length=3, max_length=100)
+    amount_vnd: int = Field(gt=0)
 
 
 @router.post("/requests/{request_id}/activate")
@@ -201,9 +266,16 @@ def activate_request(request_id: int, payload: ActivateRequest, db: Session = De
         raise HTTPException(404, "Không tìm thấy yêu cầu Plus.")
     if order.status != "pending":
         raise HTTPException(409, "Yêu cầu này đã được xử lý.")
+    if payload.amount_vnd != order.price_vnd:
+        raise HTTPException(422, "Số tiền thực nhận không khớp yêu cầu thanh toán.")
+    reference = payload.bank_reference.strip().upper()
+    if len(reference) < 3:
+        raise HTTPException(422, "Cần mã tham chiếu từ giao dịch ngân hàng.")
     now = datetime.utcnow()
     grant = db.get(PlanGrant, order.user_id)
-    valid_until = max(now, grant.valid_until) + timedelta(days=30) if grant else now + timedelta(days=30)
+    trial = db.get(PlusTrial, order.user_id)
+    start = max([now] + [item.valid_until for item in (grant, trial) if item])
+    valid_until = one_month_after(start)
     if grant is None:
         db.add(PlanGrant(user_id=order.user_id, valid_until=valid_until, granted_by=actor.id,
                          reason=f"manual_payment_request_{order.id}"))
@@ -214,8 +286,14 @@ def activate_request(request_id: int, payload: ActivateRequest, db: Session = De
     order.status = "activated"
     order.reviewed_at = now
     order.reviewed_by = actor.id
+    db.add(PlusPaymentVerification(request_id=order.id, bank_reference=reference,
+                                   amount_vnd=payload.amount_vnd, verified_by=actor.id))
     db.add(AdminAudit(actor_id=actor.id, action="activate_plus_request", target=str(order.id)))
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(409, "Mã giao dịch ngân hàng đã được dùng cho yêu cầu khác.")
     return {"user_id": order.user_id, "valid_until": valid_until.isoformat() + "Z"}
 
 

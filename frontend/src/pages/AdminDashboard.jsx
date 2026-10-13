@@ -39,6 +39,7 @@ function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [plusRequests, setPlusRequests] = useState([]);
   const [paymentChecked, setPaymentChecked] = useState({});
+  const [bankReferences, setBankReferences] = useState({});
   const [audits, setAudits] = useState([]);
   const [invite, setInvite] = useState({ email: '', full_name: '', role: 'employee' });
   const [busy, setBusy] = useState(false);
@@ -160,9 +161,13 @@ function AdminDashboard() {
     `Đã cập nhật quyền của ${user.email}.`,
   );
   const activatePlus = (item) => run(
-    () => axios.post(`/api/plans/requests/${item.id}/activate`, { payment_verified: true },
+    () => axios.post(`/api/plans/requests/${item.id}/activate`, {
+      payment_verified: true,
+      amount_vnd: item.price_vnd,
+      bank_reference: (bankReferences[item.id] || '').trim(),
+    },
       { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }),
-    `Đã kích hoạt Plus 30 ngày cho ${item.email}.`,
+    `Đã kích hoạt Plus cho ${item.email}.`,
   );
   const grantDemo = (user) => run(
     () => axios.post('/api/plans/admin/grant', { user_id: user.id, days: 30, reason: 'Trải nghiệm thử nghiệm' },
@@ -265,9 +270,9 @@ function AdminDashboard() {
         </section>}
 
         {tab === 'plus' && role === 'admin' && <section className="admin-panel"><h2>Yêu cầu nâng cấp Plus</h2>
-          <p className="admin-muted">RiceAI không thu tiền trực tuyến. Chỉ xác nhận sau khi bạn tự đối chiếu khoản thanh toán bên ngoài.</p>
-          <div className="admin-table-wrap"><table><thead><tr><th>Ngày gửi</th><th>Email</th><th>Số tiền dự kiến</th><th>Trạng thái</th><th>Xác nhận</th></tr></thead><tbody>
-            {plusRequests.map((item) => <tr key={item.id}><td>{dateText(item.created_at)}</td><td>{item.email}</td><td>{item.price_vnd.toLocaleString('vi-VN')}đ</td><td>{item.status}</td><td>{item.status === 'pending' && <><label><input type="checkbox" checked={!!paymentChecked[item.id]} onChange={(event) => setPaymentChecked({ ...paymentChecked, [item.id]: event.target.checked })} /> Đã kiểm tra thanh toán</label><button type="button" disabled={busy || !paymentChecked[item.id]} onClick={() => activatePlus(item)}>Kích hoạt</button></>}</td></tr>)}
+          <p className="admin-muted">Chỉ xác nhận sau khi thấy tiền đã vào tài khoản Techcombank, đúng số tiền và nội dung chuyển khoản. Lấy mã tham chiếu từ giao dịch ngân hàng; một mã chỉ dùng một lần.</p>
+          <div className="admin-table-wrap"><table><thead><tr><th>Ngày gửi</th><th>Email</th><th>Mã chuyển khoản</th><th>Số tiền</th><th>Trạng thái</th><th>Xác nhận</th></tr></thead><tbody>
+            {plusRequests.map((item) => <tr key={item.id}><td>{dateText(item.created_at)}</td><td>{item.email}</td><td><strong>{item.payment_code}</strong></td><td>{item.price_vnd.toLocaleString('vi-VN')}đ</td><td>{item.status === 'pending' ? 'Chờ thanh toán' : 'Đã kích hoạt'}</td><td>{item.status === 'pending' && <div className="admin-payment-check"><input aria-label={`Mã giao dịch ngân hàng cho ${item.payment_code}`} placeholder="Mã giao dịch ngân hàng" value={bankReferences[item.id] || ''} onChange={(event) => setBankReferences({ ...bankReferences, [item.id]: event.target.value })} /><label><input type="checkbox" checked={!!paymentChecked[item.id]} onChange={(event) => setPaymentChecked({ ...paymentChecked, [item.id]: event.target.checked })} /> Đã đối chiếu tiền thực nhận</label><button type="button" disabled={busy || !paymentChecked[item.id] || (bankReferences[item.id] || '').trim().length < 3} onClick={() => activatePlus(item)}>Kích hoạt Plus</button></div>}</td></tr>)}
           </tbody></table></div>{!plusRequests.length && <p className="admin-muted">Chưa có yêu cầu nâng cấp.</p>}
         </section>}
 

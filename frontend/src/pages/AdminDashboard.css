@@ -16,3 +16,4 @@
 .admin-metric,.admin-panel{border-color:#e2e9de;box-shadow:0 10px 30px #22442b0c}
 .admin-metric strong{color:#214b34}
 .admin-live-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.admin-live-grid div{display:flex;flex-direction:column;gap:5px;padding:18px;background:#f4f8f3;border:1px solid #e2e9de;border-radius:14px}.admin-live-grid strong{font-size:1.7rem;color:#214b34}.admin-live-grid span{color:#647c69;font-size:.85rem}
+.admin-payment-check{display:grid;gap:8px;min-width:220px}.admin-payment-check>input{font:inherit;border:1px solid #cbded1;border-radius:8px;padding:8px}.admin-payment-check label{display:flex;align-items:center;gap:6px;font-size:.84rem}.admin-payment-check button{padding:8px 10px;border:0;border-radius:8px;background:#176443;color:#fff;font-weight:700;cursor:pointer}.admin-payment-check button:disabled{opacity:.5;cursor:not-allowed}

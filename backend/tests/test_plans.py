@@ -13,8 +13,8 @@ from sqlalchemy.pool import StaticPool
 
 from app.api import plans
 from app.api.plans import (ActivateRequest, GrantRequest, activate_request,
-                           current_period, grant_plus, plan_status,
-                           refund_request, request_plus, reserve_request)
+                           current_period, grant_plus, one_month_after, plan_status,
+                           refund_request, request_plus, reserve_request, start_trial)
 from app.database import Base
 from app.models import User
 
@@ -22,6 +22,7 @@ from app.models import User
 def check():
     assert current_period(datetime(2026, 10, 31, 16, 59)) == "2026-10"
     assert current_period(datetime(2026, 10, 31, 17, 0)) == "2026-11"
+    assert one_month_after(datetime(2026, 1, 31, 9)) == datetime(2026, 2, 28, 9)
     engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     Base.metadata.create_all(engine)
     with sessionmaker(bind=engine)() as db:
@@ -64,26 +65,61 @@ def check():
         assert plan_status(db, farmer)["remaining"] == 40
         assert plan_status(db, farmer, datetime.utcnow() + timedelta(days=31))["plan"] == "basic"
         with patch.object(plans, "plus_model_ready", return_value=True):
+            trial = start_trial(db, buyer)
+            assert trial["plan"] == "plus" and trial["trial_active"]
+            assert not trial["trial_available"]
+            try:
+                start_trial(db, buyer)
+                raise AssertionError("Trial was started twice")
+            except HTTPException as error:
+                assert error.status_code == 409
+            assert plan_status(db, buyer, datetime.utcnow() + timedelta(days=32))["plan"] == "basic"
+            assert not plan_status(db, buyer, datetime.utcnow() + timedelta(days=32))["trial_available"]
             order = request_plus(db, buyer)
             assert order["price_vnd"] == 29000
+            assert order["payment_code"] == f"RICEAI{order['request_id']}"
             assert request_plus(db, buyer)["request_id"] == order["request_id"]
             try:
-                activate_request(order["request_id"], ActivateRequest(payment_verified=False), db, admin)
+                activate_request(order["request_id"], ActivateRequest(payment_verified=False,
+                    bank_reference="BANK123", amount_vnd=29000), db, admin)
                 raise AssertionError("Unverified payment was activated")
             except HTTPException as error:
                 assert error.status_code == 422
             try:
-                activate_request(order["request_id"], ActivateRequest(payment_verified=True), db, employee)
+                activate_request(order["request_id"], ActivateRequest(payment_verified=True,
+                    bank_reference="BANK123", amount_vnd=29000), db, employee)
                 raise AssertionError("Employee activated a payment")
             except HTTPException as error:
                 assert error.status_code == 403
-            activate_request(order["request_id"], ActivateRequest(payment_verified=True), db, admin)
-            assert plan_status(db, buyer)["plan"] == "plus"
             try:
-                activate_request(order["request_id"], ActivateRequest(payment_verified=True), db, admin)
+                activate_request(order["request_id"], ActivateRequest(payment_verified=True,
+                    bank_reference="BANK123", amount_vnd=49000), db, admin)
+                raise AssertionError("Wrong payment amount was accepted")
+            except HTTPException as error:
+                assert error.status_code == 422
+            paid = activate_request(order["request_id"], ActivateRequest(payment_verified=True,
+                bank_reference="BANK123", amount_vnd=29000), db, admin)
+            assert plan_status(db, buyer)["plan"] == "plus"
+            assert datetime.fromisoformat(paid["valid_until"].rstrip("Z")) > \
+                datetime.fromisoformat(trial["trial_valid_until"].rstrip("Z"))
+            try:
+                activate_request(order["request_id"], ActivateRequest(payment_verified=True,
+                    bank_reference="BANK123", amount_vnd=29000), db, admin)
                 raise AssertionError("Payment activated twice")
             except HTTPException as error:
                 assert error.status_code == 409
+
+            another = User(email="another@test.local", full_name="Another", role="farmer", hashed_password="!")
+            db.add(another)
+            db.commit()
+            second_order = request_plus(db, another)
+            try:
+                activate_request(second_order["request_id"], ActivateRequest(payment_verified=True,
+                    bank_reference="BANK123", amount_vnd=29000), db, admin)
+                raise AssertionError("Bank reference was used twice")
+            except HTTPException as error:
+                assert error.status_code == 409
+            assert plan_status(db, another)["plan"] == "basic"
     engine.dispose()
 
     with TemporaryDirectory() as directory:

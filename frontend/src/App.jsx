@@ -114,7 +114,7 @@ function Navbar() {
       <div className={`navbar-links ${menuOpen ? 'is-open' : ''}`}>
         <Link to="/" className={isActive('/')}>Chẩn đoán</Link>
         <Link to="/diseases" className={isActive('/diseases')}>Thư viện bệnh</Link>
-        <Link to="/plans" className={isActive('/plans')}>Gói sử dụng</Link>
+        <Link to="/plans" className={isActive('/plans')}>Gói & nâng cấp</Link>
         {token ? (
           <>
             <Link to="/history" className={isActive('/history')}>Lịch sử</Link>

@@ -80,6 +80,24 @@ class PlanGrant(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 
+class PlusTrial(Base):
+    __tablename__ = "plus_trials"
+
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    started_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    valid_until = Column(DateTime, nullable=False)
+
+
+class PlusPaymentVerification(Base):
+    __tablename__ = "plus_payment_verifications"
+
+    request_id = Column(Integer, ForeignKey("plus_requests.id"), primary_key=True)
+    bank_reference = Column(String(100), nullable=False, unique=True)
+    amount_vnd = Column(Integer, nullable=False)
+    verified_by = Column(Integer, ForeignKey("users.id"), nullable=False)
+    verified_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
 class MonthlyUsage(Base):
     __tablename__ = "monthly_usage"
     __table_args__ = (UniqueConstraint("user_id", "period", "plan"),)
