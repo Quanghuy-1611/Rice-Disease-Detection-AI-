@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../core/config/environment_config.dart';
 import '../../core/config/seven_class_catalog.dart';
 import '../../core/errors/api_exception.dart';
 import '../../core/theme/app_theme.dart';
 import '../../services/prediction_service.dart';
+import '../widgets/reliable_result_image.dart';
 
 class PlusScreen extends StatefulWidget {
   const PlusScreen(
@@ -324,7 +324,11 @@ class _PlusScreenState extends State<PlusScreen> {
               ...items.asMap().entries.map((entry) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: _PlusImageResult(
-                        index: entry.key + 1, item: entry.value),
+                        index: entry.key + 1,
+                        item: entry.value,
+                        localFallback: entry.key < _images.length
+                            ? _images[entry.key]
+                            : null),
                   )),
               if (advice?['recommendation'] is String) ...<Widget>[
                 const SizedBox(height: 8),
@@ -462,9 +466,14 @@ class _PlusSummary extends StatelessWidget {
 }
 
 class _PlusImageResult extends StatelessWidget {
-  const _PlusImageResult({required this.index, required this.item});
+  const _PlusImageResult({
+    required this.index,
+    required this.item,
+    required this.localFallback,
+  });
   final int index;
   final Map<String, dynamic> item;
+  final File? localFallback;
 
   @override
   Widget build(BuildContext context) {
@@ -474,11 +483,13 @@ class _PlusImageResult extends StatelessWidget {
         : SevenClassCatalog.names[prediction] ?? prediction;
     final heatmap = item['heatmap_url']?.toString();
     final filename = item['filename']?.toString();
+    // No heatmap means the original selected photo is already on this phone.
+    // Do not download the same photo again on a slow mobile connection.
     final url = heatmap?.isNotEmpty == true
         ? heatmap
-        : filename == null
-            ? null
-            : '/uploads/$filename';
+        : localFallback == null && filename != null
+            ? '/uploads/$filename'
+            : null;
     final confidence = (item['confidence'] as num?)?.toDouble();
     return Container(
       decoration: BoxDecoration(
@@ -490,13 +501,14 @@ class _PlusImageResult extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           if (url != null)
-            Image.network('${EnvironmentConfig.apiBaseUrl}$url',
-                width: double.infinity,
-                height: 210,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const SizedBox(
-                    height: 150,
-                    child: Center(child: Text('Chưa tải được ảnh kết quả')))),
+            ReliableResultImage(
+              path: url,
+              localFallback: localFallback,
+              height: 210,
+            )
+          else if (localFallback != null)
+            Image.file(localFallback!,
+                width: double.infinity, height: 210, fit: BoxFit.cover),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

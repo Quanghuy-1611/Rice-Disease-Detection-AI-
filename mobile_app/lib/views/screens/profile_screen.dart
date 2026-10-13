@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -9,11 +8,11 @@ import '../../core/theme/app_theme.dart';
 import '../../screens/privacy_screen.dart';
 import '../../services/auth_service.dart';
 import '../../services/notification_service.dart';
-import '../widgets/app_card.dart';
+import 'history_screen.dart';
 import 'login_screen.dart';
 import 'notifications_screen.dart';
 import 'profile_edit_screen.dart';
-import 'history_screen.dart';
+import 'server_settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -43,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         try {
           await entity.delete(recursive: true);
         } catch (_) {
-          // Một số file hệ thống có thể bị khóa; giữ app hoạt động bình thường.
+          // A file may still be in use; other temporary files can be cleared.
         }
       }
     }
@@ -57,8 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Đăng xuất?'),
-            content: const Text(
-                'Bạn sẽ cần đăng nhập lại để dùng các chức năng cần tài khoản.'),
+            content: const Text('Bạn sẽ cần đăng nhập lại để dùng RiceAI.'),
             actions: <Widget>[
               TextButton(
                   onPressed: () => Navigator.pop(context, false),
@@ -97,104 +95,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final authenticated = context.watch<AuthService>().isAuthenticated;
-    return Scaffold(
-      backgroundColor: AppTheme.porcelain,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Hồ sơ'),
-        actions: <Widget>[
-          if (authenticated)
-            IconButton(
-              tooltip: 'Chỉnh sửa hồ sơ',
-              onPressed: _editProfile,
-              icon: const Icon(Icons.edit_outlined),
-            ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
-        children: <Widget>[
-          if (authenticated)
-            _SignedInHeader(future: _profileFuture)
-          else
-            _SignedOutHeader(onLogin: _openLogin),
-          const SizedBox(height: 22),
-          const Text('Cài đặt',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
-          const SizedBox(height: 10),
-          _SettingTile(
-            icon: Icons.language_rounded,
-            title: 'Ngôn ngữ',
-            subtitle: 'Tiếng Việt',
-            onTap: _showLanguageInfo,
-          ),
-          _SettingTile(
-            icon: Icons.notifications_outlined,
-            title: 'Thông báo',
-            subtitle: context.watch<NotificationService>().unreadCount > 0
-                ? '${context.watch<NotificationService>().unreadCount} thông báo chưa đọc'
-                : 'Không có thông báo mới',
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                  builder: (_) => const NotificationsScreen()),
-            ),
-          ),
-          _SettingTile(
-            icon: Icons.history_rounded,
-            title: 'Lịch sử quét',
-            subtitle: 'Xem lượt đã phân tích và ảnh đang chờ gửi',
-            onTap: _openHistory,
-          ),
-          _SettingTile(
-            icon: Icons.dns_outlined,
-            title: 'Máy chủ',
-            subtitle: EnvironmentConfig.displayBaseUrl,
-            onTap: _showServerInfo,
-          ),
-          _SettingTile(
-            icon: Icons.lock_outline_rounded,
-            title: 'Quyền riêng tư',
-            subtitle: 'Cách RiceAI sử dụng ảnh và dữ liệu',
-            onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (_) => const PrivacyScreen())),
-          ),
-          _SettingTile(
-            icon: Icons.delete_sweep_outlined,
-            title: 'Xóa bộ nhớ đệm',
-            subtitle: 'Chỉ xóa tệp tạm, không xóa tài khoản',
-            destructive: true,
-            onTap: _clearCache,
-          ),
-          if (authenticated) ...<Widget>[
-            const SizedBox(height: 22),
-            const Text('Tài khoản',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 10),
-            _SettingTile(
-              icon: Icons.logout_rounded,
-              title: 'Đăng xuất',
-              subtitle: 'Thoát khỏi tài khoản hiện tại',
-              destructive: true,
-              onTap: _logout,
-            ),
-          ],
-          const SizedBox(height: 26),
-          const Center(
-              child: Text(
-                  'RiceAI • Phiên bản thử nghiệm\nHỗ trợ nhận diện 7 nhóm bệnh và đối tượng lúa',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: AppTheme.textMuted, fontSize: 11, height: 1.5))),
-        ],
-      ),
+  Future<void> _openServerSettings() async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(builder: (_) => const ServerSettingsScreen()),
     );
+    if (changed == true && mounted) {
+      setState(() => _profileFuture =
+          context.read<AuthService>().isAuthenticated
+              ? context.read<AuthService>().getProfile()
+              : null);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Đã kết nối máy chủ RiceAI.')));
+    }
   }
-
-  void _openLogin() => Navigator.of(context)
-      .push<bool>(MaterialPageRoute<bool>(builder: (_) => const LoginScreen()));
 
   Future<void> _openHistory() async {
     if (!context.read<AuthService>().isAuthenticated) {
@@ -203,6 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       if (signedIn != true || !mounted) return;
     }
+    if (!mounted) return;
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(builder: (_) => const HistoryScreen()),
     );
@@ -212,257 +126,305 @@ class _ProfileScreenState extends State<ProfileScreen> {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Ngôn ngữ'),
-          content: const Text(
-              'Giao diện hiện hỗ trợ tiếng Việt. Các bản dịch khác sẽ được bổ sung sau khi nội dung chuyên môn được hiệu đính.'),
+          content: const Text('RiceAI hiện hỗ trợ tiếng Việt.'),
           actions: <Widget>[
             TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Đã hiểu'))
+                child: const Text('Đã hiểu')),
           ],
         ),
       );
 
-  Future<void> _showServerInfo() async {
-    var selectedMode = EnvironmentConfig.mode;
-    final controller =
-        TextEditingController(text: EnvironmentConfig.addressFor(selectedMode));
-    var saving = false;
-    String? error;
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (dialogContext, updateDialog) => AlertDialog(
-          title: const Text('Máy chủ RiceAI'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SegmentedButton<RiceAiServerMode>(
-                segments: const <ButtonSegment<RiceAiServerMode>>[
-                  ButtonSegment(
-                      value: RiceAiServerMode.local, label: Text('Gần laptop')),
-                  ButtonSegment(
-                      value: RiceAiServerMode.internet,
-                      label: Text('Internet')),
-                ],
-                selected: <RiceAiServerMode>{selectedMode},
-                onSelectionChanged: saving
-                    ? null
-                    : (selection) => updateDialog(() {
-                          selectedMode = selection.first;
-                          controller.text =
-                              EnvironmentConfig.addressFor(selectedMode);
-                          error = null;
-                        }),
-              ),
-              const SizedBox(height: 12),
-              Text(selectedMode == RiceAiServerMode.local
-                  ? 'Chọn địa chỉ API hiện trên laptop. iPhone cần ở cùng mạng.'
-                  : 'Chỉ dùng khi đã có máy chủ Internet của RiceAI. Địa chỉ phải bắt đầu bằng https://.'),
-              const SizedBox(height: 14),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.url,
-                autocorrect: false,
-                enableSuggestions: false,
-                decoration: InputDecoration(
-                  labelText: 'Địa chỉ máy chủ',
-                  hintText: selectedMode == RiceAiServerMode.local
-                      ? 'http://192.168.1.10:8015'
-                      : 'https://api.example.com',
-                ),
-              ),
-              if (error != null) ...<Widget>[
-                const SizedBox(height: 10),
-                Text(error!, style: const TextStyle(color: Colors.red)),
-              ],
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: saving ? null : () => Navigator.pop(dialogContext),
-              child: const Text('Hủy'),
+  @override
+  Widget build(BuildContext context) {
+    final authenticated = context.watch<AuthService>().isAuthenticated;
+    final unread = context.watch<NotificationService>().unreadCount;
+    final server = EnvironmentConfig.mode == RiceAiServerMode.local
+        ? 'Gần laptop'
+        : 'Internet';
+
+    return Scaffold(
+      backgroundColor: AppTheme.porcelain,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Hồ sơ'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 42),
+        children: <Widget>[
+          if (authenticated)
+            _SignedInHeader(future: _profileFuture, onEdit: _editProfile)
+          else
+            _SignedOutHeader(
+                onLogin: () => Navigator.of(context).push<bool>(
+                      MaterialPageRoute<bool>(
+                          builder: (_) => const LoginScreen()),
+                    )),
+          const SizedBox(height: 28),
+          const _SectionTitle('Hoạt động'),
+          const SizedBox(height: 10),
+          _SettingsGroup(children: <Widget>[
+            _SettingRow(
+              icon: Icons.history_rounded,
+              title: 'Lịch sử chẩn đoán',
+              onTap: _openHistory,
             ),
-            FilledButton(
-              onPressed: saving
-                  ? null
-                  : () async {
-                      final url = EnvironmentConfig.normalize(controller.text);
-                      if (!EnvironmentConfig.isValidServerUrl(
-                          url, selectedMode)) {
-                        updateDialog(() => error =
-                            selectedMode == RiceAiServerMode.local
-                                ? 'Nhập địa chỉ dạng http://IP:8015.'
-                                : 'Nhập địa chỉ HTTPS của máy chủ Internet.');
-                        return;
-                      }
-                      updateDialog(() {
-                        saving = true;
-                        error = null;
-                      });
-                      var healthChecked = false;
-                      try {
-                        final response = await Dio(BaseOptions(
-                          connectTimeout: const Duration(seconds: 5),
-                          receiveTimeout: const Duration(seconds: 5),
-                        )).get<Map<String, dynamic>>('$url/api/health');
-                        if (response.data?['status'] != 'ok' ||
-                            response.data?['model_classes'] is! List) {
-                          throw const FormatException('Không phải API RiceAI.');
-                        }
-                        healthChecked = true;
-                        if (!mounted) return;
-                        await context
-                            .read<AuthService>()
-                            .changeServer(selectedMode, url);
-                        if (!dialogContext.mounted) return;
-                        Navigator.pop(dialogContext);
-                        if (mounted) {
-                          setState(() => _profileFuture =
-                              context.read<AuthService>().getProfile());
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Đã kết nối máy chủ RiceAI.')),
-                          );
-                        }
-                      } catch (_) {
-                        if (dialogContext.mounted) {
-                          updateDialog(() {
-                            saving = false;
-                            error = healthChecked
-                                ? 'Đã thấy RiceAI nhưng chưa xác nhận được tài khoản trên máy chủ mới.'
-                                : 'Không kết nối được máy chủ. Kiểm tra mạng và địa chỉ API.';
-                          });
-                        }
-                      }
-                    },
-              child: saving
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Kiểm tra & lưu'),
+            _SettingRow(
+              icon: Icons.notifications_none_rounded,
+              title: 'Thông báo',
+              detail: unread > 0 ? '$unread mới' : null,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                    builder: (_) => const NotificationsScreen()),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 24),
+          const _SectionTitle('Ứng dụng'),
+          const SizedBox(height: 10),
+          _SettingsGroup(children: <Widget>[
+            _SettingRow(
+              icon: Icons.dns_outlined,
+              title: 'Máy chủ',
+              detail: server,
+              onTap: _openServerSettings,
+            ),
+            _SettingRow(
+              icon: Icons.shield_outlined,
+              title: 'Quyền riêng tư',
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => const PrivacyScreen()),
+              ),
+            ),
+            _SettingRow(
+              icon: Icons.language_rounded,
+              title: 'Ngôn ngữ',
+              detail: 'Tiếng Việt',
+              onTap: _showLanguageInfo,
+            ),
+            _SettingRow(
+              icon: Icons.cleaning_services_outlined,
+              title: 'Dọn dữ liệu tạm',
+              onTap: _clearCache,
+            ),
+          ]),
+          if (authenticated) ...<Widget>[
+            const SizedBox(height: 24),
+            TextButton.icon(
+              onPressed: _logout,
+              icon: const Icon(Icons.logout_rounded, size: 19),
+              label: const Text('Đăng xuất'),
+              style: TextButton.styleFrom(
+                foregroundColor: AppTheme.dangerRed,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+              ),
             ),
           ],
-        ),
+          const SizedBox(height: 26),
+          const Center(
+            child: Text('RiceAI',
+                style: TextStyle(
+                    color: AppTheme.textMuted,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600)),
+          ),
+        ],
       ),
     );
-    controller.dispose();
   }
 }
 
 class _SignedOutHeader extends StatelessWidget {
   const _SignedOutHeader({required this.onLogin});
   final VoidCallback onLogin;
+
   @override
-  Widget build(BuildContext context) => AppCard(
-        child: Row(children: <Widget>[
-          const CircleAvatar(
-              radius: 28,
-              backgroundColor: AppTheme.cardBeige,
-              child: Icon(Icons.person_outline_rounded, color: AppTheme.moss)),
-          const SizedBox(width: 14),
-          const Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                Text('Bạn chưa đăng nhập',
-                    style:
-                        TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
-                SizedBox(height: 3),
-                Text('Đăng nhập bằng email đã xác minh để lưu dữ liệu.',
-                    style:
-                        TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
-              ])),
-          FilledButton(onPressed: onLogin, child: const Text('Đăng nhập')),
-        ]),
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(20),
+        decoration: _panelDecoration(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const Text('Chào bạn',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 5),
+            const Text('Đăng nhập để lưu lịch sử chẩn đoán.',
+                style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
+            const SizedBox(height: 18),
+            FilledButton(onPressed: onLogin, child: const Text('Đăng nhập')),
+          ],
+        ),
       );
 }
 
 class _SignedInHeader extends StatelessWidget {
-  const _SignedInHeader({required this.future});
+  const _SignedInHeader({required this.future, required this.onEdit});
   final Future<Map<String, dynamic>?>? future;
+  final VoidCallback onEdit;
+
   @override
   Widget build(BuildContext context) => FutureBuilder<Map<String, dynamic>?>(
         future: future,
         builder: (context, snapshot) {
           final user = FirebaseAuth.instance.currentUser;
-          final account = user?.isAnonymous == true
-              ? 'Chế độ dùng thử — không đồng bộ giữa thiết bị'
-              : user?.email ?? 'Email đã xác thực';
+          final anonymous = user?.isAnonymous == true;
+          final account = anonymous ? 'Tài khoản dùng thử' : user?.email ?? '';
           final name = snapshot.data?['full_name']?.toString().trim();
           final label =
-              (name == null || name.isEmpty) ? 'Người dùng RiceAI' : name;
-          return AppCard(
-            child: Row(children: <Widget>[
-              CircleAvatar(
-                  radius: 29,
-                  backgroundColor: AppTheme.moss,
+              name == null || name.isEmpty ? 'Người dùng RiceAI' : name;
+          return Container(
+            padding: const EdgeInsets.all(20),
+            decoration: _panelDecoration(),
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 26,
+                  backgroundColor: const Color(0xFFE8EFE4),
                   child: Text(label.characters.first.toUpperCase(),
                       style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 20))),
-              const SizedBox(width: 14),
-              Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                    Text(label,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w900, fontSize: 16)),
-                    const SizedBox(height: 3),
-                    Text(account,
-                        style: const TextStyle(
-                            color: AppTheme.textSecondary, fontSize: 12)),
-                    const SizedBox(height: 5),
-                    Text(
-                      user?.isAnonymous == true
-                          ? 'Dữ liệu dùng thử không đồng bộ sang thiết bị khác'
-                          : 'Email đã được xác thực',
-                      style: const TextStyle(
                           color: AppTheme.moss,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ])),
-            ]),
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700)),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontSize: 19, fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 3),
+                      Text(account,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: AppTheme.textSecondary, fontSize: 13)),
+                      const SizedBox(height: 7),
+                      Row(
+                        children: <Widget>[
+                          const Icon(Icons.check_circle_outline_rounded,
+                              size: 15, color: AppTheme.mossMid),
+                          const SizedBox(width: 5),
+                          Text(
+                              anonymous ? 'Đang dùng thử' : 'Email đã xác minh',
+                              style: const TextStyle(
+                                  color: AppTheme.mossMid,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: onEdit,
+                  tooltip: 'Sửa tên hiển thị',
+                  icon: const Icon(Icons.edit_outlined, size: 21),
+                ),
+              ],
+            ),
           );
         },
       );
 }
 
-class _SettingTile extends StatelessWidget {
-  const _SettingTile(
-      {required this.icon,
-      required this.title,
-      required this.subtitle,
-      required this.onTap,
-      this.destructive = false});
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.title);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => Text(title,
+      style: const TextStyle(
+          color: AppTheme.textPrimary,
+          fontSize: 16,
+          fontWeight: FontWeight.w700));
+}
+
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: _panelDecoration(),
+        child: Column(
+          children: <Widget>[
+            for (var index = 0; index < children.length; index++) ...<Widget>[
+              if (index > 0)
+                const Divider(indent: 66, endIndent: 16, height: 1),
+              children[index],
+            ],
+          ],
+        ),
+      );
+}
+
+class _SettingRow extends StatelessWidget {
+  const _SettingRow({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.detail,
+  });
+
   final IconData icon;
   final String title;
-  final String subtitle;
+  final String? detail;
   final VoidCallback onTap;
-  final bool destructive;
+
   @override
-  Widget build(BuildContext context) {
-    final color = destructive ? AppTheme.dangerRed : AppTheme.moss;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: AppCard(
-        padding: EdgeInsets.zero,
-        onTap: onTap,
-        child: ListTile(
-          leading: Icon(icon, color: color),
-          title: Text(title,
-              style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: destructive ? color : AppTheme.textPrimary)),
-          subtitle:
-              Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
-          trailing: const Icon(Icons.chevron_right_rounded),
+  Widget build(BuildContext context) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 38,
+                  height: 38,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0F3EB),
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: Icon(icon, color: AppTheme.mossMid, size: 21),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(title,
+                      style: const TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600)),
+                ),
+                if (detail != null) ...<Widget>[
+                  Flexible(
+                    child: Text(detail!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            color: AppTheme.textSecondary, fontSize: 12)),
+                  ),
+                  const SizedBox(width: 6),
+                ],
+                const Icon(Icons.chevron_right_rounded,
+                    color: AppTheme.textMuted, size: 20),
+              ],
+            ),
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
+
+BoxDecoration _panelDecoration() => BoxDecoration(
+      color: AppTheme.cardSolid,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(color: AppTheme.borderBeige),
+    );

@@ -9,7 +9,7 @@ if errorlevel 1 (
   echo RiceAI could not start. Send a screenshot of this window for help.
 ) else (
   echo.
-  echo RiceAI is running. You can close this window now.
+  echo RiceAI services on the laptop are running. Check the iPhone API address shown above.
 )
 echo.
 pause

@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../core/config/environment_config.dart';
 import '../../core/config/seven_class_catalog.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/ipm_advice.dart';
+import '../widgets/reliable_result_image.dart';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({
@@ -141,6 +141,7 @@ class ResultScreen extends StatelessWidget {
     );
   }
 }
+
 class _ResultTab {
   const _ResultTab({
     required this.title,
@@ -188,7 +189,11 @@ class _MedicalReportHeader extends StatelessWidget {
             runSpacing: 8,
             children: <Widget>[
               _StatusChip(
-                label: uncertain ? 'CẦN KIỂM TRA' : normal ? 'BÌNH THƯỜNG' : 'PHÁT HIỆN',
+                label: uncertain
+                    ? 'CẦN KIỂM TRA'
+                    : normal
+                        ? 'BÌNH THƯỜNG'
+                        : 'PHÁT HIỆN',
                 color: normal ? AppTheme.safeGreen : AppTheme.warningOrange,
               ),
               const _StatusChip(
@@ -199,7 +204,9 @@ class _MedicalReportHeader extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            uncertain ? 'Chưa xác định' : SevenClassCatalog.names[classId] ?? classId,
+            uncertain
+                ? 'Chưa xác định'
+                : SevenClassCatalog.names[classId] ?? classId,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: AppTheme.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -231,8 +238,8 @@ class _MedicalReportHeader extends StatelessWidget {
           if (predictionData['scope_warning'] != null) ...<Widget>[
             const SizedBox(height: 12),
             Text(predictionData['scope_warning'].toString(),
-              style: const TextStyle(color: AppTheme.textSecondary,
-                fontSize: 12, height: 1.4)),
+                style: const TextStyle(
+                    color: AppTheme.textSecondary, fontSize: 12, height: 1.4)),
           ],
         ],
       ),
@@ -313,13 +320,9 @@ class _ImageExplanation extends StatelessWidget {
               child: url == null
                   ? Image.file(imageFile,
                       fit: BoxFit.cover, width: double.infinity)
-                  : Image.network(
-                      '${EnvironmentConfig.apiBaseUrl}$url',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (_, __, ___) => const Center(
-                        child: Icon(Icons.broken_image_outlined, size: 40),
-                      ),
+                  : ReliableResultImage(
+                      path: url!,
+                      localFallback: imageFile,
                     ),
             ),
           ),

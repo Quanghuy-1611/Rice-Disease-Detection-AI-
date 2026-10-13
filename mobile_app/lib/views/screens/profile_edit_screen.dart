@@ -74,7 +74,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                             style: const TextStyle(color: AppTheme.dangerRed))),
                   const SizedBox(height: 8),
                   const Text(
-                      'Số điện thoại được xác thực bằng OTP nên không chỉnh sửa ở đây.',
+                      'Email đăng nhập được quản lý trong phần tài khoản và không chỉnh sửa tại đây.',
                       style: TextStyle(
                           color: AppTheme.textSecondary, height: 1.4)),
                   const Spacer(),
