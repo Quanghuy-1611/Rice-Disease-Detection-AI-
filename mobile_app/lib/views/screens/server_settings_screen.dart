@@ -108,7 +108,7 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                   _ModeOption(
                     icon: Icons.wifi_rounded,
                     title: 'Gần laptop',
-                    description: 'iPhone và laptop dùng cùng mạng Wi-Fi.',
+                    description: 'Điện thoại và laptop dùng cùng mạng Wi-Fi.',
                     selected: _mode == RiceAiServerMode.local,
                     onTap: () => _select(RiceAiServerMode.local),
                   ),
@@ -116,7 +116,7 @@ class _ServerSettingsScreenState extends State<ServerSettingsScreen> {
                   _ModeOption(
                     icon: Icons.public_rounded,
                     title: 'Internet',
-                    description: 'Dùng khi đi xa. Bật Tailscale trên iPhone.',
+                    description: 'Dùng khi đi xa. Bật Tailscale trên điện thoại.',
                     selected: _mode == RiceAiServerMode.internet,
                     onTap: () => _select(RiceAiServerMode.internet),
                   ),

@@ -10,12 +10,16 @@ class EnvironmentConfig {
     'API_BASE_URL',
     defaultValue: '',
   );
+  static const String _buildInternetBaseUrl = String.fromEnvironment(
+    'INTERNET_API_BASE_URL',
+    defaultValue: '',
+  );
   static const String _legacyKey = 'riceai_api_base_url';
   static const String _localKey = 'riceai_local_api_base_url';
   static const String _internetKey = 'riceai_internet_api_base_url';
   static const String _modeKey = 'riceai_server_mode';
   static String _localBaseUrl = _buildBaseUrl;
-  static String _internetBaseUrl = '';
+  static String _internetBaseUrl = _buildInternetBaseUrl;
   static RiceAiServerMode _mode = RiceAiServerMode.local;
 
   static RiceAiServerMode get mode => _mode;
@@ -29,20 +33,20 @@ class EnvironmentConfig {
       final local = preferences.getString(_localKey) ??
           preferences.getString(_legacyKey) ??
           _buildBaseUrl;
-      final internet = preferences.getString(_internetKey) ?? '';
+      final internet = preferences.getString(_internetKey) ?? _buildInternetBaseUrl;
       _localBaseUrl = isValidServerUrl(local, RiceAiServerMode.local)
           ? normalize(local)
           : _buildBaseUrl;
       _internetBaseUrl = isValidServerUrl(internet, RiceAiServerMode.internet)
           ? normalize(internet)
-          : '';
+          : _buildInternetBaseUrl;
       _mode = preferences.getString(_modeKey) == 'internet' &&
               _internetBaseUrl.isNotEmpty
           ? RiceAiServerMode.internet
           : RiceAiServerMode.local;
     } catch (_) {
       _localBaseUrl = _buildBaseUrl;
-      _internetBaseUrl = '';
+      _internetBaseUrl = _buildInternetBaseUrl;
       _mode = RiceAiServerMode.local;
     }
   }

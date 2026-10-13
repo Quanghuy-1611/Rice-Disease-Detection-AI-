@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api import predict, plus_predict, auth, chat, admin, disease_library, client, plans
 from app.database import engine, Base
 import os
+import mimetypes
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -38,6 +39,7 @@ app.include_router(disease_library.router, prefix="/api/disease-library", tags=[
 
 # Mount thư mục uploads để Frontend có thể lấy ảnh
 os.makedirs("uploads", exist_ok=True)
+mimetypes.add_type("application/vnd.android.package-archive", ".apk")
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get("/")
