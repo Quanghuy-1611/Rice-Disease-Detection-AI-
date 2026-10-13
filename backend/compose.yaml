@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: sqlite:////data/paddy_disease.db
+      FIREBASE_ADMIN_CREDENTIALS: /run/secrets/firebase-adminsdk.json
+    volumes:
+      - ./runtime:/data
+      - ./uploads:/srv/riceai/uploads
+      - ./firebase-adminsdk.json:/run/secrets/firebase-adminsdk.json:ro
+    ports:
+      - "127.0.0.1:8015:8015"
+    restart: unless-stopped

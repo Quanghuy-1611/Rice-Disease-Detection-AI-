@@ -50,6 +50,7 @@ function Wait-RiceAiUrl([string]$url, [string]$name) {
 }
 
 $apiHealth = 'http://127.0.0.1:8015/api/health'
+Write-Host 'Checking RiceAI API...' -ForegroundColor Cyan
 if (Test-RiceAiUrl $apiHealth) {
   Write-Host 'API is already running.' -ForegroundColor Green
 } else {
@@ -61,10 +62,12 @@ if (Test-RiceAiUrl $apiHealth) {
     -WorkingDirectory $apiRoot -WindowStyle Hidden `
     -RedirectStandardOutput (Join-Path $apiRoot 'server-8015.out.log') `
     -RedirectStandardError (Join-Path $apiRoot 'server-8015.err.log') | Out-Null
+  Write-Host 'Starting API. This can take up to 50 seconds...' -ForegroundColor Cyan
   Wait-RiceAiUrl $apiHealth 'API'
 }
 
 $webUrl = 'http://127.0.0.1:5174/'
+Write-Host 'Checking RiceAI web...' -ForegroundColor Cyan
 if (Test-RiceAiUrl $webUrl) {
   Write-Host 'Web is already running.' -ForegroundColor Green
 } else {
@@ -77,6 +80,7 @@ if (Test-RiceAiUrl $webUrl) {
     -WorkingDirectory $webRoot -WindowStyle Hidden `
     -RedirectStandardOutput (Join-Path $webRoot 'server-5174.out.log') `
     -RedirectStandardError (Join-Path $webRoot 'server-5174.err.log') | Out-Null
+  Write-Host 'Starting web...' -ForegroundColor Cyan
   Wait-RiceAiUrl $webUrl 'Web'
 }
 
@@ -93,3 +97,4 @@ foreach ($address in $lanAddresses) {
   Write-Host "  iPhone API: http://${address}:8015/docs"
 }
 Write-Host 'Keep this laptop powered on while using RiceAI on iPhone.'
+Write-Host 'The iPhone must be able to open the iPhone API address in Safari.'

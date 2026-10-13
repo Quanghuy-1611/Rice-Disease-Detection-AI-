@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -221,19 +222,133 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
 
-  void _showServerInfo() => showDialog<void>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Cấu hình máy chủ'),
-          content: const Text(
-              'Địa chỉ API được cấu hình khi build/chạy ứng dụng, không nhập tay trong app để tránh gửi ảnh tới nhầm máy chủ.'),
+  Future<void> _showServerInfo() async {
+    var selectedMode = EnvironmentConfig.mode;
+    final controller =
+        TextEditingController(text: EnvironmentConfig.addressFor(selectedMode));
+    var saving = false;
+    String? error;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, updateDialog) => AlertDialog(
+          title: const Text('Máy chủ RiceAI'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SegmentedButton<RiceAiServerMode>(
+                segments: const <ButtonSegment<RiceAiServerMode>>[
+                  ButtonSegment(
+                      value: RiceAiServerMode.local, label: Text('Gần laptop')),
+                  ButtonSegment(
+                      value: RiceAiServerMode.internet,
+                      label: Text('Internet')),
+                ],
+                selected: <RiceAiServerMode>{selectedMode},
+                onSelectionChanged: saving
+                    ? null
+                    : (selection) => updateDialog(() {
+                          selectedMode = selection.first;
+                          controller.text =
+                              EnvironmentConfig.addressFor(selectedMode);
+                          error = null;
+                        }),
+              ),
+              const SizedBox(height: 12),
+              Text(selectedMode == RiceAiServerMode.local
+                  ? 'Chọn địa chỉ API hiện trên laptop. iPhone cần ở cùng mạng.'
+                  : 'Chỉ dùng khi đã có máy chủ Internet của RiceAI. Địa chỉ phải bắt đầu bằng https://.'),
+              const SizedBox(height: 14),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.url,
+                autocorrect: false,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  labelText: 'Địa chỉ máy chủ',
+                  hintText: selectedMode == RiceAiServerMode.local
+                      ? 'http://192.168.1.10:8015'
+                      : 'https://api.example.com',
+                ),
+              ),
+              if (error != null) ...<Widget>[
+                const SizedBox(height: 10),
+                Text(error!, style: const TextStyle(color: Colors.red)),
+              ],
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Đã hiểu'))
+              onPressed: saving ? null : () => Navigator.pop(dialogContext),
+              child: const Text('Hủy'),
+            ),
+            FilledButton(
+              onPressed: saving
+                  ? null
+                  : () async {
+                      final url = EnvironmentConfig.normalize(controller.text);
+                      if (!EnvironmentConfig.isValidServerUrl(
+                          url, selectedMode)) {
+                        updateDialog(() => error =
+                            selectedMode == RiceAiServerMode.local
+                                ? 'Nhập địa chỉ dạng http://IP:8015.'
+                                : 'Nhập địa chỉ HTTPS của máy chủ Internet.');
+                        return;
+                      }
+                      updateDialog(() {
+                        saving = true;
+                        error = null;
+                      });
+                      var healthChecked = false;
+                      try {
+                        final response = await Dio(BaseOptions(
+                          connectTimeout: const Duration(seconds: 5),
+                          receiveTimeout: const Duration(seconds: 5),
+                        )).get<Map<String, dynamic>>('$url/api/health');
+                        if (response.data?['status'] != 'ok' ||
+                            response.data?['model_classes'] is! List) {
+                          throw const FormatException('Không phải API RiceAI.');
+                        }
+                        healthChecked = true;
+                        if (!mounted) return;
+                        await context
+                            .read<AuthService>()
+                            .changeServer(selectedMode, url);
+                        if (!dialogContext.mounted) return;
+                        Navigator.pop(dialogContext);
+                        if (mounted) {
+                          setState(() => _profileFuture =
+                              context.read<AuthService>().getProfile());
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Đã kết nối máy chủ RiceAI.')),
+                          );
+                        }
+                      } catch (_) {
+                        if (dialogContext.mounted) {
+                          updateDialog(() {
+                            saving = false;
+                            error = healthChecked
+                                ? 'Đã thấy RiceAI nhưng chưa xác nhận được tài khoản trên máy chủ mới.'
+                                : 'Không kết nối được máy chủ. Kiểm tra mạng và địa chỉ API.';
+                          });
+                        }
+                      }
+                    },
+              child: saving
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Text('Kiểm tra & lưu'),
+            ),
           ],
         ),
-      );
+      ),
+    );
+    controller.dispose();
+  }
 }
 
 class _SignedOutHeader extends StatelessWidget {

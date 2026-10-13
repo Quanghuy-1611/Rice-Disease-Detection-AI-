@@ -9,11 +9,11 @@ Cần một máy Mac có Xcode, Flutter và tài khoản Apple để ký ứng d
 1. Mở dự án `mobile_app`, chạy `flutter pub get` và `flutter doctor -v` để kiểm tra công cụ.
 2. Mở `ios/Runner.xcodeproj` bằng Xcode, chọn target **Runner**, vào **Signing & Capabilities** và chọn Apple Team. Giữ bundle ID `com.quanghuy1611.riceai`.
 3. Kết nối iPhone, tin cậy máy Mac, bật Developer Mode trên iPhone nếu được yêu cầu.
-4. Chạy backend trên địa chỉ có thể truy cập từ iPhone, ví dụ máy tính và iPhone cùng Wi-Fi. Sau đó chạy `flutter run --dart-define=API_BASE_URL=http://<IP-cua-may-chay-backend>:8000`.
+4. Chạy backend trên địa chỉ có thể truy cập từ iPhone, ví dụ máy tính và iPhone cùng Wi-Fi. Sau đó chạy `flutter run --dart-define=API_BASE_URL=http://<IP-cua-may-chay-backend>:8015`.
 
-`127.0.0.1` trên iPhone là chính iPhone, không phải laptop. Khi phát hành ra ngoài mạng nội bộ, dùng API HTTPS. Đăng nhập email cần tài khoản đã xác minh email. Google Sign-In cần URL scheme có trong `ios/Runner/Info.plist`.
+`127.0.0.1` trên iPhone là chính iPhone, không phải laptop. Từ bản 1.1.0+4, người dùng có thể đổi địa chỉ tại **Hồ sơ → Máy chủ**: chế độ **Gần laptop** nhận URL HTTP cùng mạng, còn **Internet** nhận URL HTTPS của máy chủ từ xa. Hai địa chỉ được lưu riêng và được kiểm tra trước khi chuyển. Hướng dẫn chi tiết: [Kết nối iPhone hai chế độ](../docs/KET_NOI_IPHONE_HAI_CHE_DO.md). Đăng nhập email cần tài khoản đã xác minh email. Google Sign-In cần URL scheme có trong `ios/Runner/Info.plist`.
 
-Trên Windows không thể chạy Xcode, ký IPA hoặc cài bản Flutter iOS native trực tiếp lên iPhone. Có thể dùng bản web trong Safari khi cần thử giao diện ngay.
+Trên Windows không thể chạy Xcode hay build Flutter iOS native trực tiếp. Workflow GitHub Actions tạo IPA chưa ký để cài qua AltServer hoặc công cụ sideload đang dùng trên máy.
 
 ## Không có Mac: GitHub Actions + Sideloadly
 

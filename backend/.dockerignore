@@ -1,0 +1,12 @@
+.env
+.env.*
+*.db
+*.sqlite3
+*.log
+firebase-adminsdk*.json
+uploads/
+runtime/
+__pycache__/
+*.pyc
+.venv/
+tests/

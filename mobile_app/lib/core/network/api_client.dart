@@ -35,7 +35,8 @@ class ApiClient {
         onRequest: (options, handler) async {
           // Attach JWT token if available
           final token = await _storage.read(key: 'jwt_token');
-          if (token != null) {
+          if (token != null &&
+              !options.path.endsWith('/api/auth/firebase/exchange')) {
             options.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
           }
           options.headers['X-RiceAI-Client'] =
@@ -54,6 +55,7 @@ class ApiClient {
   }
 
   Dio get dio => _dio;
+  void useServer(String url) => _dio.options.baseUrl = url;
   Future<String> getAppVersion() async {
     if (_appVersion == 'unknown') {
       try {

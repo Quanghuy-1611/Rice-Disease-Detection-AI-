@@ -49,6 +49,7 @@ venv.bak/
 # Research data and scripts are intentionally excluded from this backup.
 research/
 backend/uploads/
+backend/runtime/
 *.log
 
 # Temp files

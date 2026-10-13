@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../core/network/api_client.dart';
+import '../core/config/environment_config.dart';
 import '../core/errors/api_exception.dart';
 
 /// Xác thực bằng Firebase (email, Google hoặc khách), sau đó đổi Firebase ID
@@ -51,7 +53,8 @@ class AuthService extends ChangeNotifier with WidgetsBindingObserver {
     _heartbeatTimer?.cancel();
     unawaited(_reportHeartbeat());
     _heartbeatTimer = Timer.periodic(
-      const Duration(seconds: 45), (_) => unawaited(_reportHeartbeat()),
+      const Duration(seconds: 45),
+      (_) => unawaited(_reportHeartbeat()),
     );
   }
 
@@ -282,13 +285,15 @@ class AuthService extends ChangeNotifier with WidgetsBindingObserver {
       var clientId = await _storage.read(key: 'client_instance_id');
       if (clientId == null || clientId.isEmpty) {
         final random = Random.secure();
-        clientId = List.generate(16,
+        clientId = List.generate(
+          16,
           (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
         ).join();
         await _storage.write(key: 'client_instance_id', value: clientId);
       }
       await _apiClient.post('/api/client/heartbeat', data: <String, dynamic>{
-        'platform': defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
+        'platform':
+            defaultTargetPlatform == TargetPlatform.iOS ? 'ios' : 'android',
         'app_version': await _apiClient.getAppVersion(),
         'client_id': clientId,
       });
@@ -301,6 +306,44 @@ class AuthService extends ChangeNotifier with WidgetsBindingObserver {
     if (!_isAuthenticated) return null;
     final response = await _apiClient.get('/api/auth/me');
     return response is Map<String, dynamic> ? response : null;
+  }
+
+  /// Revalidate the Firebase identity on the selected API before switching.
+  /// The old connection remains active if the new server rejects the account.
+  Future<void> changeServer(RiceAiServerMode mode, String url) async {
+    final normalized = EnvironmentConfig.normalize(url);
+    if (!EnvironmentConfig.isValidServerUrl(normalized, mode)) {
+      throw const FormatException('Địa chỉ máy chủ chưa hợp lệ.');
+    }
+    String? newToken;
+    if (_isAuthenticated) {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw StateError('Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.');
+      }
+      final idToken = await user.getIdToken(true);
+      if (idToken == null) {
+        throw StateError('Không lấy được phiên Firebase.');
+      }
+      final response = await Dio(BaseOptions(
+        connectTimeout: const Duration(seconds: 8),
+        receiveTimeout: const Duration(seconds: 8),
+      )).post<Map<String, dynamic>>(
+        '$normalized/api/auth/firebase/exchange',
+        data: <String, dynamic>{'id_token': idToken},
+      );
+      newToken = response.data?['access_token']?.toString();
+      if (newToken == null || newToken.isEmpty) {
+        throw StateError('Máy chủ không xác nhận được tài khoản này.');
+      }
+    }
+    await EnvironmentConfig.saveForMode(mode, normalized);
+    if (newToken != null) {
+      await _storage.write(key: 'jwt_token', value: newToken);
+    }
+    _apiClient.useServer(normalized);
+    _startHeartbeat();
+    notifyListeners();
   }
 
   Future<Map<String, dynamic>> updateProfile({required String fullName}) async {
