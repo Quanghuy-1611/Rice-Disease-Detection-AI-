@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/errors/api_exception.dart';
 import '../../core/theme/app_theme.dart';
 import '../../services/auth_service.dart';
 import '../../services/prediction_service.dart';
@@ -14,6 +15,7 @@ import 'home_screen.dart';
 import 'login_screen.dart';
 import 'profile_screen.dart';
 import 'plus_screen.dart';
+import 'server_settings_screen.dart';
 
 /// AppShell – khung ngoài chứa BottomNavigationBar
 class AppShell extends StatefulWidget {
@@ -70,9 +72,11 @@ class _AppShellState extends State<AppShell>
   }
 
   Future<void> _loadPlan() async {
-    final generation = _planGeneration;
+    final generation = ++_planGeneration;
     try {
-      final plan = await _predictionService.getPlan();
+      final plan = await _predictionService.getPlan().timeout(
+            const Duration(seconds: 20),
+          );
       if (!mounted ||
           generation != _planGeneration ||
           !context.read<AuthService>().isAuthenticated) {
@@ -85,7 +89,7 @@ class _AppShellState extends State<AppShell>
         _loadingPlan = false;
         _planError = null;
       });
-    } catch (_) {
+    } catch (error) {
       if (!mounted ||
           generation != _planGeneration ||
           !context.read<AuthService>().isAuthenticated) {
@@ -93,9 +97,28 @@ class _AppShellState extends State<AppShell>
       }
       setState(() {
         _loadingPlan = false;
-        _planError =
-            'Chưa tải được gói tài khoản. Kiểm tra kết nối với máy chủ rồi thử lại.';
+        _planError = error is ApiException
+            ? error.message
+            : 'Chưa tải được gói tài khoản. Kiểm tra kết nối với máy chủ rồi thử lại.';
       });
+    }
+  }
+
+  Future<void> _retryPlan() async {
+    if (_loadingPlan) return;
+    setState(() {
+      _loadingPlan = true;
+      _planError = null;
+    });
+    await _loadPlan();
+  }
+
+  Future<void> _openServerSettings() async {
+    final changed = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(builder: (_) => const ServerSettingsScreen()),
+    );
+    if (changed == true && mounted) {
+      await _retryPlan();
     }
   }
 
@@ -198,8 +221,15 @@ class _AppShellState extends State<AppShell>
                                 textAlign: TextAlign.center),
                             const SizedBox(height: 12),
                             FilledButton(
-                                onPressed: () => unawaited(_loadPlan()),
-                                child: const Text('Thử lại')),
+                              onPressed: () => unawaited(_retryPlan()),
+                              child: const Text('Thử lại'),
+                            ),
+                            const SizedBox(height: 8),
+                            TextButton.icon(
+                              onPressed: () => unawaited(_openServerSettings()),
+                              icon: const Icon(Icons.dns_outlined),
+                              label: const Text('Chọn máy chủ'),
+                            ),
                           ],
                         ),
                       ),
