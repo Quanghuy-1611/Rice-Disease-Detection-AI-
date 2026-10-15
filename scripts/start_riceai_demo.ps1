@@ -113,14 +113,25 @@ Write-Host "  API: http://127.0.0.1:8015/docs"
 foreach ($address in $lanAddresses) {
   $lanUrl = "http://${address}:8015"
   if (Test-RiceAiUrl "$lanUrl/api/health") {
-    Write-Host "  iPhone API: $lanUrl/docs (laptop check OK)"
+    Write-Host "  Phone API: $lanUrl/docs (laptop check OK)"
   } else {
-    Write-Warning "iPhone API did not respond at $lanUrl. Check the laptop network and firewall."
+    Write-Warning "Phone API did not respond at $lanUrl. Check the laptop network and firewall."
   }
 }
 $tailscaleExe = Join-Path $env:ProgramFiles 'Tailscale\tailscale.exe'
 if (Test-Path -LiteralPath $tailscaleExe) {
-  $serveStatus = & $tailscaleExe serve status 2>$null
+  $serveStatus = @()
+  $previousErrorActionPreference = $ErrorActionPreference
+  try {
+    # Tailscale being stopped is optional, not a RiceAI startup failure.
+    $ErrorActionPreference = 'Continue'
+    $serveStatus = & $tailscaleExe serve status 2>$null
+    if ($LASTEXITCODE -ne 0) { $serveStatus = @() }
+  } catch {
+    $serveStatus = @()
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
   $internetUrl = $serveStatus | Select-String -Pattern '^https://\S+' | Select-Object -First 1
   if ($internetUrl) {
     $tailscaleUrl = $internetUrl.Matches[0].Value
@@ -129,8 +140,11 @@ if (Test-Path -LiteralPath $tailscaleExe) {
     } else {
       Write-Warning "Tailscale API did not respond at $tailscaleUrl. Check Tailscale Serve."
     }
+  } else {
+    Write-Host '  Tailscale: off or not configured. Local RiceAI is still ready.' -ForegroundColor Yellow
   }
 }
-Write-Host 'Keep this laptop powered on while using RiceAI on iPhone.'
-Write-Host 'Laptop checks cannot verify the iPhone connection. Open the chosen API /docs address in iPhone Safari.'
+Write-Host 'Keep this laptop powered on while using RiceAI on a phone.'
+Write-Host 'Laptop checks cannot verify the phone connection. Open the chosen API /docs address in the phone browser.'
 Write-Host 'For Tailscale access, both devices must be connected to the same tailnet.'
+exit 0
