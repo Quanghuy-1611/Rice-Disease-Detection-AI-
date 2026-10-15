@@ -3,6 +3,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../services/ai_assistant_service.dart';
+import '../../services/chat_history_store.dart';
+
+const String _greeting =
+    'Chào bạn! Tôi có thể giải thích triệu chứng, cách phòng ngừa và xử lý bệnh lúa. Kết quả chỉ mang tính hỗ trợ, không thay thế tư vấn cán bộ nông nghiệp.';
 
 class _ChatMessage {
   const _ChatMessage({
@@ -17,7 +21,9 @@ class _ChatMessage {
 }
 
 class AiAssistantScreen extends StatefulWidget {
-  const AiAssistantScreen({super.key});
+  const AiAssistantScreen({super.key, this.accountId});
+
+  final String? accountId;
 
   @override
   State<AiAssistantScreen> createState() => _AiAssistantScreenState();
@@ -25,24 +31,80 @@ class AiAssistantScreen extends StatefulWidget {
 
 class _AiAssistantScreenState extends State<AiAssistantScreen> {
   final AiAssistantService _aiService = AiAssistantService();
+  final ChatHistoryStore _historyStore = const ChatHistoryStore();
   final TextEditingController _textController = TextEditingController();
   final List<_ChatMessage> _messages = <_ChatMessage>[
     const _ChatMessage(
-      text:
-          'Chào bạn! Tôi có thể giải thích triệu chứng, cách phòng ngừa và xử lý bệnh lúa. Kết quả chỉ mang tính hỗ trợ, không thay thế tư vấn cán bộ nông nghiệp.',
+      text: _greeting,
       isUser: false,
     ),
   ];
   bool _isLoading = false;
+  bool _historyLoaded = false;
+  Future<void> _saveQueue = Future<void>.value();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    List<Map<String, dynamic>> stored;
+    try {
+      stored = await _historyStore.load(widget.accountId);
+    } catch (_) {
+      stored = <Map<String, dynamic>>[];
+    }
+    if (!mounted) return;
+    setState(() {
+      _messages.insertAll(
+        0,
+        stored.map((item) => _ChatMessage(
+              text: item['text'] as String,
+              isUser: item['isUser'] as bool,
+              sources: (item['sources'] is List)
+                  ? (item['sources'] as List).whereType<String>().toList()
+                  : const <String>[],
+            )),
+      );
+      _historyLoaded = true;
+    });
+  }
+
+  void _saveHistory() {
+    final snapshot = _messages
+        .take(100)
+        .map((message) => <String, dynamic>{
+              'text': message.text,
+              'isUser': message.isUser,
+              'sources': message.sources,
+            })
+        .toList();
+    // The last item is the static greeting, not an account message.
+    if (snapshot.isNotEmpty &&
+        snapshot.last['isUser'] == false &&
+        snapshot.last['text'] == _greeting) {
+      snapshot.removeLast();
+    }
+    _saveQueue = _saveQueue.then((_) async {
+      try {
+        await _historyStore.save(widget.accountId, snapshot);
+      } catch (_) {
+        // The current conversation remains usable if local storage is full.
+      }
+    });
+  }
 
   Future<void> _sendMessage() async {
     final message = _textController.text.trim();
-    if (message.isEmpty || _isLoading) return;
+    if (message.isEmpty || _isLoading || !_historyLoaded) return;
 
     setState(() {
       _messages.insert(0, _ChatMessage(text: message, isUser: true));
       _isLoading = true;
     });
+    _saveHistory();
     _textController.clear();
 
     try {
@@ -65,6 +127,7 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
           ),
         );
       });
+      _saveHistory();
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -168,7 +231,7 @@ class _AiAssistantScreenState extends State<AiAssistantScreen> {
               ),
               const SizedBox(width: 10),
               FilledButton(
-                onPressed: _isLoading ? null : _sendMessage,
+                onPressed: _isLoading || !_historyLoaded ? null : _sendMessage,
                 style: FilledButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(15)),

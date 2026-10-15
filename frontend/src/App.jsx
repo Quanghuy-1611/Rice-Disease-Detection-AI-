@@ -138,6 +138,20 @@ function Navbar() {
 
 function App() {
   const location = useLocation();
+  const getChatAccount = () => localStorage.getItem('token')
+    ? (localStorage.getItem('user_uid') || localStorage.getItem('user_email')?.trim().toLowerCase() || null)
+    : null;
+  const [chatAccount, setChatAccount] = useState(getChatAccount);
+
+  useEffect(() => {
+    const updateAccount = () => setChatAccount(getChatAccount());
+    window.addEventListener('storage', updateAccount);
+    window.addEventListener('riceai-auth-changed', updateAccount);
+    return () => {
+      window.removeEventListener('storage', updateAccount);
+      window.removeEventListener('riceai-auth-changed', updateAccount);
+    };
+  }, []);
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
@@ -155,7 +169,8 @@ function App() {
           </Routes>
         </Suspense>
       </div>
-      {!['/admin', '/login', '/register'].includes(location.pathname) && <Chatbot />}
+      {!['/admin', '/login', '/register'].includes(location.pathname) &&
+        <Chatbot key={chatAccount || 'guest'} accountId={chatAccount} />}
     </div>
   );
 }

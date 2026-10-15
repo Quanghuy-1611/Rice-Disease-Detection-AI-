@@ -25,6 +25,7 @@ class AuthService extends ChangeNotifier with WidgetsBindingObserver {
 
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _isAuthenticated;
+  String? get accountId => _isAuthenticated ? _auth.currentUser?.uid : null;
 
   AuthService() {
     WidgetsBinding.instance.addObserver(this);

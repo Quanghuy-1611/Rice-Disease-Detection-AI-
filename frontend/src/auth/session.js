@@ -8,6 +8,7 @@ export async function exchangeFirebaseSession(user) {
   localStorage.setItem('user_name', data.full_name || user.displayName || user.email);
   localStorage.setItem('user_role', data.role || 'user');
   localStorage.setItem('user_email', user.email || '');
+  localStorage.setItem('user_uid', user.uid);
   window.dispatchEvent(new Event('riceai-auth-changed'));
   return data;
 }
@@ -17,5 +18,6 @@ export function clearSession() {
   localStorage.removeItem('user_name');
   localStorage.removeItem('user_role');
   localStorage.removeItem('user_email');
+  localStorage.removeItem('user_uid');
   window.dispatchEvent(new Event('riceai-auth-changed'));
 }

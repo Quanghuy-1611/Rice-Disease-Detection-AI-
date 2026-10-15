@@ -2,12 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import './Chatbot.css';
+import { initialChatMessages, saveChatMessages } from './chatHistory';
 
-function Chatbot() {
+function Chatbot({ accountId }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { sender: 'bot', text: 'Chào bạn! Tôi là RiceAI - Chuyên gia Nông nghiệp. Bạn cần tư vấn gì về cây lúa hôm nay?' }
-  ]);
+  const [messages, setMessages] = useState(() => initialChatMessages(accountId));
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
@@ -19,6 +18,10 @@ function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    saveChatMessages(accountId, messages);
+  }, [accountId, messages]);
 
   useEffect(() => {
     const handleOpenChat = (e) => {

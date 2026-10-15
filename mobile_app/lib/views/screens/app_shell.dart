@@ -190,14 +190,18 @@ class _AppShellState extends State<AppShell>
 
   @override
   Widget build(BuildContext context) {
-    final authenticated = context.watch<AuthService>().isAuthenticated;
+    final auth = context.watch<AuthService>();
+    final authenticated = auth.isAuthenticated;
     final screens = <Widget>[
       HomeScreen(
         plusMode: authenticated && _sessionPlus == true,
         staffCanSwitch: authenticated && _staffUnlimited,
         onSwitchMode: _switchStaffMode,
       ),
-      const AiAssistantScreen(),
+      AiAssistantScreen(
+        key: ValueKey<String>(auth.accountId ?? 'guest'),
+        accountId: auth.accountId,
+      ),
       const GuideScreen(),
       const ProfileScreen(),
     ];
